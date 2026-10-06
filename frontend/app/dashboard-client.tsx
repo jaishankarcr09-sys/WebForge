@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type Issue={
@@ -26,7 +26,9 @@ type Audit={
   backend_score:number; reach_score:number; intelligence_summary:string;
   features:Record<string,any>; similar_sites:Similar[]; opportunities:any[];
 };
-type History={audit_id:number;score:number;status:string;created_at:string};
+type History={audit_id:number;url:string;score:number;status:string;created_at:string};
+type Project={id:number;name:string;description:string};
+type Schedule={id:number;website_id:number;interval_minutes:number;enabled:boolean;next_run_at:string};
 type User={id:string;email:string;name:string;avatar:string};
 type Props={user:User};
 
@@ -56,12 +58,46 @@ export default function DashboardClient({user}:Props){
   const [ticket,setTicket]=useState("");
   const [projectName,setProjectName]=useState("");
   const [workspaceMsg,setWorkspaceMsg]=useState("");
+  const [projects,setProjects]=useState<Project[]>([]);
+  const [schedules,setSchedules]=useState<Schedule[]>([]);
+  const [workspaceLoading,setWorkspaceLoading]=useState(true);
 
   const filteredIssues=useMemo(
     ()=>audit?.issues.filter(x=>(filter==="all"||x.severity===filter)&&(layerFilter==="all"||x.layer===layerFilter))??[],
     [audit,filter,layerFilter]
   );
   const topIssues=useMemo(()=>audit?.issues.slice().sort((a,b)=>b.priority-a.priority).slice(0,5)??[],[audit]);
+
+  useEffect(()=>{
+    let active=true;
+    (async()=>{
+      try{
+        const [h,p,s]=await Promise.all([
+          fetch("/api/audits/history",{cache:"no-store"}).then(r=>r.ok?r.json():[]),
+          fetch("/api/projects",{cache:"no-store"}).then(r=>r.ok?r.json():[]),
+          fetch("/api/schedules",{cache:"no-store"}).then(r=>r.ok?r.json():[]),
+        ]);
+        if(!active)return;
+        setHistory(Array.isArray(h)?h:[]);
+        setProjects(Array.isArray(p)?p:[]);
+        setSchedules(Array.isArray(s)?s:[]);
+      } finally {
+        if(active)setWorkspaceLoading(false);
+      }
+    })();
+    return ()=>{active=false};
+  },[]);
+
+  async function refreshWorkspace(){
+    const [h,p,s]=await Promise.all([
+      fetch("/api/audits/history",{cache:"no-store"}).then(r=>r.ok?r.json():[]),
+      fetch("/api/projects",{cache:"no-store"}).then(r=>r.ok?r.json():[]),
+      fetch("/api/schedules",{cache:"no-store"}).then(r=>r.ok?r.json():[]),
+    ]);
+    setHistory(Array.isArray(h)?h:[]);
+    setProjects(Array.isArray(p)?p:[]);
+    setSchedules(Array.isArray(s)?s:[]);
+  }
 
   async function runAudit(e?:FormEvent){
     e?.preventDefault();
@@ -79,8 +115,8 @@ export default function DashboardClient({user}:Props){
         if(state.status==="completed"){
           setAudit(state.result);
           setProgress("Audit complete.");
-          const h=await fetch("/api/audits/history?url="+encodeURIComponent(state.result.url),{cache:"no-store"});
-          const hist=await h.json();setHistory(Array.isArray(hist)?hist:[]);break;
+          await refreshWorkspace();
+          break;
         }
         if(state.status==="failed")throw new Error(state.error||"Audit failed.");
         if(i===179)throw new Error("Audit timed out. Try 5–10 pages first.");
@@ -98,12 +134,12 @@ export default function DashboardClient({user}:Props){
   async function createProject(e:FormEvent){
     e.preventDefault();if(!projectName.trim())return;
     const r=await fetch("/api/projects",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:projectName})});
-    const data=await r.json();setWorkspaceMsg(r.ok?"Project #"+data.id+" created.":data.detail||"Could not create project.");if(r.ok)setProjectName("");
+    const data=await r.json();setWorkspaceMsg(r.ok?"Project #"+data.id+" created.":data.detail||"Could not create project.");if(r.ok){setProjectName("");await refreshWorkspace();}
   }
   async function scheduleDaily(){
     if(!audit)return;
     const r=await fetch("/api/schedules",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:audit.url,interval_minutes:1440})});
-    const data=await r.json();setWorkspaceMsg(r.ok?"Daily rescan enabled for this website.":data.detail||"Could not schedule rescan.");
+    const data=await r.json();setWorkspaceMsg(r.ok?"Daily rescan enabled for this website.":data.detail||"Could not schedule rescan.");if(r.ok)await refreshWorkspace();
   }
 
   return <div className="shell">
@@ -130,21 +166,30 @@ export default function DashboardClient({user}:Props){
         <div className="concept-grid"><Concept title="Projects" text="Projects group related websites and audits into one workspace. They matter when you manage more than one product, client, or environment."/><Concept title="Automation" text="Automation schedules recurring rescans so you can catch regressions after releases instead of manually checking the site again."/><Concept title="Frontend + Backend" text="A polished UI can still be slowed by server delivery, caching, security headers, redirects, or APIs. WebForge reports both layers together."/><Concept title="Evidence first" text="Every important finding shows what was observed, where it happened, and what change would improve it. AI never replaces measurement." /></div>
       </section>}
 
-      {audit&&<div className="view-body">
-        {view==="overview"&&<Overview audit={audit} topIssues={topIssues} onView={setView} onAI={askAI}/>}
-        {view==="audit"&&<Overview audit={audit} topIssues={topIssues} onView={setView} onAI={askAI}/>}
-        {view==="issues"&&<Issues audit={audit} filter={filter} setFilter={setFilter} layerFilter={layerFilter} setLayerFilter={setLayerFilter} issues={filteredIssues} onTicket={makeTicket}/>}
-        {view==="pages"&&<Pages audit={audit}/>}
-        {view==="opportunities"&&<Opportunities audit={audit}/>}
-        {view==="history"&&<HistoryView history={history} setAudit={setAudit} audit={audit}/>}
-        {view==="workspace"&&<Workspace projectName={projectName} setProjectName={setProjectName} createProject={createProject} scheduleDaily={scheduleDaily} msg={workspaceMsg}/>}
+      <div className="view-body">
+        {view==="overview"&&<OverviewState audit={audit} topIssues={topIssues} onView={setView} onAI={askAI}/>}
+        {view==="audit"&&<AuditState audit={audit} topIssues={topIssues} onView={setView} onAI={askAI}/>}
+        {view==="issues"&&(audit?<Issues audit={audit} filter={filter} setFilter={setFilter} layerFilter={layerFilter} setLayerFilter={setLayerFilter} issues={filteredIssues} onTicket={makeTicket}/>:<EmptyPage title="Run an audit first" text="Your findings will appear here after WebForge measures a website." action={()=>setView("audit")} actionLabel="Start audit"/>)}
+        {view==="pages"&&(audit?<Pages audit={audit}/>:<EmptyPage title="No page measurements yet" text="Run your first website audit to populate the page evidence table." action={()=>setView("audit")} actionLabel="Measure a website"/>)}
+        {view==="opportunities"&&(audit?<Opportunities audit={audit}/>:<EmptyPage title="No opportunities yet" text="WebForge will classify the website, compare patterns and build reach opportunities after your first audit." action={()=>setView("audit")} actionLabel="Find opportunities"/>)}
+        {view==="history"&&<HistoryView history={history} setAudit={setAudit} loading={workspaceLoading}/>}
+        {view==="workspace"&&<Workspace projectName={projectName} setProjectName={setProjectName} createProject={createProject} scheduleDaily={scheduleDaily} msg={workspaceMsg} projects={projects} schedules={schedules} audit={audit} loading={workspaceLoading}/>}
         {view==="learn"&&<Learn/>}
-      </div>}
+      </div>
 
       {audit&&ai&&<section className="panel ai-panel"><div className="section-title"><div><span className="eyebrow">OPTIONAL AI LAYER</span><h2>Engineering brief</h2></div><button className="secondary" onClick={()=>setAi(null)}>Close</button></div><p className="ai-summary">{ai.summary}</p>{ai.items?.map((x:any,i:number)=><div className="ai-row" key={i}><b>{x.title}</b><span>P{x.priority}</span><p>{x.action||x.why}</p></div>)}{ai.raw&&<pre>{ai.raw}</pre>}</section>}
       {ticket&&<section className="panel ticket-panel"><div className="section-title"><div><span className="eyebrow">ENGINEERING HANDOFF</span><h2>Ticket template</h2></div><button className="secondary" onClick={()=>navigator.clipboard.writeText(ticket)}>Copy</button></div><pre>{ticket}</pre></section>}
     </main>
   </div>
+}
+
+function OverviewState({audit,topIssues,onView,onAI}:{audit:Audit|null;topIssues:Issue[];onView:(v:string)=>void;onAI:()=>void}){
+  if(!audit) return <section className="panel empty-dashboard"><span className="eyebrow">YOUR WORKSPACE</span><h2>Start with a website.</h2><p>Run a full-stack audit and this workspace will fill with health scores, evidence, weaknesses, page measurements, reach opportunities and an engineering backlog.</p><button className="primary" onClick={()=>onView("audit")}>Start your first audit</button></section>;
+  return <Overview audit={audit} topIssues={topIssues} onView={onView} onAI={onAI}/>;
+}
+
+function AuditState({audit,topIssues,onView,onAI}:{audit:Audit|null;topIssues:Issue[];onView:(v:string)=>void;onAI:()=>void}){
+  return <>{!audit&&<section className="panel empty-dashboard"><span className="eyebrow">NEW AUDIT</span><h2>Measure before you change.</h2><p>Use the audit controls above to create the first baseline. Once complete, the report remains available across this workspace.</p></section>}{audit&&<Overview audit={audit} topIssues={topIssues} onView={onView} onAI={onAI}/>}</>;
 }
 
 function Overview({audit,topIssues,onView,onAI}:{audit:Audit;topIssues:Issue[];onView:(v:string)=>void;onAI:()=>void}){
@@ -183,17 +228,46 @@ function Opportunities({audit}:{audit:Audit}){
   </div>
 }
 
-function HistoryView({history,setAudit,audit}:{history:History[];setAudit:(x:Audit)=>void;audit:Audit}){
-  async function load(id:number){const r=await fetch("/api/audits/"+id);const data=await r.json();if(data.audit_id)setAudit(data);}
-  return <section className="panel"><div className="section-title"><div><span className="eyebrow">REGRESSION CONTROL</span><h2>Scan history</h2><p>Track whether releases actually made the website better.</p></div></div>{history.length?history.map(h=><div className="history-row" key={h.audit_id}><div><b>Audit #{h.audit_id}</b><small>{new Date(h.created_at).toLocaleString()}</small></div><strong>{h.score}</strong><span className="history-status">{h.status}</span><button className="secondary" onClick={()=>load(h.audit_id)}>Open</button></div>):<Empty text="Run another audit on this website to build a history timeline."/>}</section>
+function HistoryView({history,setAudit,loading}:{history:History[];setAudit:(x:Audit)=>void;loading:boolean}){
+  async function load(id:number){
+    const r=await fetch("/api/audits/"+id,{cache:"no-store"});
+    const data=await r.json();
+    if(data.audit_id)setAudit(data);
+  }
+  return <section className="panel">
+    <div className="section-title"><div><span className="eyebrow">REGRESSION CONTROL</span><h2>Scan history</h2><p>Every authenticated audit stays in this workspace.</p></div></div>
+    {loading?<Empty text="Loading your workspace history…"/>:history.length?history.map(h=><div className="history-row" key={h.audit_id}>
+      <div><b>Audit #{h.audit_id}</b><small>{h.url} • {new Date(h.created_at).toLocaleString()}</small></div>
+      <strong>{h.score}</strong><span className="history-status">{h.status}</span>
+      <button className="secondary" onClick={()=>load(h.audit_id)}>Open</button>
+    </div>):<Empty text="No audits yet. Start your first audit and it will appear here automatically."/>}
+  </section>
 }
 
-function Workspace({projectName,setProjectName,createProject,scheduleDaily,msg}:{projectName:string;setProjectName:(x:string)=>void;createProject:(e:FormEvent)=>void;scheduleDaily:()=>void;msg:string}){
-  return <div className="grid-2"><section className="panel"><span className="eyebrow">PROJECTS</span><h2>Group work intentionally</h2><p>A project is a workspace for a product, client, or environment. It keeps related websites and audit history together.</p><form className="project-form" onSubmit={createProject}><input value={projectName} onChange={e=>setProjectName(e.target.value)} placeholder="e.g. Marketing website"/><button className="primary">Create project</button></form></section><section className="panel"><span className="eyebrow">AUTOMATION</span><h2>Catch regressions automatically</h2><p>Automation schedules recurring rescans after releases, so you do not have to manually recheck the same website.</p><button className="secondary" onClick={scheduleDaily}>Enable daily rescan for current site</button></section>{msg&&<div className="panel wide success-panel"><b>{msg}</b></div>}</div>
+function Workspace({projectName,setProjectName,createProject,scheduleDaily,msg,projects,schedules,audit,loading}:{projectName:string;setProjectName:(x:string)=>void;createProject:(e:FormEvent)=>void;scheduleDaily:()=>void;msg:string;projects:Project[];schedules:Schedule[];audit:Audit|null;loading:boolean}){
+  return <div className="grid-2">
+    <section className="panel">
+      <span className="eyebrow">PROJECTS</span><h2>Group work intentionally</h2>
+      <p>Projects organize products, clients or environments without leaving the WebForge workspace.</p>
+      <form className="project-form" onSubmit={createProject}><input value={projectName} onChange={e=>setProjectName(e.target.value)} placeholder="e.g. Marketing website"/><button className="primary">Create project</button></form>
+      <div className="workspace-list">{loading?<Empty text="Loading projects…"/>:projects.length?projects.map(p=><div className="workspace-row" key={p.id}><div><b>{p.name}</b><small>{p.description||"WebForge workspace"}</small></div><span>#{p.id}</span></div>):<Empty text="No projects yet. Projects are optional until you manage multiple products."/>}</div>
+    </section>
+    <section className="panel">
+      <span className="eyebrow">AUTOMATION</span><h2>Catch regressions automatically</h2>
+      <p>Schedules live in the same authenticated workspace and run against websites you already audited.</p>
+      {audit?<button className="secondary" onClick={scheduleDaily}>Enable daily rescan for current site</button>:<button className="secondary" onClick={()=>setWorkspaceMsg("Run an audit first so WebForge knows which website to rescan.")}>Choose a website from an audit</button>}
+      <div className="workspace-list">{loading?<Empty text="Loading automation…"/>:schedules.length?schedules.map(s=><div className="workspace-row" key={s.id}><div><b>{s.interval_minutes===1440?"Daily rescan":"Recurring rescan"}</b><small>Next run {new Date(s.next_run_at).toLocaleString()}</small></div><span>{s.enabled?"Active":"Paused"}</span></div>):<Empty text="No automated rescans yet."/>}</div>
+    </section>
+    {msg&&<div className="panel wide success-panel"><b>{msg}</b></div>}
+  </div>
 }
 
 function Learn(){
   return <div className="learn-grid"><section className="panel wide"><span className="eyebrow">THE PROCESS</span><h2>What the user should do</h2><div className="process-grid">{[["01","Sign in","Your private workspace is tied to your Supabase account."],["02","Enter a URL","Choose 5–30 pages. Start with 5–10 for a fast baseline."],["03","Read the full-stack report","Review website type, frontend health, backend health, reach score, and evidence."],["04","Fix the P1 work","Use priority, impact, effort and confidence to decide what enters the next sprint."],["05","Explore similar sites","Study comparable patterns and then build a differentiated version rather than copying."],["06","Rescan","Compare history after changes and schedule recurring scans for regression control."]].map(x=><div className="process-step" key={x[0]}><span>{x[0]}</span><div><b>{x[1]}</b><p>{x[2]}</p></div></div>)}</div></section><Concept title="Projects" text="Projects are optional organization for multiple websites, clients, or environments."/><Concept title="Automation" text="Automation is optional recurrence. It watches a known website and helps identify regressions after releases."/><Concept title="AI" text="AI is an interpretation layer. The scanner remains deterministic; AI explains measured findings and drafts work."/><Concept title="Similar websites" text="Comparables answer what the market baseline looks like, which features are common, and where a differentiated opportunity exists."/></div>
+}
+
+function EmptyPage({title,text,action,actionLabel}:{title:string;text:string;action:()=>void;actionLabel:string}){
+  return <section className="panel empty-dashboard"><span className="eyebrow">WEBFORGE WORKSPACE</span><h2>{title}</h2><p>{text}</p><button className="primary" onClick={action}>{actionLabel}</button></section>
 }
 
 function Concept({title,text}:{title:string;text:string}){return <div className="concept panel"><span className="eyebrow">{title.toUpperCase()}</span><h3>{title}</h3><p>{text}</p></div>}
