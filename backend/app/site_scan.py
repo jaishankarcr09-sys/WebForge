@@ -17,6 +17,7 @@ class PageData:
     scripts:int; lang:str; viewport:str; og_title:str; og_description:str; twitter_card:str; json_ld:int
     noindex:bool; mixed_content:int; security_headers:dict[str,bool]
     forms_without_labels:int; buttons_without_names:int
+    server:str; cache_control:str; content_encoding:str; etag:bool; set_cookie_count:int; insecure_cookie_count:int; redirect_count:int
 
 @dataclass
 class SiteData:
@@ -100,7 +101,12 @@ def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->Pag
         og_title=prop(soup,"og:title"),og_description=prop(soup,"og:description"),twitter_card=meta(soup,"twitter:card"),
         json_ld=len(soup.find_all("script",type="application/ld+json")),noindex="noindex" in robots,mixed_content=mixed,
         security_headers={h:bool(r.headers.get(h)) for h in SECURITY_HEADERS},
-        forms_without_labels=labels,buttons_without_names=unnamed_buttons
+        forms_without_labels=labels,buttons_without_names=unnamed_buttons,
+        server=str(r.headers.get("server","")), cache_control=str(r.headers.get("cache-control","")),
+        content_encoding=str(r.headers.get("content-encoding","")), etag=bool(r.headers.get("etag")),
+        set_cookie_count=len(r.raw.headers.get_all("set-cookie") or []) if hasattr(r.raw.headers,"get_all") else int(bool(r.headers.get("set-cookie"))),
+        insecure_cookie_count=sum(1 for c in (r.raw.headers.get_all("set-cookie") or []) if "secure" not in c.lower()) if hasattr(r.raw.headers,"get_all") else 0,
+        redirect_count=len(r.history)
     )
 
 def crawl(url:str,page_limit:int=10)->SiteData:
@@ -139,7 +145,7 @@ def crawl(url:str,page_limit:int=10)->SiteData:
                 discovered.add(target)
                 if target not in seen and len(discovered)<limit*5: q.append(target)
         except Exception:
-            pages.append(PageData(current,current,0,0,0,0,"","","",0,0,[],[],[],[],0,"","","","","",0,False,{},0,0))
+            pages.append(PageData(current,current,0,0,0,0,"","","",0,0,[],[],[],[],0,"","","","","",0,False,{},0,0,"","","",False,0,0,0))
     targets=[]; broken=[]; checked=set()
     for p in pages: targets += p.internal_links[:80] + p.external_links[:20]
     for target in targets:
