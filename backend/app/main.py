@@ -133,12 +133,12 @@ def create_schedule(url:str,interval_minutes:int=1440,db:Session=Depends(get_db)
     website=db.query(Website).filter(Website.url==url).first()
     if not website:website=Website(url=url);db.add(website);db.flush()
     if not db.query(UserWebsite).filter_by(user_id=user_id,website_id=website.id).first():db.add(UserWebsite(user_id=user_id,website_id=website.id))
-    row=Schedule(website_id=website.id,interval_minutes=interval_minutes,next_run_at=datetime.now(timezone.utc)+timedelta(minutes=interval_minutes));db.add(row);db.commit()
+    row=Schedule(website_id=website.id,user_id=user_id,interval_minutes=interval_minutes,next_run_at=datetime.now(timezone.utc)+timedelta(minutes=interval_minutes));db.add(row);db.commit()
     return {"id":row.id,"url":url,"interval_minutes":interval_minutes,"enabled":True}
 
 @app.get("/api/v1/schedules")
 def list_schedules(db:Session=Depends(get_db),user_id:str=Depends(current_user)):
-    rows=db.query(Schedule).join(UserWebsite,UserWebsite.website_id==Schedule.website_id).filter(UserWebsite.user_id==user_id).all()
+    rows=db.query(Schedule).filter(Schedule.user_id==user_id).all()
     return [{"id":s.id,"website_id":s.website_id,"interval_minutes":s.interval_minutes,"enabled":s.enabled,"next_run_at":s.next_run_at.isoformat()} for s in rows]
 
 @app.on_event("startup")
@@ -150,11 +150,11 @@ async def schedule_loop():
             db=SessionLocal()
             try:
                 now=datetime.now(timezone.utc)
-                rows=db.query(Schedule).filter(Schedule.enabled.is_(True),Schedule.next_run_at<=now).all()
+                rows=db.query(Schedule).filter(Schedule.enabled.is_(True),Schedule.next_run_at<=now,Schedule.user_id.is_not(None)).all()
                 for row in rows:
                     website=db.get(Website,row.website_id)
                     if website:
-                        try:run_and_persist(website.url,10,db,None)
+                        try:run_and_persist(website.url,10,db,row.user_id)
                         except Exception:db.rollback()
                     row.last_run_at=now;row.next_run_at=now+timedelta(minutes=row.interval_minutes);db.commit()
             finally:db.close()
