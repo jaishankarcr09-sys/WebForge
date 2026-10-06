@@ -1,0 +1,56 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: #0b0d12;
+  color: #f4f6fb;
+  font-family: Arial, Helvetica, sans-serif;
+}
+button, input { font: inherit; }
+.page { width: min(1100px, 92vw); margin: 0 auto; padding: 80px 0; }
+.hero { max-width: 780px; }
+.eyebrow { letter-spacing: .18em; font-weight: 700; font-size: .78rem; opacity: .7; }
+h1 { font-size: clamp(2.6rem, 7vw, 5rem); line-height: .98; margin: 16px 0; }
+.subtitle { font-size: 1.15rem; line-height: 1.7; color: #aeb5c4; }
+.scan-form { display: flex; gap: 12px; margin-top: 32px; }
+.scan-form input {
+  flex: 1; border: 1px solid #303646; background: #151923; color: #fff;
+  border-radius: 12px; padding: 15px 16px;
+}
+.scan-form button {
+  border: 0; border-radius: 12px; padding: 15px 22px;
+  font-weight: 700; cursor: pointer;
+}
+.scan-form button:disabled { cursor: wait; opacity: .6; }
+.error { color: #ff8d8d; }
+.results { margin-top: 64px; }
+.score-card {
+  border: 1px solid #303646; background: #151923;
+  border-radius: 20px; padding: 28px; width: fit-content;
+}
+.score-card span { display: block; color: #aeb5c4; }
+.score-card strong { font-size: 4rem; line-height: 1; }
+.issues { margin-top: 36px; }
+.section-heading, .issue-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.section-heading h2 { margin-bottom: 6px; }
+.section-heading span, .category { color: #8f97a8; font-size: .9rem; }
+.issue {
+  border: 1px solid #303646; border-radius: 16px;
+  background: #11151e; padding: 22px; margin-top: 14px;
+}
+.issue h3 { margin: 8px 0 0; }
+.issue p { color: #b8bfcc; line-height: 1.6; }
+.severity { text-transform: uppercase; font-size: .76rem; font-weight: 800; }
+.severity.high { color: #ff7676; }
+.severity.medium { color: #ffbf69; }
+.severity.low { color: #7dd3fc; }
+.recommendation { border-top: 1px solid #272d3a; padding-top: 14px; }
+.recommendation p { margin-bottom: 0; }
+.empty {
+  margin-top: 16px; border: 1px dashed #303646;
+  padding: 28px; border-radius: 16px; color: #aeb5c4;
+}
+@media (max-width: 700px) {
+  .scan-form { flex-direction: column; }
+}
