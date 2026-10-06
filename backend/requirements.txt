@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+requests
+beautifulsoup4
+playwright
+pydantic
+pydantic-settings
+sqlalchemy
+psycopg[binary]
+redis
+python-dotenv
+httpx
