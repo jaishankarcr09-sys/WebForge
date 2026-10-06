@@ -92,8 +92,8 @@ export default function Home(){
       {ticket&&<section className="card"><div className="row"><h2>Ticket template</h2><button className="ghost" onClick={()=>navigator.clipboard.writeText(ticket)}>Copy</button></div><pre>{ticket}</pre></section>}
     </>}
 
-    <section className="card project-card"><div className="row"><h2>Projects</h2><span className="section-note">Workspace organization</span></div><form onSubmit={createProject} className="project-form"><input value={projectName} onChange={e=>setProjectName(e.target.value)} placeholder="Project name"/><button>Create project</button></form>{projectMsg&&<small className="evidence">{projectMsg}</small>}</section>
-  </main>
+    <section className="card project-card"><div className="row"><h2>Projects & automation</h2><span className="section-note">Workspace organization</span></div><form onSubmit={createProject} className="project-form"><input value={projectName} onChange={e=>setProjectName(e.target.value)} placeholder="Project name"/><button>Create project</button></form>{audit&&<button className="ghost schedule-btn" onClick={async()=>{const r=await fetch("/api/schedules",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:audit.url,interval_minutes:1440})});const data=await r.json();setProjectMsg(r.ok?"Daily rescan scheduled":(data.detail||"Could not schedule rescan"))}}>Schedule daily rescan</button>}{projectMsg&&<small className="evidence">{projectMsg}</small>}</section>
+</main>
 }
 
 function IssueCard({issue,onTicket}:{issue:Issue;onTicket:()=>void}){
