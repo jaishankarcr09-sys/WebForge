@@ -4,7 +4,7 @@ set -Eeuo pipefail
 export BACKEND_URL="${BACKEND_URL:-http://127.0.0.1:8000}"
 export PORT="${PORT:-3000}"
 
-uvicorn app.main:app --host 127.0.0.1 --port 8000 &
+uvicorn --app-dir /app/backend app.main:app --host 127.0.0.1 --port 8000 &
 BACKEND_PID=$!
 
 cleanup() {
