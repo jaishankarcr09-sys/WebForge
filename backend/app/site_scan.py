@@ -145,7 +145,7 @@ def crawl(url:str,page_limit:int=10)->SiteData:
                 discovered.add(target)
                 if target not in seen and len(discovered)<limit*5: q.append(target)
         except Exception:
-            pages.append(PageData(current,current,0,0,0,0,"","","",0,0,[],[],[],[],0,"","","","","",0,False,{},0,0,"","","",False,0,0,0))
+            pages.append(PageData(url=current,final_url=current,status=0,response_ms=0,ttfb_ms=0,html_bytes=0,title="",description="",canonical="",canonical_count=0,h1_count=0,headings=[],images=[],internal_links=[],external_links=[],scripts=0,lang="",viewport="",og_title="",og_description="",twitter_card="",json_ld=0,noindex=False,mixed_content=0,security_headers={},forms_without_labels=0,buttons_without_names=0,server="",cache_control="",content_encoding="",etag=False,set_cookie_count=0,insecure_cookie_count=0,redirect_count=0))
     targets=[]; broken=[]; checked=set()
     for p in pages: targets += p.internal_links[:80] + p.external_links[:20]
     for target in targets:
