@@ -123,7 +123,7 @@ def create_schedule(url:str,interval_minutes:int=1440,db:Session=Depends(get_db)
 
 @app.get("/api/v1/schedules")
 def list_schedules(db:Session=Depends(get_db)):
-    return [{"id=s.id":s.id} for s in db.query(Schedule).all()]
+    return [{"id":s.id,"website_id":s.website_id,"interval_minutes":s.interval_minutes,"enabled":s.enabled,"next_run_at":s.next_run_at.isoformat()} for s in db.query(Schedule).all()]
 
 @app.on_event("startup")
 async def schedule_loop():
