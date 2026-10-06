@@ -1,12 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+
 from .analyzers import analyze, calculate_score
 from .config import settings
-from .db import Base, engine
 from .redis_client import ping
 from .schemas import AuditRequest, AuditResponse
-
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="WebForge API", version="0.1.0")
 
