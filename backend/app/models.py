@@ -30,3 +30,63 @@ class Issue(Base):
     impact: Mapped[str] = mapped_column(Text)
     recommendation: Mapped[str] = mapped_column(Text)
     audit: Mapped["Audit"] = relationship(back_populates="issues")
+
+
+class AuditDetail(Base):
+    __tablename__ = "wf_audit_details"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    audit_id: Mapped[int] = mapped_column(Integer, index=True)
+    pages_discovered: Mapped[int] = mapped_column(Integer, default=0)
+    pages_scanned: Mapped[int] = mapped_column(Integer, default=0)
+    scan_limit: Mapped[int] = mapped_column(Integer, default=10)
+    duration_ms: Mapped[int] = mapped_column(Integer, default=0)
+    dimensions: Mapped[dict] = mapped_column(JSON, default=dict)
+
+class PageDetail(Base):
+    __tablename__ = "wf_page_details"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    audit_id: Mapped[int] = mapped_column(Integer, index=True)
+    url: Mapped[str] = mapped_column(Text)
+    status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    response_time_ms: Mapped[int] = mapped_column(Integer, default=0)
+    ttfb_ms: Mapped[int] = mapped_column(Integer, default=0)
+    html_size: Mapped[int] = mapped_column(Integer, default=0)
+    title: Mapped[str] = mapped_column(Text, default="")
+    meta_description: Mapped[str] = mapped_column(Text, default="")
+    canonical: Mapped[str] = mapped_column(Text, default="")
+    h1_count: Mapped[int] = mapped_column(Integer, default=0)
+    images_count: Mapped[int] = mapped_column(Integer, default=0)
+    missing_alt_count: Mapped[int] = mapped_column(Integer, default=0)
+    external_scripts_count: Mapped[int] = mapped_column(Integer, default=0)
+    internal_links_count: Mapped[int] = mapped_column(Integer, default=0)
+    external_links_count: Mapped[int] = mapped_column(Integer, default=0)
+    robots_indexable: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    data: Mapped[dict] = mapped_column(JSON, default=dict)
+
+class IssueDetail(Base):
+    __tablename__ = "wf_issue_details"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    issue_id: Mapped[int] = mapped_column(Integer, index=True)
+    page_url: Mapped[str] = mapped_column(Text, default="")
+    evidence: Mapped[str] = mapped_column(Text, default="")
+    confidence: Mapped[int] = mapped_column(Integer, default=100)
+    effort: Mapped[str] = mapped_column(String(16), default="medium")
+    priority: Mapped[int] = mapped_column(Integer, default=50)
+    code_before: Mapped[str] = mapped_column(Text, default="")
+    code_after: Mapped[str] = mapped_column(Text, default="")
+
+class Schedule(Base):
+    __tablename__ = "wf_schedules"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    website_id: Mapped[int] = mapped_column(Integer, index=True)
+    interval_minutes: Mapped[int] = mapped_column(Integer, default=1440)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    last_run_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    next_run_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+class Project(Base):
+    __tablename__ = "wf_project_catalog"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(Text)
+    description: Mapped[str] = mapped_column(Text, default="")
+    owner_key: Mapped[str] = mapped_column(Text, default="default")
