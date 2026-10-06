@@ -78,11 +78,32 @@ def websites(db:Session=Depends(get_db),user_id:str=Depends(current_user)):
     return [{"id":w.id,"url":w.url,"audits":db.query(UserAudit).filter(UserAudit.user_id==user_id).filter(UserAudit.audit_id.in_( [a.id for a in w.audits] )).count()} for w in db.query(Website).filter(Website.id.in_(ids)).order_by(Website.created_at.desc()).all()]
 
 @app.get("/api/v1/websites/history")
-def website_history(url:str,db:Session=Depends(get_db),user_id:str=Depends(current_user)):
-    website=db.query(Website).filter(Website.url==url).first()
-    if not website or not db.query(UserWebsite).filter_by(user_id=user_id,website_id=website.id).first():return []
+def website_history(
+    url:str|None=None,
+    db:Session=Depends(get_db),
+    user_id:str=Depends(current_user),
+):
     audit_ids=[x.audit_id for x in db.query(UserAudit).filter_by(user_id=user_id).all()]
-    return [{"audit_id":a.id,"score":a.score,"status":a.status,"created_at":a.created_at.isoformat()} for a in db.query(Audit).filter(Audit.website_id==website.id,Audit.id.in_(audit_ids)).order_by(Audit.created_at.desc()).all()]
+    if not audit_ids:
+        return []
+
+    query=db.query(Audit).filter(Audit.id.in_(audit_ids))
+    if url:
+        website=db.query(Website).filter(Website.url==url).first()
+        if not website or not db.query(UserWebsite).filter_by(user_id=user_id,website_id=website.id).first():
+            return []
+        query=query.filter(Audit.website_id==website.id)
+
+    return [
+        {
+            "audit_id":a.id,
+            "url":a.website.url,
+            "score":a.score,
+            "status":a.status,
+            "created_at":a.created_at.isoformat(),
+        }
+        for a in query.order_by(Audit.created_at.desc()).all()
+    ]
 
 @app.get("/api/v1/audits/compare")
 def compare_audits(left:int=Query(...),right:int=Query(...),db:Session=Depends(get_db),user_id:str=Depends(current_user)):
