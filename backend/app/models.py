@@ -117,6 +117,7 @@ class Schedule(Base):
     __tablename__ = "wf_schedules"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     website_id: Mapped[int] = mapped_column(Integer, index=True)
+    user_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     interval_minutes: Mapped[int] = mapped_column(Integer, default=1440)
     enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     last_run_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
