@@ -74,6 +74,44 @@ class IssueDetail(Base):
     priority: Mapped[int] = mapped_column(Integer, default=50)
     code_before: Mapped[str] = mapped_column(Text, default="")
     code_after: Mapped[str] = mapped_column(Text, default="")
+    layer: Mapped[str] = mapped_column(String(24), default="frontend")
+
+class BackendMetrics(Base):
+    __tablename__ = "webforge_backend_metrics"
+    audit_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    server: Mapped[str] = mapped_column(Text, default="")
+    cache_control: Mapped[str] = mapped_column(Text, default="")
+    content_encoding: Mapped[str] = mapped_column(Text, default="")
+    etag: Mapped[bool] = mapped_column(Boolean, default=False)
+    insecure_cookie_count: Mapped[int] = mapped_column(Integer, default=0)
+    redirect_count: Mapped[int] = mapped_column(Integer, default=0)
+
+class AuditIntelligence(Base):
+    __tablename__ = "webforge_audit_intelligence"
+    audit_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    website_type: Mapped[str] = mapped_column(Text, default="Unknown")
+    frontend_score: Mapped[int] = mapped_column(Integer, default=0)
+    backend_score: Mapped[int] = mapped_column(Integer, default=0)
+    reach_score: Mapped[int] = mapped_column(Integer, default=0)
+    summary: Mapped[str] = mapped_column(Text, default="")
+    features: Mapped[dict] = mapped_column(JSON, default=dict)
+    similar_sites: Mapped[list] = mapped_column(JSON, default=list)
+    opportunities: Mapped[list] = mapped_column(JSON, default=list)
+
+class UserWebsite(Base):
+    __tablename__ = "webforge_user_websites"
+    user_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    website_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+
+class UserAudit(Base):
+    __tablename__ = "webforge_user_audits"
+    user_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    audit_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+
+class UserProject(Base):
+    __tablename__ = "webforge_user_projects"
+    user_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    project_id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
 class Schedule(Base):
     __tablename__ = "wf_schedules"
