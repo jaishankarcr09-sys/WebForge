@@ -11,12 +11,12 @@ IMPACT={"critical":10,"high":8,"medium":5,"low":2}
 class Finding:
     category:str; title:str; severity:str; impact:str; recommendation:str
     page_url:str=""; evidence:str=""; confidence:int=100; effort:str="medium"; priority:int=50
-    code_before:str=""; code_after:str=""; dimension:str="technical"
+    code_before:str=""; code_after:str=""; dimension:str="technical"; layer:str="frontend"
     def asdict(self): return asdict(self)
 
-def finding(category,title,severity,impact,recommendation,page_url="",evidence="",confidence=100,effort="medium",code_before="",code_after="",dimension="technical"):
+def finding(category,title,severity,impact,recommendation,page_url="",evidence="",confidence=100,effort="medium",code_before="",code_after="",dimension="technical",layer="frontend"):
     priority=max(1,min(100,round(IMPACT[severity]*confidence/EFFORT[effort])))
-    return Finding(category,title,severity,impact,recommendation,page_url,evidence,confidence,effort,priority,code_before,code_after,dimension)
+    return Finding(category,title,severity,impact,recommendation,page_url,evidence,confidence,effort,priority,code_before,code_after,dimension,layer)
 
 def analyze(site:SiteData)->list[Finding]:
     out=[]
