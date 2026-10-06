@@ -26,12 +26,22 @@ export default function Home(){
   const runAudit=async(e:FormEvent)=>{
     e.preventDefault(); setLoading(true); setError(""); setAudit(null); setAi(null); setTicket("");
     try{
-      const r=await fetch("/api/audits/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url,page_limit:limit})});
-      const data=await r.json(); if(!r.ok) throw new Error(data.detail || "Audit failed");
-      setAudit(data);
-      const h=await fetch("/api/audits/history?url="+encodeURIComponent(data.url),{cache:"no-store"});
+      const r=await fetch("/api/audits/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url,page_limit:limit})});
+      const data=await r.json();
+      if(!r.ok) throw new Error(data.detail || "Could not start scan");
+      let done:any=null;
+      for(let i=0;i<180;i++){
+        await new Promise(x=>setTimeout(x,1000));
+        const s=await fetch("/api/audits/jobs/"+data.job_id,{cache:"no-store"});
+        const state=await s.json();
+        if(state.status==="completed"){done=state.result;break}
+        if(state.status==="failed") throw new Error(state.error || "Scan failed");
+      }
+      if(!done) throw new Error("Scan timed out. Try a smaller page limit.");
+      setAudit(done);
+      const h=await fetch("/api/audits/history?url="+encodeURIComponent(done.url),{cache:"no-store"});
       const hist=await h.json(); if(Array.isArray(hist)) setHistory(hist);
-    }catch(err){setError(err instanceof Error?err.message:"Audit failed")}
+    }catch(err){setError(err instanceof Error?err.message:"Scan failed")}
     finally{setLoading(false)}
   };
 
