@@ -3,7 +3,7 @@ import asyncio, csv, io
 from datetime import datetime, timezone, timedelta
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi.responses import JSONResponse, PlainTextResponse, Response
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
@@ -92,6 +92,16 @@ def export_csv(audit_id:int,db:Session=Depends(get_db)):
     writer=csv.DictWriter(out,fieldnames=fields); writer.writeheader()
     for item in result["issues"]: writer.writerow({k:item.get(k,"") for k in fields})
     return PlainTextResponse(out.getvalue(),media_type="text/csv")
+
+@app.get("/api/v1/audits/{audit_id}/export.pdf")
+def export_pdf(audit_id:int,db:Session=Depends(get_db)):
+    from .report_pdf import render_pdf
+    try:
+        pdf=render_pdf(load_result(db,audit_id))
+        return Response(pdf,media_type="application/pdf",headers={"Content-Disposition":f"attachment; filename=webforge-audit-{audit_id}.pdf"})
+    except ValueError as exc:
+        raise HTTPException(status_code=404,detail=str(exc)) from exc
+
 
 @app.post("/api/v1/audits/{audit_id}/ai")
 def ai_backlog(audit_id:int,db:Session=Depends(get_db)):return generate_ai_backlog(load_result(db,audit_id))
