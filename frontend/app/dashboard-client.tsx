@@ -173,7 +173,7 @@ export default function DashboardClient({user}:Props){
         {view==="pages"&&(audit?<Pages audit={audit}/>:<EmptyPage title="No page measurements yet" text="Run your first website audit to populate the page evidence table." action={()=>setView("audit")} actionLabel="Measure a website"/>)}
         {view==="opportunities"&&(audit?<Opportunities audit={audit}/>:<EmptyPage title="No opportunities yet" text="WebForge will classify the website, compare patterns and build reach opportunities after your first audit." action={()=>setView("audit")} actionLabel="Find opportunities"/>)}
         {view==="history"&&<HistoryView history={history} setAudit={setAudit} loading={workspaceLoading}/>}
-        {view==="workspace"&&<Workspace projectName={projectName} setProjectName={setProjectName} createProject={createProject} scheduleDaily={scheduleDaily} msg={workspaceMsg} projects={projects} schedules={schedules} audit={audit} loading={workspaceLoading}/>}
+        {view==="workspace"&&<Workspace projectName={projectName} setProjectName={setProjectName} createProject={createProject} scheduleDaily={scheduleDaily} msg={workspaceMsg} setMsg={setWorkspaceMsg} projects={projects} schedules={schedules} audit={audit} loading={workspaceLoading}/>}
         {view==="learn"&&<Learn/>}
       </div>
 
@@ -244,7 +244,7 @@ function HistoryView({history,setAudit,loading}:{history:History[];setAudit:(x:A
   </section>
 }
 
-function Workspace({projectName,setProjectName,createProject,scheduleDaily,msg,projects,schedules,audit,loading}:{projectName:string;setProjectName:(x:string)=>void;createProject:(e:FormEvent)=>void;scheduleDaily:()=>void;msg:string;projects:Project[];schedules:Schedule[];audit:Audit|null;loading:boolean}){
+function Workspace({projectName,setProjectName,createProject,scheduleDaily,msg,setMsg,projects,schedules,audit,loading}:{projectName:string;setProjectName:(x:string)=>void;createProject:(e:FormEvent)=>void;scheduleDaily:()=>void;msg:string;setMsg:(m:string)=>void;projects:Project[];schedules:Schedule[];audit:Audit|null;loading:boolean}){
   return <div className="grid-2">
     <section className="panel">
       <span className="eyebrow">PROJECTS</span><h2>Group work intentionally</h2>
@@ -255,7 +255,7 @@ function Workspace({projectName,setProjectName,createProject,scheduleDaily,msg,p
     <section className="panel">
       <span className="eyebrow">AUTOMATION</span><h2>Catch regressions automatically</h2>
       <p>Schedules live in the same authenticated workspace and run against websites you already audited.</p>
-      {audit?<button className="secondary" onClick={scheduleDaily}>Enable daily rescan for current site</button>:<button className="secondary" onClick={()=>setWorkspaceMsg("Run an audit first so WebForge knows which website to rescan.")}>Choose a website from an audit</button>}
+      {audit?<button className="secondary" onClick={scheduleDaily}>Enable daily rescan for current site</button>:<button className="secondary" onClick={()=>setMsg("Run an audit first so WebForge knows which website to rescan.")}>Choose a website from an audit</button>}
       <div className="workspace-list">{loading?<Empty text="Loading automation…"/>:schedules.length?schedules.map(s=><div className="workspace-row" key={s.id}><div><b>{s.interval_minutes===1440?"Daily rescan":"Recurring rescan"}</b><small>Next run {new Date(s.next_run_at).toLocaleString()}</small></div><span>{s.enabled?"Active":"Paused"}</span></div>):<Empty text="No automated rescans yet."/>}</div>
     </section>
     {msg&&<div className="panel wide success-panel"><b>{msg}</b></div>}
