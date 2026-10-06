@@ -12,9 +12,10 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.text();
+    const targetUrl = BACKEND_URL.replace(/\/$/, "");
 
     const response = await fetch(
-      `${BACKEND_URL.replace(/\\/$/, "")}/api/v1/audits/analyze`,
+      `${targetUrl}/api/v1/audits/analyze`,
       {
         method: "POST",
         headers: {
