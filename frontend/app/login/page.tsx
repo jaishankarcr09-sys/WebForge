@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type Provider = "google" | "github";
@@ -9,6 +9,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState<Provider | "email" | null>(null);
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const authError = params.get("error");
+    if (authError) setMessage(authError);
+  }, []);
 
   async function oauth(provider: Provider) {
     setLoading(provider);
@@ -132,7 +138,7 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {message && <p className="auth-message">{message}</p>}
+        {message && <p className="auth-message" role="alert">{message}</p>}
 
         <div className="trust-row">
           <span>Private workspace</span>
