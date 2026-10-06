@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -22,8 +23,14 @@ app.add_middleware(
 
 
 @app.get("/health")
-def health() -> dict[str, object]:
-    return {"status": "ok", "redis": ping()}
+def health(db: Session = Depends(get_db)) -> dict[str, object]:
+    try:
+        db.execute(text("SELECT 1"))
+        db_status = "ok"
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="PostgreSQL unavailable") from exc
+
+    return {"status": "ok", "postgres": db_status, "redis": ping()}
 
 
 @app.post("/api/v1/audits/analyze", response_model=AuditResponse)
