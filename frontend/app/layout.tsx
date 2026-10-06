@@ -13,5 +13,21 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}</body></html>;
+  const supabaseRuntimeConfig = {
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+    publishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "",
+  };
+
+  return (
+    <html lang="en">
+      <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__WEBFORGE_SUPABASE__ = ${JSON.stringify(supabaseRuntimeConfig)};`,
+          }}
+        />
+        {children}
+      </body>
+    </html>
+  );
 }
