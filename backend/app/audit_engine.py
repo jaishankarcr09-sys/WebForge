@@ -4,12 +4,15 @@ from sqlalchemy.orm import Session
 from .analyzers import analyze, score
 from .models import Audit, Issue, Website, AuditDetail, PageDetail, IssueDetail
 from .site_scan import crawl
+from .browser_metrics import measure
 
 def run_and_persist(url: str, page_limit: int, db: Session) -> dict:
     started = time.perf_counter()
     site = crawl(url, page_limit)
     findings = analyze(site)
     overall, dimensions = score(findings)
+    browser = measure(site.root_url)
+    dimensions["browser"] = browser
     website = db.query(Website).filter(Website.url == site.root_url).first()
     if website is None:
         website = Website(url=site.root_url)
