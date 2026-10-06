@@ -15,7 +15,7 @@ type Audit = {
   issues: Issue[];
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_URL = "";
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -30,7 +30,7 @@ export default function Home() {
     setAudit(null);
 
     try {
-      const response = await fetch(`${API_URL}/api/v1/audits/analyze`, {
+      const response = await fetch(`${API_URL}/api/audits/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
