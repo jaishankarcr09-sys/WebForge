@@ -303,3 +303,79 @@ def test_optional_seo_recommendations_do_not_reduce_layer_scores():
     _, dimensions = score_full(analyze_full(site))
     assert dimensions["frontend"] == 100
     assert dimensions["backend"] == 100
+
+
+def test_health_score_averages_page_penalties_instead_of_zeroing_from_many_pages():
+    from app.analyzers import Finding
+
+    findings = [
+        Finding(
+            category="Technical",
+            title="Missing H1 heading",
+            severity="high",
+            impact="Missing primary heading",
+            recommendation="Add an H1",
+            page_url=f"https://example.com/page-{index}",
+            evidence="H1 count: 0.",
+            dimension="technical",
+        )
+        for index in range(10)
+    ]
+    overall, dimensions = score(findings, page_count=10)
+    assert 0 < overall < 100
+    assert 0 < dimensions["technical"] < 100
+
+
+def test_repeated_findings_on_one_page_are_capped_and_optional_findings_do_not_score():
+    from app.analyzers import Finding
+
+    findings = [
+        Finding(
+            category="Technical",
+            title=f"Finding {index}",
+            severity="critical",
+            impact="Critical issue",
+            recommendation="Fix it",
+            page_url="https://example.com/",
+            evidence=f"Evidence {index}",
+            dimension="technical",
+        )
+        for index in range(20)
+    ]
+    findings.append(Finding(
+        category="SEO",
+        title="Optional metadata suggestion",
+        severity="critical",
+        impact="Optional",
+        recommendation="Only if relevant",
+        page_url="https://example.com/",
+        evidence="Not applicable to all pages",
+        dimension="seo",
+        score_eligible=False,
+    ))
+    overall, dimensions = score(findings, page_count=1)
+    assert dimensions["technical"] == 55
+    assert dimensions["seo"] == 100
+    assert 0 < overall < 100
+
+
+def test_layer_scores_use_verified_page_count_and_do_not_collapse_to_zero():
+    from app.analyzers import Finding
+
+    findings = [
+        Finding(
+            category="Accessibility",
+            title="Potential unlabeled control",
+            severity="high",
+            impact="Accessibility concern",
+            recommendation="Add a label",
+            page_url=f"https://example.com/page-{index}",
+            evidence="Potential unlabeled controls: 1.",
+            dimension="accessibility",
+            layer="frontend",
+        )
+        for index in range(10)
+    ]
+    _, dimensions = score_full(findings, page_count=10)
+    assert dimensions["frontend"] == 84
+    assert dimensions["backend"] == 100
