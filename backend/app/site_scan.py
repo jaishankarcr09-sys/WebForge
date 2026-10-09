@@ -159,7 +159,6 @@ def crawl(url:str,page_limit:int=10)->SiteData:
         seen.add(current)
         try:
             r,b,elapsed,ttfb=fetch(session,current)
-            if "html" not in r.headers.get("content-type","").lower() and current!=root: continue
             page=parse_page(current,r,b,elapsed,ttfb); pages.append(page)
             for target in page.internal_links:
                 discovered.add(target)
