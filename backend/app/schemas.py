@@ -23,6 +23,10 @@ class AuditResponse(BaseModel):
     audit_id: int
     url: str
     score: int
+    score_status: str = "verified"
+    verified_pages: int = 0
+    unverified_pages: int = 0
+    crawl_warnings: list[dict] = []
     dimensions: dict = {}
     pages_discovered: int = 0
     pages_scanned: int = 0
