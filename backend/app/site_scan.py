@@ -5,6 +5,7 @@ import ipaddress, socket, time
 from urllib.parse import urljoin, urlsplit, urlunsplit, urldefrag
 import requests
 from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
 
 UA="WebForgeBot/1.2"; MAX_BYTES=2_000_000
 SECURITY_HEADERS=("strict-transport-security","content-security-policy","x-frame-options","x-content-type-options","referrer-policy","permissions-policy")
@@ -154,6 +155,81 @@ def _record_link_result(target:str,status_code:int,response_ms:int,broken:list[d
         warnings.append({"url":target,"status":status_code,"reason":"The destination rejected or failed this crawler request; this does not confirm that the link is broken."})
 
 
+class _RawHeaders:
+    def __init__(self, headers):
+        self._headers = headers
+
+    def get_all(self, name):
+        value = next((v for k, v in self._headers.items() if k.lower() == name.lower()), None)
+        if value is None:
+            return []
+        return value if isinstance(value, list) else [value]
+
+
+def _browser_fetch(url: str, timeout: int = 20):
+    """Retry a blocked plain-HTTP fetch with a guarded headless browser."""
+    from requests import Response
+    from requests.structures import CaseInsensitiveDict
+    start = time.perf_counter()
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        try:
+            context = browser.new_context(
+                user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                           "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            )
+            # Keep the crawler's public-address restriction in place for browser
+            # navigations and subresources; do not let a page reach private hosts.
+            def guard(route):
+                target = route.request.url
+                if target.startswith(("http://", "https://")):
+                    try:
+                        safe_url(target)
+                    except Exception:
+                        route.abort()
+                        return
+                route.continue_()
+
+            context.route("**/*", guard)
+            page = context.new_page()
+            response = page.goto(url, wait_until="domcontentloaded", timeout=timeout * 1000)
+            page.wait_for_timeout(800)
+            body = page.content().encode("utf-8")[:MAX_BYTES]
+            headers = response.all_headers() if response else {}
+            status = response.status if response else 0
+            final_url = page.url or url
+            safe_url(final_url)
+            result = Response()
+            result.status_code = status
+            result.url = final_url
+            result.headers = CaseInsensitiveDict(headers)
+            result.encoding = "utf-8"
+            result._content = body
+            result.history = []
+            result.raw = type("BrowserRaw", (), {"headers": _RawHeaders(headers)})()
+            elapsed = int((time.perf_counter() - start) * 1000)
+            return result, body, elapsed, elapsed
+        finally:
+            browser.close()
+
+
+def _fetch_with_browser_fallback(session, url: str, timeout: int = 15):
+    """Use browser rendering as a bounded fallback for an HTTP 403 response."""
+    result = fetch(session, url, timeout)
+    response = result[0]
+    if response.status_code != 403:
+        return result
+    try:
+        browser_result = _browser_fetch(url, min(timeout + 5, 20))
+        browser_response = browser_result[0]
+        if 200 <= browser_response.status_code < 400:
+            return browser_result
+    except Exception:
+        # Preserve the original HTTP response so the audit can explain the block.
+        pass
+    return result
+
+
 def crawl(url:str,page_limit:int=10)->SiteData:
     root=safe_url(url); limit=max(1,min(int(page_limit),30)); start=time.perf_counter(); session=requests.Session()
     q=deque([root]); seen=set(); pages=[]; discovered={root}
@@ -185,7 +261,7 @@ def crawl(url:str,page_limit:int=10)->SiteData:
         if current in seen or not same_origin(current,root): continue
         seen.add(current)
         try:
-            r,b,elapsed,ttfb=fetch(session,current)
+            r,b,elapsed,ttfb=_fetch_with_browser_fallback(session,current)
             page=parse_page(current,r,b,elapsed,ttfb); pages.append(page)
             for target in page.internal_links:
                 # XML sitemaps/feeds are linked resources, not HTML pages for the page-limit queue.
