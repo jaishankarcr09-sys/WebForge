@@ -90,6 +90,10 @@ def test_duplicate_page_url_does_not_duplicate_findings_or_title_groups():
 def test_xml_sitemap_detected_even_if_server_claims_html():
     url = "https://example.com/jobs/sitemap.xml"
     assert _is_xml_resource(url, "text/html", b"<urlset><url></url></urlset>")
+    # Also detect an XML body on a URL without an .xml suffix.
+    assert _is_xml_resource("https://example.com/feed", "text/html", b"<?xml version='1.0'?><rss></rss>")
+    # XHTML is HTML and must remain eligible for HTML analysis.
+    assert not _is_xml_resource("https://example.com/", "application/xhtml+xml", b"<html><body></body></html>")
 
 
 def test_xml_page_never_generates_html_findings_or_backend_size_findings():
