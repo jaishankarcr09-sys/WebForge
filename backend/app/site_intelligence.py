@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import time
 from urllib.parse import parse_qs, unquote, urljoin, urlsplit
 
 import requests
@@ -11,6 +12,10 @@ from bs4 import BeautifulSoup
 from .site_scan import SiteData, crawl
 
 logger = logging.getLogger(__name__)
+
+_SEARCH_CACHE: dict[str, tuple[float, list[dict]]] = {}
+_SEARCH_CACHE_TTL_SECONDS = 1800
+_SEARCH_EMPTY_TTL_SECONDS = 120
 
 
 def classify(site: SiteData) -> str:
@@ -183,22 +188,31 @@ def _search_duckduckgo(query: str, limit: int = 8) -> list[dict]:
 
 
 def _search(query: str, limit: int = 8) -> list[dict]:
-    """Prefer the configured web index; fall back to public HTML search."""
+    """Use an optional configured index, then a bounded no-key best-effort fallback."""
+    cache_key = query.strip().lower()
+    now = time.monotonic()
+    cached = _SEARCH_CACHE.get(cache_key)
+    if cached and cached[0] > now:
+        return cached[1][:limit]
+    results: list[dict] = []
     try:
         results = _search_brave(query, limit)
-        if results:
-            return results
     except (requests.RequestException, ValueError, KeyError) as exc:
-        logger.warning("Similar-site Brave search failed; using DuckDuckGo fallback (%s)", type(exc).__name__)
-    try:
-        results = _search_duckduckgo(query, limit)
-        if not results:
-            logger.info("Similar-site search returned no results for query")
-        return results
-    except (requests.RequestException, ValueError) as exc:
-        logger.warning("Similar-site DuckDuckGo search failed (%s)", type(exc).__name__)
-        return []
-
+        logger.warning("Configured search provider failed (%s); trying no-key fallback", type(exc).__name__)
+    if not results:
+        try:
+            results = _search_duckduckgo(query, limit)
+        except (requests.RequestException, ValueError) as exc:
+            logger.warning("No-key search fallback failed (%s)", type(exc).__name__)
+            results = []
+    ttl = _SEARCH_CACHE_TTL_SECONDS if results else _SEARCH_EMPTY_TTL_SECONDS
+    _SEARCH_CACHE[cache_key] = (now + ttl, results[:limit])
+    if len(_SEARCH_CACHE) > 500:
+        for key in [key for key, (expires, _) in _SEARCH_CACHE.items() if expires <= now]:
+            _SEARCH_CACHE.pop(key, None)
+        while len(_SEARCH_CACHE) > 500:
+            _SEARCH_CACHE.pop(next(iter(_SEARCH_CACHE)))
+    return results[:limit]
 
 def _keywords(site: SiteData) -> list[str]:
     raw = " ".join(
