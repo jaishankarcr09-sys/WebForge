@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import logging
 import os
 import re
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, unquote, urljoin, urlsplit
 
 import requests
 from bs4 import BeautifulSoup
 
 from .site_scan import SiteData, crawl
+
+logger = logging.getLogger(__name__)
 
 
 def classify(site: SiteData) -> str:
@@ -70,6 +73,32 @@ def _search_brave(query: str, limit: int) -> list[dict]:
     ]
 
 
+def _extract_result_url(href: str) -> str:
+    """Resolve a DuckDuckGo result link to its actual HTTP(S) destination.
+
+    DuckDuckGo may render result anchors as relative or absolute /l/?uddg=...
+    redirect links. Only return a direct public-web URL, never the redirect URL.
+    """
+    href = (href or "").strip()
+    if not href:
+        return ""
+    resolved = urljoin("https://duckduckgo.com", href)
+    parsed = urlsplit(resolved)
+    if (parsed.hostname or "").lower().removeprefix("www.") == "duckduckgo.com":
+        if parsed.path.rstrip("/") != "/l":
+            return ""
+        destination = parse_qs(parsed.query).get("uddg", [""])[0]
+        if not destination:
+            return ""
+        resolved = unquote(destination)
+        parsed = urlsplit(resolved)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
+        return ""
+    if (parsed.hostname or "").lower().removeprefix("www.") == "duckduckgo.com":
+        return ""
+    return resolved
+
+
 def _search_duckduckgo(query: str, limit: int = 8) -> list[dict]:
     """Best-effort fallback. HTML markup can change, so empty results are valid."""
     response = requests.get(
@@ -86,14 +115,15 @@ def _search_duckduckgo(query: str, limit: int = 8) -> list[dict]:
         snippet = item.select_one(".result__snippet")
         if not anchor:
             continue
-        href = anchor.get("href", "")
-        if href.startswith(("https://", "http://")):
+        href = _extract_result_url(str(anchor.get("href", "")))
+        if href:
             out.append({
                 "name": anchor.get_text(" ", strip=True),
                 "url": href,
                 "snippet": snippet.get_text(" ", strip=True) if snippet else "",
                 "source": "DuckDuckGo",
             })
+    logger.info("Similar-site DuckDuckGo search parsed %d results", len(out))
     return out
 
 
@@ -103,11 +133,15 @@ def _search(query: str, limit: int = 8) -> list[dict]:
         results = _search_brave(query, limit)
         if results:
             return results
-    except (requests.RequestException, ValueError, KeyError):
-        pass
+    except (requests.RequestException, ValueError, KeyError) as exc:
+        logger.warning("Similar-site Brave search failed; using DuckDuckGo fallback (%s)", type(exc).__name__)
     try:
-        return _search_duckduckgo(query, limit)
-    except (requests.RequestException, ValueError):
+        results = _search_duckduckgo(query, limit)
+        if not results:
+            logger.info("Similar-site search returned no results for query")
+        return results
+    except (requests.RequestException, ValueError) as exc:
+        logger.warning("Similar-site DuckDuckGo search failed (%s)", type(exc).__name__)
         return []
 
 
@@ -165,8 +199,11 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     if description:
         queries.append(f'{description[:100]} alternatives')
     candidates: dict[str, dict] = {}
+    search_result_count = 0
     for query in queries:
-        for item in _search(query, 10):
+        results = _search(query, 10)
+        search_result_count += len(results)
+        for item in results:
             host = _host(item.get("url", ""))
             if not host or host == root or not item.get("name"):
                 continue
@@ -176,7 +213,12 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
             elif len(item.get("snippet", "")) > len(candidates[host].get("snippet", "")):
                 candidates[host] = item
 
+    logger.info(
+        "Similar-site discovery search phase complete: queries=%d raw_results=%d unique_candidates=%d",
+        len(queries), search_result_count, len(candidates),
+    )
     ranked = []
+    crawl_failures = 0
     for host, item in candidates.items():
         candidate_type = "Unknown"
         features = {}
@@ -190,7 +232,9 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
             verified_url = candidate.root_url
             candidate_type = classify(candidate)
             features = feature_snapshot(candidate)
-        except Exception:
+        except Exception as exc:
+            crawl_failures += 1
+            logger.debug("Similar-site candidate validation failed for %s (%s)", host, type(exc).__name__)
             continue
         relevance, reason = _relevance(
             website_type, item.get("name", ""), item.get("snippet", ""), candidate_type
@@ -206,6 +250,10 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
             "match_reason": reason,
         })
     ranked.sort(key=lambda row: (-row["relevance_score"], row["name"].lower()))
+    logger.info(
+        "Similar-site discovery complete: accepted=%d candidate_validation_failures=%d",
+        len(ranked), crawl_failures,
+    )
     return ranked[:max(0, min(int(limit), 20))]
 
 
