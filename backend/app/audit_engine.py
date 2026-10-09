@@ -15,8 +15,8 @@ def run_and_persist(url: str, page_limit: int, db: Session, user_id: str | None 
     started=time.perf_counter()
     site=crawl(url,page_limit)
     findings=analyze(site)
-    overall,dimensions=score(findings)
     verified_pages=sum(1 for p in site.pages if getattr(p,"analysis_eligible",True) and 200 <= p.status < 400)
+    overall,dimensions=score(findings,page_count=verified_pages)
     unverified_pages=len(site.pages)-verified_pages
     coverage=round(100*verified_pages/len(site.pages)) if site.pages else 0
     score_status="verified" if verified_pages else "insufficient_verified_data"
