@@ -3,9 +3,10 @@ from types import SimpleNamespace
 from app.analyzers import analyze
 
 
-def make_site(page):
+def make_site(page_or_pages):
+    pages = page_or_pages if isinstance(page_or_pages, list) else [page_or_pages]
     return SimpleNamespace(
-        pages=[page],
+        pages=pages,
         robots_present=True,
         robots_allowed=True,
         sitemap_present=True,
@@ -38,8 +39,8 @@ def test_non_html_success_response_is_not_analyzed_for_missing_h1():
     assert "Missing page title" not in titles
 
 
-def test_valid_html_missing_h1_still_reports_evidence_backed_finding():
-    page = SimpleNamespace(
+def valid_page():
+    return SimpleNamespace(
         status=200,
         url="https://example.com/",
         analysis_eligible=True,
@@ -64,37 +65,20 @@ def test_valid_html_missing_h1_still_reports_evidence_backed_finding():
         ttfb_ms=100,
         html_bytes=1000,
         scripts=1,
-        url="https://example.com/",
     )
-    findings = analyze(make_site(page))
+
+
+def test_valid_html_missing_h1_reports_page_url_and_evidence():
+    findings = analyze(make_site(valid_page()))
     h1 = [finding for finding in findings if finding.title == "Missing H1 heading"]
     assert len(h1) == 1
     assert h1[0].page_url == "https://example.com/"
     assert h1[0].evidence == "H1 count: 0."
 
 
-def test_duplicate_identical_findings_are_removed():
-    from app.analyzers import finding
-
-    item = finding("SEO", "Duplicate", "low", "Impact", "Fix", "https://example.com/", "same evidence")
-    # The analyzer's output de-duplication is stable; verify its key semantics with
-    # two identical entries using a tiny monkeypatched rule result.
-    import app.analyzers as analyzer_module
-
-    original = analyzer_module.finding
-    calls = {"count": 0}
-
-    def duplicate_finding(*args, **kwargs):
-        calls["count"] += 1
-        return item
-
-    # Directly exercise the key policy without altering the global analyzer function.
-    findings = [item, item]
-    seen = set()
-    unique = []
-    for current in findings:
-        key = (current.category, current.title, current.page_url, current.evidence)
-        if key not in seen:
-            seen.add(key)
-            unique.append(current)
-    assert len(unique) == 1
+def test_duplicate_page_url_does_not_duplicate_findings_or_title_groups():
+    findings = analyze(make_site([valid_page(), valid_page()]))
+    h1 = [finding for finding in findings if finding.title == "Missing H1 heading"]
+    duplicate_titles = [finding for finding in findings if finding.title == "Duplicate page titles"]
+    assert len(h1) == 1
+    assert duplicate_titles == []
