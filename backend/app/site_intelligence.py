@@ -72,7 +72,7 @@ def classify(site: SiteData) -> str:
     if not scores:
         return "General Website"
     best_category, best_score = max(scores.items(), key=lambda item: item[1])
-        # A verified page with weak category signals is still a real site; reserve
+    # A verified page with weak category signals is still a real site; reserve
     # the insufficient-evidence label for crawls with no verified HTML above.
     return best_category if best_score >= 3 else "General Website"
 
