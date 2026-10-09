@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
 from app.analyzers import analyze, score
-from app.full_analyzer import analyze as analyze_full
+from app.full_analyzer import analyze as analyze_full, score as score_full
 from app.site_scan import _is_xml_resource, parse_page
 
 
@@ -270,3 +270,32 @@ def test_analyzer_does_not_flag_explicit_empty_alt_as_missing():
     alt_findings = [item for item in findings if "missing alt text" in item.title.lower()]
     assert len(alt_findings) == 1
     assert alt_findings[0].title == "1 image(s) missing alt text"
+
+
+
+def test_optional_seo_recommendations_do_not_reduce_layer_scores():
+    page = valid_page()
+    page.title = "Example"
+    page.description = ""
+    page.canonical_count = 0
+    page.canonical = ""
+    page.h1_count = 1
+    page.headings = [("h1", "Example")]
+    page.og_title = ""
+    page.og_description = ""
+    page.json_ld = 0
+    page.security_headers = {
+        "strict-transport-security": True,
+        "content-security-policy": True,
+        "x-frame-options": True,
+        "x-content-type-options": True,
+        "referrer-policy": True,
+        "permissions-policy": True,
+    }
+    site = make_site(page)
+    site.robots_present = True
+    site.sitemap_present = True
+
+    _, dimensions = score_full(analyze_full(site))
+    assert dimensions["frontend"] == 100
+    assert dimensions["backend"] == 100
