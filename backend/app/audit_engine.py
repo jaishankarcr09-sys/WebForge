@@ -63,7 +63,7 @@ def run_and_persist(url: str, page_limit: int, db: Session, user_id: str | None 
     website_type=classify(site)
     features=feature_snapshot(site)
     similar=discover_similar(site,website_type,3)
-    growth=opportunities(features,similar)
+    growth=opportunities(features,similar,website_type)
     frontend_score=int(dimensions.get("frontend",dimensions.get("seo",0)))
     backend_score=int(dimensions.get("backend",dimensions.get("security",0)))
     reach_score=round((int(dimensions.get("seo",0))*0.65)+((100 if site.sitemap_present else 55)*0.15)+(100 if site.robots_present else 55)*0.1+(int(dimensions.get("accessibility",0))*0.1))

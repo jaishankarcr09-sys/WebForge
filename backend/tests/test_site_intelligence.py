@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from app.site_intelligence import _extract_result_url, _host, _parse_duckduckgo_results, _relevance, discover_similar
+from app.site_intelligence import _extract_result_url, _host, _parse_duckduckgo_results, _relevance, discover_similar, opportunities
 
 
 def test_host_normalizes_www_and_case():
@@ -76,3 +76,51 @@ def test_curated_references_do_not_publish_fake_similarity_percentages(monkeypat
     assert all(item["verification_status"] == "curated-reference" for item in results)
     assert next(item for item in results if item["name"] == "Twitch")["match_type"] == "Adjacent alternative"
     assert all(item["match_type"] == "Category reference" for item in results if item["name"] != "Twitch")
+
+
+def test_ecommerce_opportunities_are_sector_specific_and_evidence_qualified():
+    target = {
+        "pages_scanned": 3,
+        "social_ready_pages": 2,
+        "json_ld_pages": 0,
+        "missing_alt_images": 0,
+        "security_header_coverage": 100,
+        "sector_signals": {"commerce": True, "jobs": False, "learning": False, "saas": False},
+    }
+    result = opportunities(target, [], "E-commerce")
+    titles = [item["title"] for item in result]
+
+    assert "Validate the product-to-checkout journey" in titles
+    assert "Review product structured data" in titles
+    assert all("proven" not in item["reason"].lower() for item in result)
+    assert any("not necessarily absent" in item["action"] for item in result if item["title"] == "Validate the product-to-checkout journey")
+
+
+def test_job_platform_opportunities_cover_application_funnel():
+    target = {
+        "pages_scanned": 2,
+        "social_ready_pages": 2,
+        "json_ld_pages": 0,
+        "missing_alt_images": 0,
+        "security_header_coverage": 100,
+        "sector_signals": {"commerce": False, "jobs": True, "learning": False, "saas": False},
+    }
+    result = opportunities(target, [], "Job Board / Recruitment")
+    titles = [item["title"] for item in result]
+
+    assert "Review the job discovery and application funnel" in titles
+    assert "Validate JobPosting structured data" in titles
+    assert any("not verified" in item["reason"].lower() for item in result)
+
+
+def test_unrelated_sector_does_not_receive_ecommerce_recommendations():
+    target = {
+        "pages_scanned": 1,
+        "social_ready_pages": 1,
+        "json_ld_pages": 1,
+        "missing_alt_images": 0,
+        "security_header_coverage": 100,
+        "sector_signals": {"commerce": False, "jobs": False, "learning": False, "saas": False},
+    }
+    result = opportunities(target, [], "Blog / Publication")
+    assert all("checkout" not in item["title"].lower() for item in result)
