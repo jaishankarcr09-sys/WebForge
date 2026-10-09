@@ -372,7 +372,8 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
             "relevance_score": relevance,
             "match_reason": reason,
         })
-    ranked.sort(key=lambda row: (-row["relevance_score"], row["name"].lower()))
+    # Python sorting is stable: preserve curated ordering when relevance ties.
+    ranked.sort(key=lambda row: -row["relevance_score"])
     logger.info(
         "Similar-site discovery complete: accepted=%d candidate_validation_failures=%d",
         len(ranked), crawl_failures,
