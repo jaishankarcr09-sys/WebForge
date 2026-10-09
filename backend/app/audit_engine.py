@@ -16,6 +16,20 @@ def run_and_persist(url: str, page_limit: int, db: Session, user_id: str | None 
     site=crawl(url,page_limit)
     findings=analyze(site)
     overall,dimensions=score(findings)
+    verified_pages=sum(1 for p in site.pages if getattr(p,"analysis_eligible",True) and 200 <= p.status < 400)
+    unverified_pages=len(site.pages)-verified_pages
+    coverage=round(100*verified_pages/len(site.pages)) if site.pages else 0
+    score_status="verified" if verified_pages else "insufficient_verified_data"
+    if not verified_pages:
+        # The legacy database score column is integer-only; the UI must display this as unavailable.
+        overall=0
+    dimensions["audit_reliability"]={
+        "score_status":score_status,
+        "verified_pages":verified_pages,
+        "unverified_pages":unverified_pages,
+        "crawl_coverage_percent":coverage,
+        "crawl_warnings":site.crawl_warnings,
+    }
     browser=measure(site.root_url)
     dimensions["browser"]=browser
     website=db.query(Website).filter(Website.url==site.root_url).first()
@@ -77,6 +91,10 @@ def run_and_persist(url: str, page_limit: int, db: Session, user_id: str | None 
         "robots_present": site.robots_present,
         "sitemap_present": site.sitemap_present,
         "broken_links": site.broken_links,
+        "crawl_warnings": site.crawl_warnings,
+        "verified_pages": verified_pages,
+        "unverified_pages": unverified_pages,
+        "score_status": score_status,
     })
 
 def load_result(db: Session, audit_id: int, user_id: str | None = None, extra: dict | None = None) -> dict:
@@ -92,6 +110,10 @@ def load_result(db: Session, audit_id: int, user_id: str | None = None, extra: d
     intel=db.get(AuditIntelligence,audit_id)
     result={
         "audit_id":audit.id,"url":audit.website.url,"score":audit.score,
+        "score_status":(detail.dimensions.get("audit_reliability",{}).get("score_status","verified") if detail else "verified"),
+        "verified_pages":(detail.dimensions.get("audit_reliability",{}).get("verified_pages",len(pages)) if detail else len(pages)),
+        "unverified_pages":(detail.dimensions.get("audit_reliability",{}).get("unverified_pages",0) if detail else 0),
+        "crawl_warnings":(detail.dimensions.get("audit_reliability",{}).get("crawl_warnings",[]) if detail else []),
         "dimensions":detail.dimensions if detail else {},
         "pages_discovered":detail.pages_discovered if detail else len(pages),
         "pages_scanned":detail.pages_scanned if detail else len(pages),
