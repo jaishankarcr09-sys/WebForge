@@ -124,14 +124,32 @@ def analyze(site:SiteData)->list[Finding]:
         deduped.append(item)
     return deduped
 
-def score(findings:list[Finding])->tuple[int,dict[str,int]]:
-    deductions={"seo":0.0,"performance":0.0,"accessibility":0.0,"security":0.0,"technical":0.0}
-    for f in findings:
-        # Recommendations and unconfirmed opportunities remain visible but do not
-        # lower the health score until they represent a demonstrated issue.
-        if not getattr(f, "score_eligible", True):
-            continue
-        deductions[f.dimension]+=min(25,IMPACT[f.severity]*2.5)
-    dimensions={k:max(0,round(100-v)) for k,v in deductions.items()}
-    overall=round(sum(dimensions[k]*DIMENSION_WEIGHTS[k] for k in dimensions))
-    return max(0,min(100,overall)),dimensions
+def score(findings:list[Finding], page_count:int|None=None)->tuple[int,dict[str,int]]:
+    """Score verified pages without letting repeated page-level findings zero every dimension.
+
+    Page findings are grouped by URL and dimension, capped per page, then averaged
+    over the verified-page count. Site-wide findings (no page URL) receive a small
+    separate capped penalty. Informational/unconfirmed findings remain visible but
+    are excluded from scoring.
+    """
+    dimensions_order=("seo","performance","accessibility","security","technical")
+    severity_penalty={"critical":25,"high":16,"medium":9,"low":3}
+    eligible=[f for f in findings if getattr(f,"score_eligible",True) and f.dimension in dimensions_order]
+    observed_pages={f.page_url for f in eligible if f.page_url}
+    denominator=max(1, page_count if page_count is not None else len(observed_pages) or 1)
+    page_penalties={dimension:{} for dimension in dimensions_order}
+    global_penalties={dimension:0 for dimension in dimensions_order}
+    for item in eligible:
+        penalty=severity_penalty.get(item.severity,0)
+        if item.page_url:
+            bucket=page_penalties[item.dimension]
+            bucket[item.page_url]=min(45,bucket.get(item.page_url,0)+penalty)
+        else:
+            global_penalties[item.dimension]=min(20,global_penalties[item.dimension]+penalty)
+    scores={}
+    for dimension in dimensions_order:
+        average_page_penalty=sum(page_penalties[dimension].values())/denominator
+        total_penalty=min(75,average_page_penalty+global_penalties[dimension])
+        scores[dimension]=max(0,round(100-total_penalty))
+    overall=round(sum(scores[k]*DIMENSION_WEIGHTS[k] for k in scores))
+    return max(0,min(100,overall)),scores
