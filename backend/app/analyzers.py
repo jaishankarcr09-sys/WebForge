@@ -11,15 +11,15 @@ IMPACT={"critical":10,"high":8,"medium":5,"low":2}
 class Finding:
     category:str; title:str; severity:str; impact:str; recommendation:str
     page_url:str=""; evidence:str=""; confidence:int=100; effort:str="medium"; priority:int=50
-    code_before:str=""; code_after:str=""; dimension:str="technical"; layer:str="frontend"
+    code_before:str=""; code_after:str=""; dimension:str="technical"; layer:str="frontend"; score_eligible:bool=True
     def asdict(self): return asdict(self)
 
-def finding(category,title,severity,impact,recommendation,page_url="",evidence="",confidence=100,effort="medium",code_before="",code_after="",dimension="technical",layer="frontend"):
+def finding(category,title,severity,impact,recommendation,page_url="",evidence="",confidence=100,effort="medium",code_before="",code_after="",dimension="technical",layer="frontend",score_eligible=True):
     severity_base={"critical":100,"high":80,"medium":55,"low":25}[severity]
     confidence_factor=max(0,min(100,confidence))/100
     effort_factor={"low":1.0,"medium":0.9,"high":0.8}[effort]
     priority=max(1,min(100,round(severity_base*confidence_factor*effort_factor)))
-    return Finding(category,title,severity,impact,recommendation,page_url,evidence,confidence,effort,priority,code_before,code_after,dimension,layer)
+    return Finding(category,title,severity,impact,recommendation,page_url,evidence,confidence,effort,priority,code_before,code_after,dimension,layer,score_eligible)
 
 def analyze(site:SiteData)->list[Finding]:
     out=[]
@@ -47,15 +47,15 @@ def analyze(site:SiteData)->list[Finding]:
         if not p.title:
             out.append(finding("SEO","Missing page title","high","The page lacks a primary title signal.","Add one unique, descriptive <title>.",p.url,"No <title> element found.",100,"low","<head>...</head>","<head>\n  <title>Descriptive page title</title>\n</head>","seo"))
         elif len(p.title)<30:
-            out.append(finding("SEO","Title may be too short","low","Very short titles provide weak topical context.","Expand the title with useful page context.",p.url,f"Title length: {len(p.title)} characters.",90,"low",dimension="seo"))
+            out.append(finding("SEO","Title may be too short","low","Short titles can be valid; consider whether more context would help users understand this page.","Expand the title only when additional wording improves clarity or distinctiveness.",p.url,f"Title length: {len(p.title)} characters.",90,"low",dimension="seo",score_eligible=False))
         elif len(p.title)>60:
             out.append(finding("SEO","Title may be too long","low","Long titles can be truncated in search interfaces.","Keep the main intent near the beginning and shorten the title.",p.url,f"Title length: {len(p.title)} characters.",90,"low",dimension="seo"))
         if not p.description:
-            out.append(finding("SEO","Missing meta description","medium","Search engines may generate a less useful snippet.","Add a unique, relevant meta description.",p.url,"No meta description found.",100,"low",dimension="seo"))
+            out.append(finding("SEO","Missing meta description","low","A search engine may generate its own snippet; a description can help you suggest useful wording.","Add a unique, relevant meta description when it benefits this page.",p.url,"No meta description element was found in the captured HTML.",100,"low",dimension="seo",score_eligible=False))
         elif len(p.description)>170:
             out.append(finding("SEO","Meta description may be too long","low","Long snippets may be truncated.","Keep the important message concise.",p.url,f"Description length: {len(p.description)} characters.",90,"low",dimension="seo"))
         if p.canonical_count==0:
-            out.append(finding("SEO","Missing canonical URL","medium","Canonicalization intent is not explicit.","Add one canonical URL pointing to the preferred page.",p.url,"Canonical tag count: 0.",100,"low",dimension="seo"))
+            out.append(finding("SEO","Canonical URL not declared","low","A canonical link is useful when a page has duplicate or alternate URLs, but is not required for every page.","If this page has duplicate or alternate URLs, declare the preferred canonical URL.",p.url,"Canonical tag count: 0; no duplicate-URL condition has been established.",100,"low",dimension="seo",score_eligible=False))
         elif p.canonical_count>1:
             out.append(finding("SEO","Multiple canonical tags","medium","Conflicting canonical tags can create ambiguous indexing signals.","Keep exactly one canonical link.",p.url,f"Canonical tags found: {p.canonical_count}.",100,"low",dimension="seo"))
         if p.noindex:
@@ -68,7 +68,7 @@ def analyze(site:SiteData)->list[Finding]:
             prev=int(p.headings[i-1][0][1]); cur=int(p.headings[i][0][1])
             if cur-prev>1:
                 out.append(finding("Accessibility","Heading hierarchy skip","low","Skipped heading levels can make navigation harder for assistive technology.","Avoid jumping more than one heading level.",p.url,f"Observed: {p.headings[i-1][0]} → {p.headings[i][0]}.",95,"low",dimension="accessibility")); break
-        missing=sum(1 for x in p.images if not x.get("alt"))
+        missing=sum(1 for x in p.images if not x.get("alt_present", bool(x.get("alt"))))
         if missing:
             out.append(finding("Accessibility",f"{missing} image(s) missing alt text","medium","Informative images may be inaccessible to screen-reader users.","Add meaningful alt text; use empty alt for decorative images.",p.url,f"Images without alt: {missing}.",100,"low",'<img src="hero.jpg">','<img src="hero.jpg" alt="Descriptive image">',"accessibility"))
         no_dims=sum(1 for x in p.images if not x.get("width") or not x.get("height"))
@@ -83,9 +83,9 @@ def analyze(site:SiteData)->list[Finding]:
         if not p.viewport:
             out.append(finding("Technical","Missing viewport meta tag","medium","Mobile layout behavior may be inconsistent.","Add a responsive viewport declaration.",p.url,"No viewport meta tag found.",100,"low","<head>","<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">","technical"))
         if not p.og_title or not p.og_description:
-            out.append(finding("SEO","Incomplete social metadata","low","Shared links may lack a useful title or description.","Add og:title and og:description for important pages.",p.url,f"og:title={bool(p.og_title)}, og:description={bool(p.og_description)}.",90,"low",dimension="seo"))
+            out.append(finding("SEO","Incomplete social metadata","low","Social platforms may use fallback page content when sharing this URL.","Add Open Graph title and description if controlled link previews are important.",p.url,f"og:title={bool(p.og_title)}, og:description={bool(p.og_description)}.",90,"low",dimension="seo",score_eligible=False))
         if p.json_ld==0:
-            out.append(finding("SEO","No JSON-LD structured data detected","low","Eligible structured-data opportunities may be missing.","Add accurate schema.org JSON-LD where it represents the page.",p.url,"JSON-LD script count: 0.",80,"medium",dimension="seo"))
+            out.append(finding("SEO","No JSON-LD structured data detected","low","Structured data is only useful for supported content types and is not required on every page.","Add valid structured data only when the page content matches an applicable schema type.",p.url,"JSON-LD script count: 0; applicability was not established.",80,"medium",dimension="seo",score_eligible=False))
         if p.mixed_content:
             out.append(finding("Security","Mixed content detected","high","An HTTPS page references insecure HTTP resources.","Serve all resources over HTTPS.",p.url,f"HTTP resources detected: {p.mixed_content}.",100,"medium",dimension="security"))
         missing_headers=[h for h,v in p.security_headers.items() if not v]
@@ -108,9 +108,9 @@ def analyze(site:SiteData)->list[Finding]:
     # Do not infer missing site-wide files when every page fetch failed or was blocked.
     has_successful_page = any(200 <= page.status < 400 for page in site.pages)
     if has_successful_page:
-        if not site.robots_present: out.append(finding("SEO","robots.txt not detected","low","The crawler did not find a robots.txt response at the expected location.","Verify whether a robots.txt is needed for your crawling policy.",site.root_url,"robots.txt did not return HTTP 200; network restrictions may affect this check.",80,"low",dimension="seo"))
+        if not site.robots_present: out.append(finding("SEO","robots.txt not confirmed","low","WebForge did not confirm a usable robots.txt response at the expected location; this may be absence or a fetch restriction.","Check the robots.txt URL and response status before deciding whether a file is needed.",site.root_url,"robots.txt was not confirmed as HTTP 200; absence has not been distinguished from access or network failure.",80,"low",dimension="seo",score_eligible=False))
         elif not site.robots_allowed: out.append(finding("SEO","Crawler appears blocked by robots.txt","medium","The site's robots rules appear to disallow the audit crawler at the root.","Review robots rules if public crawling is intended.",site.root_url,"WebForgeBot cannot fetch the root under current rules.",95,"medium",dimension="seo"))
-        if not site.sitemap_present: out.append(finding("SEO","Sitemap not detected at common locations","low","WebForge did not find a sitemap at the locations it checked; this does not prove that no sitemap exists.","Verify the sitemap URL and reference it in robots.txt when appropriate.",site.root_url,"No sitemap returned HTTP 200 at the locations checked.",80,"low",dimension="seo"))
+        if not site.sitemap_present: out.append(finding("SEO","Sitemap not confirmed","low","WebForge did not confirm a sitemap at the locations checked; a sitemap is not required for every site and may be published at another URL.","Check sitemap declarations in robots.txt and the site's known sitemap locations if discoverability requires it.",site.root_url,"No sitemap returned HTTP 200 at the locations checked; other locations and access restrictions were not ruled out.",80,"low",dimension="seo",score_eligible=False))
     if site.broken_links:
         out.append(finding("Technical",f"{len(site.broken_links)} broken link(s) detected","high","Broken destinations create dead ends for users and crawlers.","Repair the link target or update the source page.",site.root_url,f"Broken links observed: {len(site.broken_links)}.",100,"medium",dimension="technical"))
     # Deduplicate identical findings for the same page and evidence.
@@ -127,6 +127,10 @@ def analyze(site:SiteData)->list[Finding]:
 def score(findings:list[Finding])->tuple[int,dict[str,int]]:
     deductions={"seo":0.0,"performance":0.0,"accessibility":0.0,"security":0.0,"technical":0.0}
     for f in findings:
+        # Recommendations and unconfirmed opportunities remain visible but do not
+        # lower the health score until they represent a demonstrated issue.
+        if not getattr(f, "score_eligible", True):
+            continue
         deductions[f.dimension]+=min(25,IMPACT[f.severity]*2.5)
     dimensions={k:max(0,round(100-v)) for k,v in deductions.items()}
     overall=round(sum(dimensions[k]*DIMENSION_WEIGHTS[k] for k in dimensions))

@@ -32,7 +32,7 @@ def score(findings: list[Finding]):
     backend=[f for f in findings if f.layer=='backend']
     full=[f for f in findings if f.layer=='full-stack']
     def layer_score(items):
-        penalty=sum(min(12, {'critical':18,'high':12,'medium':7,'low':3}[f.severity]) for f in items)
+        penalty=sum(min(12, {'critical':18,'high':12,'medium':7,'low':3}[f.severity]) for f in items if getattr(f, 'score_eligible', True))
         return max(0,100-penalty)
     dimensions['frontend']=layer_score(frontend+full)
     dimensions['backend']=layer_score(backend+full)
