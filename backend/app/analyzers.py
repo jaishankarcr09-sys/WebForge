@@ -15,18 +15,23 @@ class Finding:
     def asdict(self): return asdict(self)
 
 def finding(category,title,severity,impact,recommendation,page_url="",evidence="",confidence=100,effort="medium",code_before="",code_after="",dimension="technical",layer="frontend"):
-    priority=max(1,min(100,round(IMPACT[severity]*confidence/EFFORT[effort])))
+    severity_base={"critical":100,"high":80,"medium":55,"low":25}[severity]
+    confidence_factor=max(0,min(100,confidence))/100
+    effort_factor={"low":1.0,"medium":0.9,"high":0.8}[effort]
+    priority=max(1,min(100,round(severity_base*confidence_factor*effort_factor)))
     return Finding(category,title,severity,impact,recommendation,page_url,evidence,confidence,effort,priority,code_before,code_after,dimension,layer)
 
 def analyze(site:SiteData)->list[Finding]:
     out=[]
     titles=[]; descriptions=[]
     for p in site.pages:
-        titles.append(p.title.strip().lower()); descriptions.append(p.description.strip().lower())
         if p.status==0:
-            out.append(finding("Technical","Page could not be fetched","high","The crawler could not obtain a valid response.","Check DNS, TLS, firewall rules, redirects, or upstream availability.",p.url,"Crawler request failed.",100,"medium",dimension="technical")); continue
+            out.append(finding("Technical","Page could not be fetched","high","The crawler could not obtain a valid response.","Check DNS, TLS, firewall rules, redirects, or upstream availability.",p.url,"Crawler request failed; page-content checks were skipped.",100,"medium",dimension="technical"))
+            continue
         if p.status>=400:
-            out.append(finding("Technical",f"HTTP error ({p.status})","high","Users and search engines receive an error response.","Fix the route or redirect the URL to the correct destination.",p.url,f"HTTP status: {p.status}.",100,"medium",dimension="technical"))
+            out.append(finding("Technical",f"HTTP error ({p.status})","high","WebForge's crawler received an HTTP error response. This may reflect bot protection or access policy and does not alone prove that ordinary visitors see the same error.","Check the response in a normal browser and confirm whether the crawler is permitted. Page-content SEO checks are skipped for this response.",p.url,f"Crawler-observed HTTP status: {p.status}; HTML-derived findings were skipped because the response may be an error or block page.",100,"medium",dimension="technical"))
+            continue
+        titles.append(p.title.strip().lower()); descriptions.append(p.description.strip().lower())
         if not p.title:
             out.append(finding("SEO","Missing page title","high","The page lacks a primary title signal.","Add one unique, descriptive <title>.",p.url,"No <title> element found.",100,"low","<head>...</head>","<head>\n  <title>Descriptive page title</title>\n</head>","seo"))
         elif len(p.title)<30:
