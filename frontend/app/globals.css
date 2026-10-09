@@ -272,3 +272,10 @@ a{color:inherit;text-decoration:none}
   .similar-card,.similar-link{transition:none}
   .similar-card:hover{transform:none}
 }
+
+
+.crawl-warning{margin-bottom:16px;border-color:rgba(217,119,6,.35);background:linear-gradient(135deg,rgba(217,119,6,.07),var(--surface) 58%)}
+.crawl-warning h2{margin:6px 0;font-size:17px}
+.crawl-warning p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
+.crawl-warning small{display:block;margin-top:7px;color:var(--muted);font-size:11px;overflow-wrap:anywhere}
+.score-ring.unverified{--score:0;opacity:.78}
