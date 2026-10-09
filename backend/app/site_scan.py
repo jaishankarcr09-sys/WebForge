@@ -255,17 +255,27 @@ def crawl(url:str,page_limit:int=10)->SiteData:
             lines=rb.decode("utf-8",errors="replace").splitlines()
             robots_allowed=not any("disallow: /" in x.lower().replace(" ","") for x in lines if x.lower().startswith("disallow"))
             sitemap_urls=[x.split(":",1)[1].strip() for x in lines if x.lower().startswith("sitemap:") and ":" in x]
-    except Exception: pass
+    except Exception as exc:
+        resource_warnings.append({"url":robots if "robots" in locals() else root,"status":0,"reason":"robots.txt could not be checked reliably; absence is unverified.","error_type":type(exc).__name__})
     if not sitemap_urls: sitemap_urls=[urlunsplit((urlsplit(root).scheme,urlsplit(root).netloc,"/sitemap.xml","",""))]
-    sitemap_found=[]
+    sitemap_found=[]; sitemap_statuses=[]
     for sm in sitemap_urls[:3]:
         try:
             sr,sb,_,_=fetch(session,sm,10)
+            sitemap_statuses.append(sr.status_code)
+            if sitemap_status is None: sitemap_status=sr.status_code
             if sr.status_code==200:
                 sitemap_present=True
                 import re
                 sitemap_found += [norm(x.strip()) for x in re.findall(r"<loc>\s*([^<]+?)\s*</loc>",sb.decode("utf-8",errors="ignore"))[:200]]
-        except Exception: pass
+        except Exception as exc:
+            sitemap_statuses.append(0)
+            resource_warnings.append({"url":sm,"status":0,"reason":"Sitemap could not be checked reliably; absence is unverified.","error_type":type(exc).__name__})
+    if not sitemap_present and sitemap_statuses:
+        if all(status in {404,410} for status in sitemap_statuses):
+            resource_warnings.append({"url":sitemap_urls[0],"status":sitemap_statuses[0],"reason":"No sitemap was found at the checked sitemap URLs; the server returned 404/410."})
+        elif any(status not in {404,410} for status in sitemap_statuses) and not any(w.get("url") in sitemap_urls for w in resource_warnings):
+            resource_warnings.append({"url":sitemap_urls[0],"status":sitemap_statuses[0],"reason":"Sitemap availability could not be confirmed; this does not prove that no sitemap exists."})
     for x in sitemap_found[:limit]:
         # Sitemap indexes and XML feeds are crawl resources, not HTML pages to audit.
         if same_origin(x,root) and not _is_xml_resource(x):
