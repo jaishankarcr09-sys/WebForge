@@ -15,18 +15,23 @@ class Finding:
     def asdict(self): return asdict(self)
 
 def finding(category,title,severity,impact,recommendation,page_url="",evidence="",confidence=100,effort="medium",code_before="",code_after="",dimension="technical",layer="frontend"):
-    priority=max(1,min(100,round(IMPACT[severity]*confidence/EFFORT[effort])))
+    severity_base={"critical":100,"high":80,"medium":55,"low":25}[severity]
+    confidence_factor=max(0,min(100,confidence))/100
+    effort_factor={"low":1.0,"medium":0.9,"high":0.8}[effort]
+    priority=max(1,min(100,round(severity_base*confidence_factor*effort_factor)))
     return Finding(category,title,severity,impact,recommendation,page_url,evidence,confidence,effort,priority,code_before,code_after,dimension,layer)
 
 def analyze(site:SiteData)->list[Finding]:
     out=[]
     titles=[]; descriptions=[]
     for p in site.pages:
-        titles.append(p.title.strip().lower()); descriptions.append(p.description.strip().lower())
         if p.status==0:
-            out.append(finding("Technical","Page could not be fetched","high","The crawler could not obtain a valid response.","Check DNS, TLS, firewall rules, redirects, or upstream availability.",p.url,"Crawler request failed.",100,"medium",dimension="technical")); continue
+            out.append(finding("Technical","Page could not be fetched","high","The crawler could not obtain a valid response.","Check DNS, TLS, firewall rules, redirects, or upstream availability.",p.url,"Crawler request failed; page-content checks were skipped.",100,"medium",dimension="technical"))
+            continue
         if p.status>=400:
-            out.append(finding("Technical",f"HTTP error ({p.status})","high","Users and search engines receive an error response.","Fix the route or redirect the URL to the correct destination.",p.url,f"HTTP status: {p.status}.",100,"medium",dimension="technical"))
+            out.append(finding("Technical",f"HTTP error ({p.status})","high","WebForge's crawler received an HTTP error response. This may reflect bot protection or access policy and does not alone prove that ordinary visitors see the same error.","Check the response in a normal browser and confirm whether the crawler is permitted. Page-content SEO checks are skipped for this response.",p.url,f"Crawler-observed HTTP status: {p.status}; HTML-derived findings were skipped because the response may be an error or block page.",100,"medium",dimension="technical"))
+            continue
+        titles.append(p.title.strip().lower()); descriptions.append(p.description.strip().lower())
         if not p.title:
             out.append(finding("SEO","Missing page title","high","The page lacks a primary title signal.","Add one unique, descriptive <title>.",p.url,"No <title> element found.",100,"low","<head>...</head>","<head>\n  <title>Descriptive page title</title>\n</head>","seo"))
         elif len(p.title)<30:
@@ -88,9 +93,12 @@ def analyze(site:SiteData)->list[Finding]:
     if dup_titles: out.append(finding("SEO","Duplicate page titles","medium","Multiple pages share the same title and can target the same search intent poorly.","Make titles unique for each important page.",evidence=f"Duplicate title groups: {len(dup_titles)}.",confidence=100,effort="medium",dimension="seo"))
     dup_desc=[x for x,c in Counter(descriptions).items() if x and c>1]
     if dup_desc: out.append(finding("SEO","Duplicate meta descriptions","low","Repeated descriptions provide weak page differentiation.","Write unique descriptions for important pages.",evidence=f"Duplicate description groups: {len(dup_desc)}.",confidence=100,effort="medium",dimension="seo"))
-    if not site.robots_present: out.append(finding("SEO","robots.txt missing","medium","Crawler directives are not explicitly published.","Add a valid robots.txt at the site root.",site.root_url,"robots.txt returned no 200 response.",95,"low",dimension="seo"))
-    elif not site.robots_allowed: out.append(finding("SEO","Crawler appears blocked by robots.txt","high","The site's robots rules appear to disallow the audit crawler at the root.","Review robots rules if public crawling is intended.",site.root_url,"WebForgeBot cannot fetch the root under current rules.",100,"medium",dimension="seo"))
-    if not site.sitemap_present: out.append(finding("SEO","sitemap.xml missing","medium","No XML sitemap was detected at common sitemap locations.","Publish and reference a valid XML sitemap.",site.root_url,"No sitemap returned 200.",95,"medium",dimension="seo"))
+    # Do not infer missing site-wide files when every page fetch failed or was blocked.
+    has_successful_page = any(200 <= page.status < 400 for page in site.pages)
+    if has_successful_page:
+        if not site.robots_present: out.append(finding("SEO","robots.txt not detected","low","The crawler did not find a robots.txt response at the expected location.","Verify whether a robots.txt is needed for your crawling policy.",site.root_url,"robots.txt did not return HTTP 200; network restrictions may affect this check.",80,"low",dimension="seo"))
+        elif not site.robots_allowed: out.append(finding("SEO","Crawler appears blocked by robots.txt","medium","The site's robots rules appear to disallow the audit crawler at the root.","Review robots rules if public crawling is intended.",site.root_url,"WebForgeBot cannot fetch the root under current rules.",95,"medium",dimension="seo"))
+        if not site.sitemap_present: out.append(finding("SEO","Sitemap not detected at common locations","low","WebForge did not find a sitemap at the locations it checked; this does not prove that no sitemap exists.","Verify the sitemap URL and reference it in robots.txt when appropriate.",site.root_url,"No sitemap returned HTTP 200 at the locations checked.",80,"low",dimension="seo"))
     if site.broken_links:
         out.append(finding("Technical",f"{len(site.broken_links)} broken link(s) detected","high","Broken destinations create dead ends for users and crawlers.","Repair the link target or update the source page.",site.root_url,f"Broken links observed: {len(site.broken_links)}.",100,"medium",dimension="technical"))
     return out
