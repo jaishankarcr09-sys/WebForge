@@ -1,6 +1,6 @@
 from __future__ import annotations
 from collections import deque
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 import ipaddress, socket, time
 from urllib.parse import urljoin, urlsplit, urlunsplit, urldefrag
 import requests
@@ -18,11 +18,13 @@ class PageData:
     noindex:bool; mixed_content:int; security_headers:dict[str,bool]
     forms_without_labels:int; buttons_without_names:int
     server:str; cache_control:str; content_encoding:str; etag:bool; set_cookie_count:int; insecure_cookie_count:int; redirect_count:int
+    content_type:str=""; analysis_eligible:bool=True; crawl_note:str=""; html_truncated:bool=False
 
 @dataclass
 class SiteData:
     root_url:str; pages:list[PageData]; discovered:list[str]; broken_links:list[dict]
     robots_present:bool; robots_allowed:bool; sitemap_present:bool; sitemap_urls:list[str]; duration_ms:int
+    crawl_warnings:list[dict]=field(default_factory=list)
 
 def safe_url(url:str)->str:
     p=urlsplit(url)
@@ -91,9 +93,27 @@ def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->Pag
     if r.url.startswith("https://"):
         mixed=sum(int(str(t.get("src","")).startswith("http://")) for t in soup.find_all(["img","script","iframe"],src=True))
         mixed+=sum(int(str(t.get("href","")).startswith("http://")) for t in soup.find_all("link",href=True))
+    content_type=str(r.headers.get("content-type","")).lower()
+    html_response="html" in content_type
+    title_text=soup.title.get_text(" ",strip=True) if soup.title else ""
+    body_text=soup.get_text(" ",strip=True).lower()[:12000]
+    challenge_markers=("verify you are human","checking your browser","attention required","captcha","unusual traffic","request blocked","enable javascript and cookies to continue")
+    challenge=any(marker in (title_text+" "+body_text).lower() for marker in challenge_markers)
+    status_ok=200 <= r.status_code < 400
+    eligible=status_ok and html_response and not challenge
+    note=""
+    if not status_ok: note=f"HTTP status {r.status_code}; content checks skipped."
+    elif not html_response: note=f"Non-HTML response ({content_type or 'unknown content type'}); HTML checks skipped."
+    elif challenge: note="Response resembles a bot challenge or access interstitial; HTML checks skipped."
+    content_length=r.headers.get("content-length","")
+    try: truncated=int(content_length)>len(body)
+    except (TypeError,ValueError): truncated=False
+    if truncated:
+        eligible=False
+        note=(note+" " if note else "")+"Response body may be truncated at the crawler size limit; content checks skipped."
     return PageData(
         url=url,final_url=r.url,status=r.status_code,response_ms=elapsed,ttfb_ms=ttfb,html_bytes=len(body),
-        title=soup.title.get_text(" ",strip=True) if soup.title else "",description=meta(soup,"description"),
+        title=title_text,description=meta(soup,"description"),
         canonical=canonical,canonical_count=len(cans),h1_count=len(soup.find_all("h1")),
         headings=[(t.name,t.get_text(" ",strip=True)) for t in soup.find_all(["h1","h2","h3","h4","h5","h6"])],
         images=images,internal_links=internal,external_links=external,scripts=len(soup.find_all("script",src=True)),
@@ -106,7 +126,7 @@ def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->Pag
         content_encoding=str(r.headers.get("content-encoding","")), etag=bool(r.headers.get("etag")),
         set_cookie_count=len(r.raw.headers.get_all("set-cookie") or []) if hasattr(r.raw.headers,"get_all") else int(bool(r.headers.get("set-cookie"))),
         insecure_cookie_count=sum(1 for c in (r.raw.headers.get_all("set-cookie") or []) if "secure" not in c.lower()) if hasattr(r.raw.headers,"get_all") else 0,
-        redirect_count=len(r.history)
+        redirect_count=len(r.history),content_type=content_type,analysis_eligible=eligible,crawl_note=note,html_truncated=truncated
     )
 
 def crawl(url:str,page_limit:int=10)->SiteData:
@@ -139,13 +159,12 @@ def crawl(url:str,page_limit:int=10)->SiteData:
         seen.add(current)
         try:
             r,b,elapsed,ttfb=fetch(session,current)
-            if "html" not in r.headers.get("content-type","").lower() and current!=root: continue
             page=parse_page(current,r,b,elapsed,ttfb); pages.append(page)
             for target in page.internal_links:
                 discovered.add(target)
                 if target not in seen and len(discovered)<limit*5: q.append(target)
         except Exception:
-            pages.append(PageData(url=current,final_url=current,status=0,response_ms=0,ttfb_ms=0,html_bytes=0,title="",description="",canonical="",canonical_count=0,h1_count=0,headings=[],images=[],internal_links=[],external_links=[],scripts=0,lang="",viewport="",og_title="",og_description="",twitter_card="",json_ld=0,noindex=False,mixed_content=0,security_headers={},forms_without_labels=0,buttons_without_names=0,server="",cache_control="",content_encoding="",etag=False,set_cookie_count=0,insecure_cookie_count=0,redirect_count=0))
+            pages.append(PageData(url=current,final_url=current,status=0,response_ms=0,ttfb_ms=0,html_bytes=0,title="",description="",canonical="",canonical_count=0,h1_count=0,headings=[],images=[],internal_links=[],external_links=[],scripts=0,lang="",viewport="",og_title="",og_description="",twitter_card="",json_ld=0,noindex=False,mixed_content=0,security_headers={},forms_without_labels=0,buttons_without_names=0,server="",cache_control="",content_encoding="",etag=False,set_cookie_count=0,insecure_cookie_count=0,redirect_count=0,content_type="",analysis_eligible=False,crawl_note="Crawler request failed; page content was not verified."))
     targets=[]; broken=[]; checked=set()
     for p in pages: targets += p.internal_links[:80] + p.external_links[:20]
     for target in targets:
@@ -155,6 +174,7 @@ def crawl(url:str,page_limit:int=10)->SiteData:
             r,_,elapsed,_=fetch(session,target,10)
             if r.status_code>=400: broken.append({"url":target,"status":r.status_code,"response_ms":elapsed})
         except Exception as exc: broken.append({"url":target,"status":0,"error":str(exc)[:160]})
-    return SiteData(root,pages,sorted(discovered),broken,robots_present,robots_allowed,sitemap_present,sorted(set(sitemap_found or sitemap_urls)),int((time.perf_counter()-start)*1000))
+    warnings=[{"url":p.url,"status":p.status,"final_url":p.final_url,"content_type":p.content_type,"reason":p.crawl_note or "Page content was not eligible for analysis."} for p in pages if not p.analysis_eligible]
+    return SiteData(root,pages,sorted(discovered),broken,robots_present,robots_allowed,sitemap_present,sorted(set(sitemap_found or sitemap_urls)),int((time.perf_counter()-start)*1000),warnings)
 
 def page_json(page:PageData)->dict: return asdict(page)

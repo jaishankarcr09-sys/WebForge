@@ -24,7 +24,19 @@ def finding(category,title,severity,impact,recommendation,page_url="",evidence="
 def analyze(site:SiteData)->list[Finding]:
     out=[]
     titles=[]; descriptions=[]
-    for p in site.pages:
+    unique_pages=[]
+    seen_page_urls=set()
+    for page in site.pages:
+        page_key=getattr(page,"url","")
+        if page_key and page_key in seen_page_urls:
+            continue
+        if page_key:
+            seen_page_urls.add(page_key)
+        unique_pages.append(page)
+    for p in unique_pages:
+        # Skip HTML-derived rules for blocked, challenge, non-HTML, or incomplete responses.
+        if not getattr(p,"analysis_eligible",True):
+            continue
         if p.status==0:
             out.append(finding("Technical","Page could not be fetched","high","The crawler could not obtain a valid response.","Check DNS, TLS, firewall rules, redirects, or upstream availability.",p.url,"Crawler request failed; page-content checks were skipped.",100,"medium",dimension="technical"))
             continue
@@ -101,7 +113,16 @@ def analyze(site:SiteData)->list[Finding]:
         if not site.sitemap_present: out.append(finding("SEO","Sitemap not detected at common locations","low","WebForge did not find a sitemap at the locations it checked; this does not prove that no sitemap exists.","Verify the sitemap URL and reference it in robots.txt when appropriate.",site.root_url,"No sitemap returned HTTP 200 at the locations checked.",80,"low",dimension="seo"))
     if site.broken_links:
         out.append(finding("Technical",f"{len(site.broken_links)} broken link(s) detected","high","Broken destinations create dead ends for users and crawlers.","Repair the link target or update the source page.",site.root_url,f"Broken links observed: {len(site.broken_links)}.",100,"medium",dimension="technical"))
-    return out
+    # Deduplicate identical findings for the same page and evidence.
+    deduped=[]
+    seen=set()
+    for item in out:
+        key=(item.category,item.title,item.page_url,item.evidence)
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(item)
+    return deduped
 
 def score(findings:list[Finding])->tuple[int,dict[str,int]]:
     deductions={"seo":0.0,"performance":0.0,"accessibility":0.0,"security":0.0,"technical":0.0}
