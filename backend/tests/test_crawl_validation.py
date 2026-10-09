@@ -241,3 +241,32 @@ def test_link_checker_warnings_are_not_misreported_as_confirmed_broken_links():
     )
     assert site.broken_links == []
     assert site.link_check_warnings[0]["status"] == 403
+
+
+
+def test_link_status_classification_only_confirms_404_and_410_as_broken():
+    from app.site_scan import _record_link_result
+
+    broken = []
+    warnings = []
+    _record_link_result("https://example.com/missing", 404, 12, broken, warnings)
+    _record_link_result("https://example.com/gone", 410, 15, broken, warnings)
+    _record_link_result("https://example.com/private", 403, 11, broken, warnings)
+    _record_link_result("https://example.com/limited", 429, 10, broken, warnings)
+    _record_link_result("https://example.com/server-error", 503, 10, broken, warnings)
+
+    assert [item["status"] for item in broken] == [404, 410]
+    assert all(item["verification"] == "confirmed_http_not_found" for item in broken)
+    assert [item["status"] for item in warnings] == [403, 429, 503]
+
+
+def test_analyzer_does_not_flag_explicit_empty_alt_as_missing():
+    page = valid_page()
+    page.images = [
+        {"src": "https://example.com/decorative.svg", "alt": "", "alt_present": True},
+        {"src": "https://example.com/informative.png", "alt": "", "alt_present": False},
+    ]
+    findings = analyze(make_site(page))
+    alt_findings = [item for item in findings if "missing alt text" in item.title.lower()]
+    assert len(alt_findings) == 1
+    assert alt_findings[0].title == "1 image(s) missing alt text"
