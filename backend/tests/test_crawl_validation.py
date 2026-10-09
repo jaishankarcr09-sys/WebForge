@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from app.analyzers import analyze, score
 from app.full_analyzer import analyze as analyze_full, score as score_full
 from app.site_scan import _is_xml_resource, parse_page
+from app.site_intelligence import classify
 
 
 def make_site(page_or_pages):
@@ -379,3 +380,18 @@ def test_layer_scores_use_verified_page_count_and_do_not_collapse_to_zero():
     _, dimensions = score_full(findings, page_count=10)
     assert dimensions["frontend"] == 84
     assert dimensions["backend"] == 100
+
+
+def test_verified_site_with_weak_category_signals_is_not_mislabeled_insufficient_evidence():
+    page = valid_page()
+    page.title = "Python"
+    page.description = ""
+    page.headings = []
+    site = make_site(page)
+    assert classify(site) == "General Website"
+
+
+def test_python_org_uses_known_site_category_without_guessing_from_page_copy():
+    site = make_site([])
+    site.root_url = "https://www.python.org/"
+    assert classify(site) == "Programming Language / Documentation"
