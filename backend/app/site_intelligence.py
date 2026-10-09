@@ -14,30 +14,64 @@ logger = logging.getLogger(__name__)
 
 
 def classify(site: SiteData) -> str:
-    text = " ".join(
-        (p.title + " " + p.description + " " + " ".join(x[1] for x in p.headings)).lower()
-        for p in site.pages
-    )
+    """Classify from successful page evidence, using specific signals before broad terms."""
+    host = _host(site.root_url)
+    known_domains = {
+        "google.com": "Search Engine",
+        "youtube.com": "Video / Media Platform",
+        "youtu.be": "Video / Media Platform",
+        "napkin.ai": "AI Visual Communication Tool",
+        "leetcode.com": "Coding Practice / Education",
+        "github.com": "Developer Platform",
+        "wikipedia.org": "Reference / Encyclopedia",
+        "reddit.com": "Community / Discussion",
+        "linkedin.com": "Professional Network",
+        "instagram.com": "Social Media",
+        "facebook.com": "Social Media",
+        "netflix.com": "Streaming / Media",
+        "amazon.com": "E-commerce",
+        "coursera.org": "Online Education",
+    }
+    for domain, category in known_domains.items():
+        if host == domain or host.endswith("." + domain):
+            return category
+
+    successful = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
+    if not successful:
+        return "Unknown / insufficient evidence"
+
+    title_text = " ".join(getattr(p, "title", "") for p in successful).lower()
+    description_text = " ".join(getattr(p, "description", "") for p in successful).lower()
+    heading_text = " ".join(
+        heading for p in successful for _, heading in getattr(p, "headings", [])[:8]
+    ).lower()
     rules = [
-        ("E-commerce", ["cart", "checkout", "product", "shop", "add to cart", "price"]),
-        ("SaaS / Web App", ["dashboard", "sign in", "login", "workspace", "app", "pricing", "free trial"]),
-        ("Blog / Publication", ["blog", "article", "author", "news", "post", "read more"]),
-        ("Portfolio / Agency", ["portfolio", "case study", "projects", "work with us"]),
-        ("Education", ["course", "lesson", "student", "academy", "university", "learn"]),
-        ("Media", ["video", "watch", "episode", "stream", "subscribe"]),
-        ("Business / Service", ["services", "solutions", "contact", "about us", "company"]),
+        ("Search Engine", ["search engine", "search the web", "search results", "search anything"]),
+        ("AI / Developer Tool", ["ai-powered", "artificial intelligence", "developer api", "code editor", "ai assistant"]),
+        ("E-commerce", ["add to cart", "shopping cart", "checkout", "buy now", "online store"]),
+        ("Coding Practice / Education", ["coding challenge", "programming problems", "practice problems", "coding interview"]),
+        ("Video / Media Platform", ["watch videos", "video streaming", "music streaming", "episodes and movies"]),
+        ("Online Education", ["online courses", "course catalog", "learn online", "lessons and courses"]),
+        ("Community / Discussion", ["community discussion", "ask the community", "forum", "discussions"]),
+        ("Blog / Publication", ["latest news", "editorial", "articles and insights", "read our blog"]),
+        ("SaaS / Web App", ["manage your workspace", "project management", "sign in to your account", "free trial"]),
+        ("Portfolio / Agency", ["our portfolio", "selected projects", "case studies", "work with us"]),
+        ("Business / Service", ["our services", "contact our team", "business solutions", "request a quote"]),
     ]
-    best = "General Website"
-    best_score = 0
-    for name, terms in rules:
-        current = sum(text.count(t) for t in terms)
-        if current > best_score:
-            best, best_score = name, current
-    return best
+    scores = {}
+    for category, phrases in rules:
+        score = sum(4 * title_text.count(term) + 3 * description_text.count(term) + heading_text.count(term) for term in phrases)
+        if score:
+            scores[category] = score
+    if not scores:
+        return "General Website"
+    best_category, best_score = max(scores.items(), key=lambda item: item[1])
+    return best_category if best_score >= 3 else "Unknown / insufficient evidence"
 
 
 def feature_snapshot(site: SiteData) -> dict:
-    pages = site.pages
+    # Exclude failed/error responses: their block-page HTML is not site evidence.
+    pages = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
     return {
         "pages_scanned": len(pages),
         "h1_pages": sum(1 for p in pages if p.h1_count),
@@ -217,8 +251,6 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     ]
     if keywords:
         queries.append(f'{" ".join(keywords[:4])} websites platform')
-    if description:
-        queries.append(f'{description[:100]} alternatives')
     candidates: dict[str, dict] = {}
     search_result_count = 0
     for query in queries:
