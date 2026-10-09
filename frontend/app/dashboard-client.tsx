@@ -77,7 +77,7 @@ export default function DashboardClient({user}:Props){
       if(existing){existing.occurrences+=1;if(issue.priority>existing.priority){existing.priority=issue.priority;existing.page_url=issue.page_url;existing.evidence=issue.evidence;}}
       else grouped.set(key,{...issue,occurrences:1});
     }
-    return [...grouped.values()].sort((a,b)=>b.priority-a.priority).slice(0,5);
+    return Array.from(grouped.values()).sort((a,b)=>b.priority-a.priority).slice(0,5);
   },[audit]);
 
   useEffect(()=>{
