@@ -395,3 +395,23 @@ def test_python_org_uses_known_site_category_without_guessing_from_page_copy():
     site = make_site([])
     site.root_url = "https://www.python.org/"
     assert classify(site) == "Programming Language / Documentation"
+
+
+def test_known_domain_classification_requires_verified_page_evidence():
+    blocked_page = SimpleNamespace(
+        status=403,
+        url="https://leetcode.com/",
+        analysis_eligible=False,
+    )
+    site = make_site(blocked_page)
+    site.root_url = "https://leetcode.com/"
+
+    assert classify(site) == "Unknown / insufficient evidence"
+
+
+def test_known_domain_classification_remains_available_with_verified_html():
+    page = valid_page()
+    site = make_site(page)
+    site.root_url = "https://leetcode.com/"
+
+    assert classify(site) == "Coding Practice / Education"
