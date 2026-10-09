@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, JSON, Boolean
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, JSON, Boolean, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .db import Base
 
@@ -100,24 +100,24 @@ class AuditIntelligence(Base):
 
 class UserWebsite(Base):
     __tablename__ = "webforge_user_websites"
-    user_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True)
     website_id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
 class UserAudit(Base):
     __tablename__ = "webforge_user_audits"
-    user_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True)
     audit_id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
 class UserProject(Base):
     __tablename__ = "webforge_user_projects"
-    user_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True)
     project_id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
 class Schedule(Base):
     __tablename__ = "wf_schedules"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     website_id: Mapped[int] = mapped_column(Integer, index=True)
-    user_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    user_id: Mapped[str | None] = mapped_column(Uuid(as_uuid=False), nullable=True, index=True)
     interval_minutes: Mapped[int] = mapped_column(Integer, default=1440)
     enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     last_run_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
