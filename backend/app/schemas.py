@@ -35,6 +35,7 @@ class AuditResponse(BaseModel):
     robots_present: bool = False
     sitemap_present: bool = False
     broken_links: list[dict] = []
+    link_check_warnings: list[dict] = []
     pages: list[dict] = []
     website_type: str = "Unknown"
     frontend_score: int = 0
