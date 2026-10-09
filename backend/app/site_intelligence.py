@@ -41,7 +41,7 @@ def classify(site: SiteData) -> str:
         if host == domain or host.endswith("." + domain):
             return category
 
-    successful = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
+    successful = [p for p in site.pages if getattr(p, "analysis_eligible", True) and 200 <= getattr(p, "status", 0) < 400]
     if not successful:
         return "Unknown / insufficient evidence"
 
@@ -76,7 +76,7 @@ def classify(site: SiteData) -> str:
 
 def feature_snapshot(site: SiteData) -> dict:
     # Exclude failed/error responses: their block-page HTML is not site evidence.
-    pages = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
+    pages = [p for p in site.pages if getattr(p, "analysis_eligible", True) and 200 <= getattr(p, "status", 0) < 400]
     return {
         "pages_scanned": len(pages),
         "h1_pages": sum(1 for p in pages if p.h1_count),
@@ -215,7 +215,7 @@ def _search(query: str, limit: int = 8) -> list[dict]:
     return results[:limit]
 
 def _keywords(site: SiteData) -> list[str]:
-    successful = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
+    successful = [p for p in site.pages if getattr(p, "analysis_eligible", True) and 200 <= getattr(p, "status", 0) < 400]
     raw = " ".join(
         " ".join([p.title, p.description] + [heading for _, heading in p.headings[:8]])
         for p in successful[:5]
@@ -293,7 +293,7 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     DuckDuckGo HTML search is a best-effort fallback, not an exhaustive index.
     """
     root = _host(site.root_url)
-    successful_pages = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
+    successful_pages = [p for p in site.pages if getattr(p, "analysis_eligible", True) and 200 <= getattr(p, "status", 0) < 400]
     title = successful_pages[0].title.strip() if successful_pages else ""
     description = successful_pages[0].description.strip() if successful_pages else ""
     keywords = _keywords(site)
