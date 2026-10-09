@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 
 import httpx
 
@@ -88,8 +87,13 @@ def _parse_ai_response(content: str, context: dict) -> dict | None:
     if not isinstance(content, str):
         return None
     text = content.strip()
-    if text.startswith("\u0060\u0060\u0060"):
-        text = re.sub(r"^\u0060\u0060\u0060(?:json)?\\s*|\\s*\u0060\u0060\u0060$", "", text, flags=re.IGNORECASE).strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if lines and lines[0].strip().startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
     try:
         payload = json.loads(text)
     except (json.JSONDecodeError, TypeError):
