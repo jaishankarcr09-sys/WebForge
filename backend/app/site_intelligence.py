@@ -215,9 +215,10 @@ def _search(query: str, limit: int = 8) -> list[dict]:
     return results[:limit]
 
 def _keywords(site: SiteData) -> list[str]:
+    successful = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
     raw = " ".join(
         " ".join([p.title, p.description] + [heading for _, heading in p.headings[:8]])
-        for p in site.pages[:5]
+        for p in successful[:5]
     ).lower()
     words = re.findall(r"[a-z][a-z0-9+-]{2,}", raw)
     stop = {
@@ -292,8 +293,9 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     DuckDuckGo HTML search is a best-effort fallback, not an exhaustive index.
     """
     root = _host(site.root_url)
-    title = site.pages[0].title.strip() if site.pages else ""
-    description = site.pages[0].description.strip() if site.pages else ""
+    successful_pages = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
+    title = successful_pages[0].title.strip() if successful_pages else ""
+    description = successful_pages[0].description.strip() if successful_pages else ""
     keywords = _keywords(site)
     topics = [x for x in [title, description, " ".join(keywords)] if x]
     queries = [
@@ -303,6 +305,12 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     if keywords:
         queries.append(f'{" ".join(keywords[:4])} websites platform')
     candidates: dict[str, dict] = {}
+    # Seed common categories so blocked/empty search providers cannot leave the
+    # feature blank. Dynamic results are merged and ranked alongside these.
+    for item in _curated_comparables(website_type):
+        host = _host(item["url"])
+        if host and host != root:
+            candidates[host] = item
     search_result_count = 0
     for query in queries:
         results = _search(query, 10)
@@ -323,32 +331,33 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     )
     ranked = []
     crawl_failures = 0
-    for host, item in list(candidates.items())[:8]:
-        candidate_type = "Unverified"
+    for host, item in list(candidates.items())[:12]:
+        candidate_type = item.get("website_type", "Unverified")
         features = {}
         verified_url = item["url"]
-        verification_status = "search-result-only"
-        # A search result can be useful even if the target blocks automated
-        # crawlers. Do not discard every candidate merely because WebForge gets
-        # a 403/429; also never classify an error page as the candidate's website.
-        try:
-            candidate = crawl(verified_url, 1)
-            if candidate.pages and 200 <= candidate.pages[0].status < 400:
-                verified_url = candidate.root_url
-                candidate_type = classify(candidate)
-                features = feature_snapshot(candidate)
-                verification_status = "crawl-verified"
-            elif candidate.pages:
-                status = candidate.pages[0].status
-                verification_status = f"crawler-http-{status}" if status else "crawler-fetch-failed"
+        is_curated = item.get("source") == "WebForge curated baseline"
+        verification_status = "curated-reference" if is_curated else "search-result-only"
+        # Curated references are category-level suggestions, not live-crawl claims.
+        # Dynamic search results are crawled when possible and retained if blocked.
+        if not is_curated:
+            try:
+                candidate = crawl(verified_url, 1)
+                if candidate.pages and 200 <= candidate.pages[0].status < 400:
+                    verified_url = candidate.root_url
+                    candidate_type = classify(candidate)
+                    features = feature_snapshot(candidate)
+                    verification_status = "crawl-verified"
+                elif candidate.pages:
+                    status = candidate.pages[0].status
+                    verification_status = f"crawler-http-{status}" if status else "crawler-fetch-failed"
+                    crawl_failures += 1
+                else:
+                    verification_status = "crawler-no-page"
+                    crawl_failures += 1
+            except Exception as exc:
                 crawl_failures += 1
-            else:
-                verification_status = "crawler-no-page"
-                crawl_failures += 1
-        except Exception as exc:
-            crawl_failures += 1
-            verification_status = "crawler-unavailable"
-            logger.debug("Similar-site candidate validation failed for %s (%s)", host, type(exc).__name__)
+                verification_status = "crawler-unavailable"
+                logger.debug("Similar-site candidate validation failed for %s (%s)", host, type(exc).__name__)
         relevance, reason = _relevance(
             website_type, item.get("name", ""), item.get("snippet", ""), candidate_type
         )
