@@ -60,14 +60,14 @@ def test_sitewide_missing_files_are_not_reported_when_all_pages_are_blocked():
     assert "Sitemap not detected at common locations" not in titles
 
 
-def test_known_domain_uses_specific_site_category_even_when_crawler_is_blocked():
+def test_known_domain_is_not_classified_from_hostname_when_crawler_is_blocked():
     from app.site_intelligence import classify
 
     site = SimpleNamespace(
         root_url="https://www.youtube.com/",
         pages=[SimpleNamespace(status=403, title="Forbidden", description="", headings=[])],
     )
-    assert classify(site) == "Video / Media Platform"
+    assert classify(site) == "Unknown / insufficient evidence"
 
 
 def test_unknown_blocked_site_is_not_classified_from_error_page():
