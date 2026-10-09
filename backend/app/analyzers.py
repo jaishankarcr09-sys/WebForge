@@ -24,7 +24,16 @@ def finding(category,title,severity,impact,recommendation,page_url="",evidence="
 def analyze(site:SiteData)->list[Finding]:
     out=[]
     titles=[]; descriptions=[]
-    for p in site.pages:
+    unique_pages=[]
+    seen_page_urls=set()
+    for page in site.pages:
+        page_key=getattr(page,"url","")
+        if page_key and page_key in seen_page_urls:
+            continue
+        if page_key:
+            seen_page_urls.add(page_key)
+        unique_pages.append(page)
+    for p in unique_pages:
         # Skip HTML-derived rules for blocked, challenge, non-HTML, or incomplete responses.
         if not getattr(p,"analysis_eligible",True):
             continue
