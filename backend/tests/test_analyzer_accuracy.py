@@ -43,3 +43,18 @@ def test_high_severity_finding_ranks_above_low_severity():
     high = finding("Technical", "High", "high", "High", "Fix", confidence=100, effort="low")
 
     assert high.priority > low.priority
+
+
+def test_sitewide_missing_files_are_not_reported_when_all_pages_are_blocked():
+    blocked_page = SimpleNamespace(status=403, url="https://example.com/")
+    site = SimpleNamespace(
+        pages=[blocked_page],
+        robots_present=False,
+        robots_allowed=True,
+        sitemap_present=False,
+        broken_links=[],
+        root_url="https://example.com/",
+    )
+    titles = [item.title for item in analyze(site)]
+    assert "robots.txt not detected" not in titles
+    assert "Sitemap not detected at common locations" not in titles
