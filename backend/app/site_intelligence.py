@@ -286,7 +286,7 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     )
     ranked = []
     crawl_failures = 0
-    for host, item in candidates.items():
+    for host, item in list(candidates.items())[:8]:
         candidate_type = "Unverified"
         features = {}
         verified_url = item["url"]
