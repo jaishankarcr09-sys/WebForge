@@ -176,6 +176,9 @@ def crawl(url:str,page_limit:int=10)->SiteData:
             r,b,elapsed,ttfb=fetch(session,current)
             page=parse_page(current,r,b,elapsed,ttfb); pages.append(page)
             for target in page.internal_links:
+                # XML sitemaps/feeds are linked resources, not HTML pages for the page-limit queue.
+                if _is_xml_resource(target):
+                    continue
                 discovered.add(target)
                 if target not in seen and len(discovered)<limit*5: q.append(target)
         except Exception:
