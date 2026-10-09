@@ -215,9 +215,10 @@ def _search(query: str, limit: int = 8) -> list[dict]:
     return results[:limit]
 
 def _keywords(site: SiteData) -> list[str]:
+    successful = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
     raw = " ".join(
         " ".join([p.title, p.description] + [heading for _, heading in p.headings[:8]])
-        for p in site.pages[:5]
+        for p in successful[:5]
     ).lower()
     words = re.findall(r"[a-z][a-z0-9+-]{2,}", raw)
     stop = {
@@ -231,6 +232,43 @@ def _keywords(site: SiteData) -> list[str]:
             counts[word] = counts.get(word, 0) + 1
     return [word for word, _ in sorted(counts.items(), key=lambda pair: (-pair[1], pair[0]))[:6]]
 
+
+def _curated_comparables(site_type: str) -> list[dict]:
+    """Small transparent fallback catalog for common categories when web search fails."""
+    kind = site_type.lower()
+    catalogs = [
+        (("video", "media", "streaming"), [
+            ("Vimeo", "https://vimeo.com/", "Video hosting and creator-focused publishing.", "Video / Media Platform"),
+            ("Dailymotion", "https://www.dailymotion.com/", "Video discovery and publishing platform.", "Video / Media Platform"),
+            ("Twitch", "https://www.twitch.tv/", "Live-streaming and creator community platform.", "Video / Media Platform"),
+        ]),
+        (("search engine",), [
+            ("Bing", "https://www.bing.com/", "Web search and discovery.", "Search Engine"),
+            ("DuckDuckGo", "https://duckduckgo.com/", "Privacy-focused web search.", "Search Engine"),
+            ("Brave Search", "https://search.brave.com/", "Independent web search.", "Search Engine"),
+        ]),
+        (("ai visual", "visual communication", "diagram", "whiteboard"), [
+            ("Canva", "https://www.canva.com/", "Visual design and presentation creation.", "AI Visual Communication Tool"),
+            ("Miro", "https://miro.com/", "Collaborative visual whiteboards and diagramming.", "AI Visual Communication Tool"),
+            ("Whimsical", "https://whimsical.com/", "Flowcharts, wireframes, and visual collaboration.", "AI Visual Communication Tool"),
+            ("Lucidchart", "https://www.lucidchart.com/", "Diagramming and visual documentation.", "AI Visual Communication Tool"),
+        ]),
+        (("coding practice", "education", "programming"), [
+            ("HackerRank", "https://www.hackerrank.com/", "Programming challenges and technical skills practice.", "Coding Practice / Education"),
+            ("Codewars", "https://www.codewars.com/", "Community-driven coding kata and practice.", "Coding Practice / Education"),
+            ("Codeforces", "https://codeforces.com/", "Competitive programming contests and problems.", "Coding Practice / Education"),
+            ("CodeChef", "https://www.codechef.com/", "Programming practice and competitive contests.", "Coding Practice / Education"),
+        ]),
+        (("e-commerce", "commerce", "online store"), [
+            ("Etsy", "https://www.etsy.com/", "Online marketplace for independent sellers.", "E-commerce"),
+            ("eBay", "https://www.ebay.com/", "Online marketplace for new and used goods.", "E-commerce"),
+            ("Shopify", "https://www.shopify.com/", "Tools for building and operating online stores.", "E-commerce"),
+        ]),
+    ]
+    for triggers, entries in catalogs:
+        if any(trigger in kind for trigger in triggers):
+            return [{"name": name, "url": url, "snippet": snippet, "source": "WebForge curated baseline", "website_type": category} for name, url, snippet, category in entries]
+    return []
 
 def _relevance(site_type: str, title: str, snippet: str, candidate_type: str) -> tuple[int, str]:
     text = (title + " " + snippet).lower()
@@ -255,8 +293,9 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     DuckDuckGo HTML search is a best-effort fallback, not an exhaustive index.
     """
     root = _host(site.root_url)
-    title = site.pages[0].title.strip() if site.pages else ""
-    description = site.pages[0].description.strip() if site.pages else ""
+    successful_pages = [p for p in site.pages if 200 <= getattr(p, "status", 0) < 400]
+    title = successful_pages[0].title.strip() if successful_pages else ""
+    description = successful_pages[0].description.strip() if successful_pages else ""
     keywords = _keywords(site)
     topics = [x for x in [title, description, " ".join(keywords)] if x]
     queries = [
@@ -266,6 +305,12 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     if keywords:
         queries.append(f'{" ".join(keywords[:4])} websites platform')
     candidates: dict[str, dict] = {}
+    # Seed common categories so blocked/empty search providers cannot leave the
+    # feature blank. Dynamic results are merged and ranked alongside these.
+    for item in _curated_comparables(website_type):
+        host = _host(item["url"])
+        if host and host != root:
+            candidates[host] = item
     search_result_count = 0
     for query in queries:
         results = _search(query, 10)
@@ -286,35 +331,40 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     )
     ranked = []
     crawl_failures = 0
-    for host, item in list(candidates.items())[:8]:
-        candidate_type = "Unverified"
+    for host, item in list(candidates.items())[:12]:
+        candidate_type = item.get("website_type", "Unverified")
         features = {}
         verified_url = item["url"]
-        verification_status = "search-result-only"
-        # A search result can be useful even if the target blocks automated
-        # crawlers. Do not discard every candidate merely because WebForge gets
-        # a 403/429; also never classify an error page as the candidate's website.
-        try:
-            candidate = crawl(verified_url, 1)
-            if candidate.pages and 200 <= candidate.pages[0].status < 400:
-                verified_url = candidate.root_url
-                candidate_type = classify(candidate)
-                features = feature_snapshot(candidate)
-                verification_status = "crawl-verified"
-            elif candidate.pages:
-                status = candidate.pages[0].status
-                verification_status = f"crawler-http-{status}" if status else "crawler-fetch-failed"
+        is_curated = item.get("source") == "WebForge curated baseline"
+        verification_status = "curated-reference" if is_curated else "search-result-only"
+        # Curated references are category-level suggestions, not live-crawl claims.
+        # Dynamic search results are crawled when possible and retained if blocked.
+        if not is_curated:
+            try:
+                candidate = crawl(verified_url, 1)
+                if candidate.pages and 200 <= candidate.pages[0].status < 400:
+                    verified_url = candidate.root_url
+                    candidate_type = classify(candidate)
+                    features = feature_snapshot(candidate)
+                    verification_status = "crawl-verified"
+                elif candidate.pages:
+                    status = candidate.pages[0].status
+                    verification_status = f"crawler-http-{status}" if status else "crawler-fetch-failed"
+                    crawl_failures += 1
+                else:
+                    verification_status = "crawler-no-page"
+                    crawl_failures += 1
+            except Exception as exc:
                 crawl_failures += 1
-            else:
-                verification_status = "crawler-no-page"
-                crawl_failures += 1
-        except Exception as exc:
-            crawl_failures += 1
-            verification_status = "crawler-unavailable"
-            logger.debug("Similar-site candidate validation failed for %s (%s)", host, type(exc).__name__)
-        relevance, reason = _relevance(
-            website_type, item.get("name", ""), item.get("snippet", ""), candidate_type
-        )
+                verification_status = "crawler-unavailable"
+                logger.debug("Similar-site candidate validation failed for %s (%s)", host, type(exc).__name__)
+        if is_curated:
+            relevance = 72
+            reason = "curated reference in the same broad website category; similarity is not independently verified"
+        else:
+            relevance, reason = _relevance(
+                website_type, item.get("name", ""), item.get("snippet", ""), candidate_type
+            )
         ranked.append({
             "name": item["name"],
             "url": verified_url,
@@ -326,7 +376,8 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
             "relevance_score": relevance,
             "match_reason": reason,
         })
-    ranked.sort(key=lambda row: (-row["relevance_score"], row["name"].lower()))
+    # Python sorting is stable: preserve curated ordering when relevance ties.
+    ranked.sort(key=lambda row: -row["relevance_score"])
     logger.info(
         "Similar-site discovery complete: accepted=%d candidate_validation_failures=%d",
         len(ranked), crawl_failures,
