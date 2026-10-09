@@ -82,6 +82,21 @@ def classify(site: SiteData) -> str:
 def feature_snapshot(site: SiteData) -> dict:
     # Exclude failed/error responses: their block-page HTML is not site evidence.
     pages = [p for p in site.pages if getattr(p, "analysis_eligible", True) and 200 <= getattr(p, "status", 0) < 400]
+    observed_text = " ".join(
+        " ".join([
+            getattr(p, "url", ""),
+            getattr(p, "title", ""),
+            getattr(p, "description", ""),
+            " ".join(text for _, text in getattr(p, "headings", [])),
+        ])
+        for p in pages
+    ).lower()
+    sector_signals = {
+        "commerce": any(term in observed_text for term in ("product", "shop", "cart", "checkout", "catalog", "add to cart")),
+        "jobs": any(term in observed_text for term in ("job", "career", "vacancy", "recruit", "apply now", "employer")),
+        "learning": any(term in observed_text for term in ("course", "lesson", "curriculum", "instructor", "learn online")),
+        "saas": any(term in observed_text for term in ("free trial", "workspace", "dashboard", "integrations", "pricing")),
+    }
     return {
         "pages_scanned": len(pages),
         "h1_pages": sum(1 for p in pages if p.h1_count),
@@ -90,6 +105,7 @@ def feature_snapshot(site: SiteData) -> dict:
         "json_ld_pages": sum(1 for p in pages if p.json_ld),
         "social_ready_pages": sum(1 for p in pages if p.og_title and p.og_description),
         "security_header_coverage": round(100 * sum(sum(p.security_headers.values()) for p in pages) / (len(pages) * 6)) if pages else 0,
+        "sector_signals": sector_signals,
     }
 
 
@@ -409,20 +425,60 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     return ranked[:max(0, min(int(limit), 20))]
 
 
-def opportunities(target: dict, similar: list[dict]) -> list[dict]:
+def opportunities(target: dict, similar: list[dict], website_type: str = "") -> list[dict]:
     out = []
+    signals = target.get("sector_signals", {})
     if not target.get("social_ready_pages"):
-        out.append({"title": "Own the share preview", "reason": "Important pages are not fully prepared for link sharing.", "action": "Add complete Open Graph and social preview metadata."})
+        out.append({"title": "Own the share preview", "reason": "Open Graph title and description were not both observed on the sampled pages.", "action": "Add and validate accurate Open Graph metadata on important landing and detail pages."})
     if not target.get("json_ld_pages"):
-        out.append({"title": "Add structured search context", "reason": "No structured data was detected.", "action": "Add accurate JSON-LD that matches the website type and page content."})
+        out.append({"title": "Add structured search context", "reason": "No JSON-LD was detected on the sampled pages.", "action": "Add accurate structured data appropriate to the actual page type; do not mark up features or offers that are not present."})
     if target.get("missing_alt_images", 0) > 0:
-        out.append({"title": "Make visuals searchable and accessible", "reason": "Image metadata is incomplete.", "action": "Add meaningful alt text and image dimensions."})
+        out.append({"title": "Make visuals searchable and accessible", "reason": "Some sampled images appear to lack meaningful alternative text.", "action": "Add useful alt text for informative images and preserve empty alt text for decorative images."})
     if target.get("security_header_coverage", 100) < 70:
-        out.append({"title": "Strengthen browser trust", "reason": "Several important response security headers are missing.", "action": "Configure and validate HSTS, CSP, framing, MIME, referrer, and permissions policies."})
+        out.append({"title": "Strengthen browser trust", "reason": "Several important response security headers are missing from sampled responses.", "action": "Review and validate HSTS, CSP, framing, MIME, referrer, and permissions policies."})
+
+    normalized_type = website_type.lower()
+    if "e-commerce" in normalized_type or signals.get("commerce"):
+        out.append({
+            "title": "Validate the product-to-checkout journey",
+            "reason": "Commerce-related terms were observed in the sampled pages; the public crawl cannot establish whether the full purchase flow works.",
+            "action": "Manually test category/search → product detail → cart → checkout on mobile and desktop, including price, stock, shipping, returns, and error states. Treat any unobserved step as unverified, not necessarily absent.",
+        })
+        if signals.get("commerce") and not target.get("json_ld_pages"):
+            out.append({
+                "title": "Review product structured data",
+                "reason": "Commerce-related page signals were observed, but no JSON-LD was detected in the sample.",
+                "action": "Where real product pages exist, validate Product and Offer structured data against visible price, availability, currency, and product details.",
+            })
+    elif "job" in normalized_type or signals.get("jobs"):
+        out.append({
+            "title": "Review the job discovery and application funnel",
+            "reason": "Job or recruitment terms were observed in the sampled pages; completion of the full application flow was not verified.",
+            "action": "Test keyword/location filters, salary and employment details, application steps, confirmation states, and mobile usability. Consider saved searches or job alerts as a user-validated feature experiment if they are not already available.",
+        })
+        if not target.get("json_ld_pages"):
+            out.append({
+                "title": "Validate JobPosting structured data",
+                "reason": "No JSON-LD was detected in the sampled pages; the presence of job-specific markup has not been confirmed.",
+                "action": "For genuine public job-detail pages, evaluate valid JobPosting structured data and keep it synchronized with live job status and expiration.",
+            })
+    elif "education" in normalized_type or signals.get("learning"):
+        out.append({
+            "title": "Improve course discovery and learning continuity",
+            "reason": "Course or lesson terms were observed in the sampled pages; signed-in learning flows may not be crawlable.",
+            "action": "Review course filters, prerequisites, lesson navigation, progress recovery, and accessible captions. Validate any proposed learning-path or progress feature with learners before prioritizing it.",
+        })
+    elif "saas" in normalized_type or signals.get("saas"):
+        out.append({
+            "title": "Reduce time-to-value for new users",
+            "reason": "SaaS or workspace signals were observed in the sampled pages; onboarding after sign-in was not verified.",
+            "action": "Walk through signup and first-use tasks. Consider a sample workspace, guided first task, or contextual documentation if user testing confirms setup friction.",
+        })
+
     if similar and len(out) < 5:
         stronger = next((s for s in similar if s.get("features", {}).get("social_ready_pages", 0) > target.get("social_ready_pages", 0)), None)
         if stronger:
-            out.append({"title": "Borrow a proven pattern, then differentiate", "reason": "A comparable site has stronger social-preview coverage.", "action": "Study its information hierarchy and build a differentiated version for your audience."})
+            out.append({"title": "Compare a relevant product pattern", "reason": "A reference site has stronger social-preview coverage, but its broader product quality has not been independently verified.", "action": "Compare the specific observed pattern and validate whether it suits your users before adopting it."})
     if not out:
-        out.append({"title": "Differentiate on product value", "reason": "The baseline experience is comparatively healthy.", "action": "Add one distinctive workflow or feature that competitors cannot explain in one sentence."})
+        out.append({"title": "Choose a measurable product experiment", "reason": "The sampled technical baseline did not surface a clear high-priority opportunity.", "action": "Use user interviews or product analytics to choose one measurable experiment; do not treat the crawl alone as proof of product-market or conversion performance."})
     return out[:5]
