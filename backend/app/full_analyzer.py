@@ -8,16 +8,15 @@ def analyze(site: SiteData) -> list[Finding]:
         if item.category == 'Security': item.layer='backend'
         elif item.category == 'Performance': item.layer='full-stack'
     for p in site.pages[:3]:
-        if p.status and p.redirect_count>1:
+        # A 4xx/5xx body may be a proxy or bot-block page, not the target website.
+        if not (200 <= p.status < 400):
+            continue
+        if p.redirect_count>1:
             findings.append(finding('Backend','Redirect chain detected','medium','Multiple redirects increase latency and can dilute canonical delivery.','Reduce redirects so important URLs resolve directly.',p.url,f'Redirects followed: {p.redirect_count}.',100,'medium',dimension='performance',layer='backend'))
-        if p.status and not p.cache_control:
-            findings.append(finding('Backend','No explicit cache-control signal','medium','Browsers and CDNs have less guidance for caching this response.','Add cache-control appropriate to the resource and freshness model.',p.url,'Cache-Control header is missing.',95,'medium',dimension='performance',layer='backend'))
         if p.status and not p.content_encoding and p.html_bytes>100000:
             findings.append(finding('Backend','Compression signal missing','low','Large HTML without a visible content-encoding may increase transfer cost.','Enable Brotli or gzip at the edge/server where appropriate.',p.url,f'HTML size: {round(p.html_bytes/1024)} KB; Content-Encoding header absent.',85,'medium',dimension='performance',layer='backend'))
         if p.insecure_cookie_count:
             findings.append(finding('Backend','Insecure cookie flag detected','high','A response sets cookies without the Secure attribute.','Review session cookies and require Secure, HttpOnly, and appropriate SameSite settings.',p.url,f'Potential insecure Set-Cookie values: {p.insecure_cookie_count}.',100,'medium',dimension='security',layer='backend'))
-        if p.server:
-            findings.append(finding('Backend','Server fingerprint exposed','low','Server identification can reveal implementation details unnecessarily.','Consider minimizing server banners at the edge.',p.url,'Server header: '+p.server,75,'low',dimension='security',layer='backend'))
     if site.broken_links:
         for item in findings:
             if 'broken link' in item.title.lower(): item.layer='full-stack'
