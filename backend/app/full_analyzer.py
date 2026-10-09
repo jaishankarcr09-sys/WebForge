@@ -8,6 +8,10 @@ def analyze(site: SiteData) -> list[Finding]:
         if item.category == 'Security': item.layer='backend'
         elif item.category == 'Performance': item.layer='full-stack'
     for p in site.pages[:3]:
+        # Backend checks also require a validated HTML response; never infer
+        # HTML size/compression/cookie findings from XML, binary, or challenge pages.
+        if not getattr(p, "analysis_eligible", True):
+            continue
         # A 4xx/5xx body may be a proxy or bot-block page, not the target website.
         if not (200 <= p.status < 400):
             continue
