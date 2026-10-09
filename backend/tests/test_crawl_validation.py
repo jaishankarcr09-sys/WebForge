@@ -391,8 +391,8 @@ def test_verified_site_with_weak_category_signals_is_not_mislabeled_insufficient
     assert classify(site) == "General Website"
 
 
-def test_python_org_uses_known_site_category_without_guessing_from_page_copy():
-    site = make_site([])
+def test_python_org_uses_known_site_category_when_html_is_verified():
+    site = make_site(valid_page())
     site.root_url = "https://www.python.org/"
     assert classify(site) == "Programming Language / Documentation"
 
