@@ -26,14 +26,26 @@ def analyze(site: SiteData) -> list[Finding]:
             if 'broken link' in item.title.lower(): item.layer='full-stack'
     return findings
 
-def score(findings: list[Finding]):
-    overall,dimensions=base_score(findings)
+def score(findings: list[Finding], page_count: int | None = None):
+    overall,dimensions=base_score(findings,page_count=page_count)
     frontend=[f for f in findings if f.layer=='frontend']
     backend=[f for f in findings if f.layer=='backend']
     full=[f for f in findings if f.layer=='full-stack']
+    severity_penalty={'critical':25,'high':16,'medium':9,'low':3}
+    denominator=max(1,page_count if page_count is not None else len({f.page_url for f in findings if f.page_url}) or 1)
     def layer_score(items):
-        penalty=sum(min(12, {'critical':18,'high':12,'medium':7,'low':3}[f.severity]) for f in items if getattr(f, 'score_eligible', True))
-        return max(0,100-penalty)
+        by_page={}
+        global_penalty=0
+        for item in items:
+            if not getattr(item,'score_eligible',True):
+                continue
+            penalty=severity_penalty.get(item.severity,0)
+            if item.page_url:
+                by_page[item.page_url]=min(45,by_page.get(item.page_url,0)+penalty)
+            else:
+                global_penalty=min(20,global_penalty+penalty)
+        average=sum(by_page.values())/denominator
+        return max(0,round(100-min(75,average+global_penalty)))
     dimensions['frontend']=layer_score(frontend+full)
     dimensions['backend']=layer_score(backend+full)
     return overall,dimensions
