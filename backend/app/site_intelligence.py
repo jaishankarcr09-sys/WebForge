@@ -241,22 +241,31 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
     ranked = []
     crawl_failures = 0
     for host, item in candidates.items():
-        candidate_type = "Unknown"
+        candidate_type = "Unverified"
         features = {}
         verified_url = item["url"]
-        # Verify that the candidate is crawlable before showing it. Never let one
-        # inaccessible candidate fail the whole discovery run.
+        verification_status = "search-result-only"
+        # A search result can be useful even if the target blocks automated
+        # crawlers. Do not discard every candidate merely because WebForge gets
+        # a 403/429; also never classify an error page as the candidate's website.
         try:
             candidate = crawl(verified_url, 1)
-            if not candidate.pages or candidate.pages[0].status < 200 or candidate.pages[0].status >= 400:
-                continue
-            verified_url = candidate.root_url
-            candidate_type = classify(candidate)
-            features = feature_snapshot(candidate)
+            if candidate.pages and 200 <= candidate.pages[0].status < 400:
+                verified_url = candidate.root_url
+                candidate_type = classify(candidate)
+                features = feature_snapshot(candidate)
+                verification_status = "crawl-verified"
+            elif candidate.pages:
+                status = candidate.pages[0].status
+                verification_status = f"crawler-http-{status}" if status else "crawler-fetch-failed"
+                crawl_failures += 1
+            else:
+                verification_status = "crawler-no-page"
+                crawl_failures += 1
         except Exception as exc:
             crawl_failures += 1
+            verification_status = "crawler-unavailable"
             logger.debug("Similar-site candidate validation failed for %s (%s)", host, type(exc).__name__)
-            continue
         relevance, reason = _relevance(
             website_type, item.get("name", ""), item.get("snippet", ""), candidate_type
         )
@@ -266,6 +275,7 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
             "snippet": item.get("snippet", ""),
             "source": item.get("source", "Web search"),
             "website_type": candidate_type,
+            "verification_status": verification_status,
             "features": features,
             "relevance_score": relevance,
             "match_reason": reason,
