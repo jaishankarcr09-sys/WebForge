@@ -65,6 +65,20 @@ def prop(soup:BeautifulSoup,name:str)->str:
     tag=soup.find("meta",attrs={"property":name})
     return str(tag.get("content","")).strip() if tag else ""
 
+def _is_xml_resource(url:str, content_type:str="", body:bytes=b"")->bool:
+    """Identify XML feeds/sitemaps even when the server sends a misleading MIME type."""
+    path=urlsplit(url).path.lower()
+    if path.endswith(".xml"):
+        return True
+    mime=(content_type or "").split(";",1)[0].strip().lower()
+    if mime in {"application/xml","text/xml","application/rss+xml","application/atom+xml","image/svg+xml"}:
+        return True
+    if mime.endswith("+xml") and mime != "application/xhtml+xml":
+        return True
+    prefix=body[:2048].decode("utf-8",errors="ignore").lstrip("\ufeff\r\n\t ").lower()
+    return prefix.startswith("<?xml") or prefix.startswith("<urlset") or prefix.startswith("<sitemapindex") or prefix.startswith("<rss") or prefix.startswith("<feed")
+
+
 def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->PageData:
     soup=BeautifulSoup(body.decode(r.encoding or "utf-8",errors="replace"),"html.parser")
     internal=[]; external=[]; si=set(); se=set()
@@ -94,7 +108,8 @@ def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->Pag
         mixed=sum(int(str(t.get("src","")).startswith("http://")) for t in soup.find_all(["img","script","iframe"],src=True))
         mixed+=sum(int(str(t.get("href","")).startswith("http://")) for t in soup.find_all("link",href=True))
     content_type=str(r.headers.get("content-type","")).lower()
-    html_response="html" in content_type
+    xml_resource=_is_xml_resource(r.url,content_type,body)
+    html_response="html" in content_type and not xml_resource
     title_text=soup.title.get_text(" ",strip=True) if soup.title else ""
     body_text=soup.get_text(" ",strip=True).lower()[:12000]
     challenge_markers=("verify you are human","checking your browser","attention required","captcha","unusual traffic","request blocked","enable javascript and cookies to continue")
@@ -103,6 +118,7 @@ def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->Pag
     eligible=status_ok and html_response and not challenge
     note=""
     if not status_ok: note=f"HTTP status {r.status_code}; content checks skipped."
+    elif xml_resource: note=f"XML/resource response ({content_type or 'URL/body indicates XML'}); HTML checks skipped."
     elif not html_response: note=f"Non-HTML response ({content_type or 'unknown content type'}); HTML checks skipped."
     elif challenge: note="Response resembles a bot challenge or access interstitial; HTML checks skipped."
     content_length=r.headers.get("content-length","")
@@ -151,8 +167,10 @@ def crawl(url:str,page_limit:int=10)->SiteData:
                 import re
                 sitemap_found += [norm(x.strip()) for x in re.findall(r"<loc>\s*([^<]+?)\s*</loc>",sb.decode("utf-8",errors="ignore"))[:200]]
         except Exception: pass
-    for x in sitemap_found[:limit]: 
-        if same_origin(x,root): q.append(x); discovered.add(x)
+    for x in sitemap_found[:limit]:
+        # Sitemap indexes and XML feeds are crawl resources, not HTML pages to audit.
+        if same_origin(x,root) and not _is_xml_resource(x):
+            q.append(x); discovered.add(x)
     while q and len(pages)<limit:
         current=norm(q.popleft())
         if current in seen or not same_origin(current,root): continue
@@ -161,6 +179,9 @@ def crawl(url:str,page_limit:int=10)->SiteData:
             r,b,elapsed,ttfb=fetch(session,current)
             page=parse_page(current,r,b,elapsed,ttfb); pages.append(page)
             for target in page.internal_links:
+                # XML sitemaps/feeds are linked resources, not HTML pages for the page-limit queue.
+                if _is_xml_resource(target):
+                    continue
                 discovered.add(target)
                 if target not in seen and len(discovered)<limit*5: q.append(target)
         except Exception:
