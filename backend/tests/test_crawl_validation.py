@@ -1,8 +1,8 @@
 from types import SimpleNamespace
 
-from app.analyzers import analyze
+from app.analyzers import analyze, score
 from app.full_analyzer import analyze as analyze_full
-from app.site_scan import _is_xml_resource
+from app.site_scan import _is_xml_resource, parse_page
 
 
 def make_site(page_or_pages):
@@ -141,3 +141,103 @@ def test_xml_page_never_generates_html_findings_or_backend_size_findings():
         "Compression signal missing",
     }
     assert not invalid_titles.intersection({finding.title for finding in findings})
+
+
+
+def test_example_domain_heading_is_parsed_from_captured_html():
+    response = SimpleNamespace(
+        url="https://example.com/",
+        status_code=200,
+        headers={"content-type": "text/html; charset=utf-8"},
+        encoding="utf-8",
+        history=[],
+        raw=SimpleNamespace(headers={}),
+    )
+    page = parse_page(
+        "https://example.com/",
+        response,
+        b"<!doctype html><html lang='en'><head><title>Example Domain</title></head><body><h1>Example Domain</h1><p>For use in documentation examples.</p></body></html>",
+        10,
+        5,
+    )
+    assert page.analysis_eligible is True
+    assert page.title == "Example Domain"
+    assert page.h1_count == 1
+    assert ("h1", "Example Domain") in page.headings
+
+
+def test_empty_alt_is_valid_for_decorative_images_but_missing_alt_is_counted():
+    response = SimpleNamespace(
+        url="https://example.com/",
+        status_code=200,
+        headers={"content-type": "text/html; charset=utf-8"},
+        encoding="utf-8",
+        history=[],
+        raw=SimpleNamespace(headers={}),
+    )
+    page = parse_page(
+        "https://example.com/",
+        response,
+        b"<html><head><title>Example</title></head><body><img src='decorative.svg' alt=''><img src='informative.png'></body></html>",
+        10,
+        5,
+    )
+    assert page.images[0]["alt_present"] is True
+    assert page.images[0]["alt"] == ""
+    assert page.images[1]["alt_present"] is False
+    assert sum(1 for image in page.images if not image.get("alt_present", bool(image.get("alt")))) == 1
+
+
+def test_optional_seo_recommendations_do_not_reduce_health_score():
+    page = valid_page()
+    page.title = "Example"
+    page.description = ""
+    page.canonical_count = 0
+    page.canonical = ""
+    page.og_title = ""
+    page.og_description = ""
+    page.json_ld = 0
+    page.h1_count = 1
+    page.headings = [("h1", "Example")]
+    page.security_headers = {
+        "strict-transport-security": True,
+        "content-security-policy": True,
+        "x-frame-options": True,
+        "x-content-type-options": True,
+        "referrer-policy": True,
+        "permissions-policy": True,
+    }
+    site = make_site(page)
+    site.robots_present = True
+    site.sitemap_present = True
+
+    findings = analyze(site)
+    optional = {
+        "Title may be too short",
+        "Missing meta description",
+        "Canonical URL not declared",
+        "Incomplete social metadata",
+        "No JSON-LD structured data detected",
+    }
+    assert optional.issubset({item.title for item in findings})
+    assert all(not item.score_eligible for item in findings if item.title in optional)
+    assert score(findings)[0] == 100
+
+
+def test_link_checker_warnings_are_not_misreported_as_confirmed_broken_links():
+    from app.site_scan import SiteData
+
+    site = SiteData(
+        root_url="https://example.com/",
+        pages=[],
+        discovered=[],
+        broken_links=[],
+        robots_present=True,
+        robots_allowed=True,
+        sitemap_present=True,
+        sitemap_urls=[],
+        duration_ms=1,
+        link_check_warnings=[{"url": "https://blocked.example/resource", "status": 403, "reason": "blocked"}],
+    )
+    assert site.broken_links == []
+    assert site.link_check_warnings[0]["status"] == 403
