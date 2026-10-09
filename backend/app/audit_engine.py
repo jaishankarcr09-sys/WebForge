@@ -73,7 +73,7 @@ def run_and_persist(url: str, page_limit: int, db: Session, user_id: str | None 
         frontend_score=frontend_score,
         backend_score=backend_score,
         reach_score=max(0,min(100,reach_score)),
-        summary=f"This looks like a {website_type.lower()}. WebForge found {len(findings)} actionable findings across {len(site.pages)} scanned page(s).",
+        summary=f"This looks like a {website_type.lower()}. WebForge found {len(findings)} actionable findings across {verified_pages} verified page(s); {unverified_pages} page(s) could not be fully verified.",
         features=features,
         similar_sites=similar,
         opportunities=growth,
