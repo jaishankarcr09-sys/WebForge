@@ -101,3 +101,42 @@ def test_feature_snapshot_ignores_blocked_error_pages():
     assert snapshot["pages_scanned"] == 0
     assert snapshot["h1_pages"] == 0
     assert snapshot["json_ld_pages"] == 0
+
+
+
+def test_similar_sites_have_category_fallback_when_search_returns_nothing(monkeypatch):
+    import app.site_intelligence as intelligence
+
+    monkeypatch.setattr(intelligence, "_search", lambda query, limit=8: [])
+    monkeypatch.setattr(
+        intelligence,
+        "crawl",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("curated entries should not be crawled")),
+    )
+    site = SimpleNamespace(
+        root_url="https://www.youtube.com/",
+        pages=[SimpleNamespace(status=403, title="Forbidden", description="", headings=[])],
+    )
+
+    results = intelligence.discover_similar(site, "Video / Media Platform", 3)
+
+    assert [item["name"] for item in results] == ["Vimeo", "Dailymotion", "Twitch"]
+    assert all(item["source"] == "WebForge curated baseline" for item in results)
+    assert all(item["verification_status"] == "curated-reference" for item in results)
+    assert all(item["url"] != site.root_url for item in results)
+
+
+def test_napkin_category_gets_visual_tool_comparables_without_api(monkeypatch):
+    import app.site_intelligence as intelligence
+
+    monkeypatch.setattr(intelligence, "_search", lambda query, limit=8: [])
+    site = SimpleNamespace(
+        root_url="https://www.napkin.ai/",
+        pages=[SimpleNamespace(status=403, title="Forbidden", description="", headings=[])],
+    )
+
+    results = intelligence.discover_similar(site, "AI Visual Communication Tool", 3)
+
+    assert len(results) == 3
+    assert {item["name"] for item in results} == {"Canva", "Miro", "Whimsical"}
+    assert all(item["verification_status"] == "curated-reference" for item in results)
