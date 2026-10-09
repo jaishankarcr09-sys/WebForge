@@ -38,13 +38,15 @@ def classify(site: SiteData) -> str:
         "amazon.com": "E-commerce",
         "coursera.org": "Online Education",
     }
+    successful = [p for p in site.pages if getattr(p, "analysis_eligible", True) and 200 <= getattr(p, "status", 0) < 400]
+    if not successful:
+        # A familiar hostname is not evidence that this particular crawl verified
+        # the site's content. Keep classification unknown when every page is blocked.
+        return "Unknown / insufficient evidence"
+
     for domain, category in known_domains.items():
         if host == domain or host.endswith("." + domain):
             return category
-
-    successful = [p for p in site.pages if getattr(p, "analysis_eligible", True) and 200 <= getattr(p, "status", 0) < 400]
-    if not successful:
-        return "Unknown / insufficient evidence"
 
     title_text = " ".join(getattr(p, "title", "") for p in successful).lower()
     description_text = " ".join(getattr(p, "description", "") for p in successful).lower()
