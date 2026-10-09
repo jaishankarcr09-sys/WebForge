@@ -25,6 +25,7 @@ class SiteData:
     root_url:str; pages:list[PageData]; discovered:list[str]; broken_links:list[dict]
     robots_present:bool; robots_allowed:bool; sitemap_present:bool; sitemap_urls:list[str]; duration_ms:int
     crawl_warnings:list[dict]=field(default_factory=list)
+    link_check_warnings:list[dict]=field(default_factory=list)
 
 def safe_url(url:str)->str:
     p=urlsplit(url)
@@ -92,7 +93,7 @@ def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->Pag
         elif target not in se: external.append(target); se.add(target)
     images=[]
     for img in soup.find_all("img"):
-        images.append({"src":urljoin(r.url,str(img.get("src",""))),"alt":str(img.get("alt","")).strip(),"width":img.get("width"),"height":img.get("height"),"loading":img.get("loading")})
+        images.append({"src":urljoin(r.url,str(img.get("src",""))),"alt":str(img.get("alt"," ")).strip() if img.has_attr("alt") else "","alt_present":img.has_attr("alt"),"width":img.get("width"),"height":img.get("height"),"loading":img.get("loading")})
     cans=soup.find_all("link",rel=lambda v:v and "canonical" in v)
     canonical=urljoin(r.url,str(cans[0].get("href",""))) if cans and cans[0].get("href") else ""
     robots=meta(soup,"robots").lower()
@@ -186,16 +187,20 @@ def crawl(url:str,page_limit:int=10)->SiteData:
                 if target not in seen and len(discovered)<limit*5: q.append(target)
         except Exception:
             pages.append(PageData(url=current,final_url=current,status=0,response_ms=0,ttfb_ms=0,html_bytes=0,title="",description="",canonical="",canonical_count=0,h1_count=0,headings=[],images=[],internal_links=[],external_links=[],scripts=0,lang="",viewport="",og_title="",og_description="",twitter_card="",json_ld=0,noindex=False,mixed_content=0,security_headers={},forms_without_labels=0,buttons_without_names=0,server="",cache_control="",content_encoding="",etag=False,set_cookie_count=0,insecure_cookie_count=0,redirect_count=0,content_type="",analysis_eligible=False,crawl_note="Crawler request failed; page content was not verified."))
-    targets=[]; broken=[]; checked=set()
+    targets=[]; broken=[]; link_warnings=[]; checked=set()
     for p in pages: targets += p.internal_links[:80] + p.external_links[:20]
     for target in targets:
         if target in checked: continue
         checked.add(target)
         try:
             r,_,elapsed,_=fetch(session,target,10)
-            if r.status_code>=400: broken.append({"url":target,"status":r.status_code,"response_ms":elapsed})
-        except Exception as exc: broken.append({"url":target,"status":0,"error":str(exc)[:160]})
+            if r.status_code in {404,410}:
+                broken.append({"url":target,"status":r.status_code,"response_ms":elapsed,"verification":"confirmed_http_not_found"})
+            elif r.status_code>=400:
+                link_warnings.append({"url":target,"status":r.status_code,"reason":"The destination rejected or failed this crawler request; this does not confirm that the link is broken."})
+        except Exception as exc:
+            link_warnings.append({"url":target,"status":0,"reason":"The destination could not be checked reliably; this does not confirm that the link is broken.","error_type":type(exc).__name__})
     warnings=[{"url":p.url,"status":p.status,"final_url":p.final_url,"content_type":p.content_type,"reason":p.crawl_note or "Page content was not eligible for analysis."} for p in pages if not p.analysis_eligible]
-    return SiteData(root,pages,sorted(discovered),broken,robots_present,robots_allowed,sitemap_present,sorted(set(sitemap_found or sitemap_urls)),int((time.perf_counter()-start)*1000),warnings)
+    return SiteData(root,pages,sorted(discovered),broken,robots_present,robots_allowed,sitemap_present,sorted(set(sitemap_found or sitemap_urls)),int((time.perf_counter()-start)*1000),warnings,link_warnings)
 
 def page_json(page:PageData)->dict: return asdict(page)
