@@ -27,6 +27,8 @@ class SiteData:
     robots_present:bool; robots_allowed:bool; sitemap_present:bool; sitemap_urls:list[str]; duration_ms:int
     crawl_warnings:list[dict]=field(default_factory=list)
     link_check_warnings:list[dict]=field(default_factory=list)
+    robots_status:int|None=None
+    sitemap_status:int|None=None
 
 def safe_url(url:str)->str:
     p=urlsplit(url)
@@ -117,9 +119,16 @@ def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->Pag
     challenge_markers=("verify you are human","checking your browser","attention required","captcha","unusual traffic","request blocked","enable javascript and cookies to continue")
     challenge=any(marker in (title_text+" "+body_text).lower() for marker in challenge_markers)
     status_ok=200 <= r.status_code < 400
-    eligible=status_ok and html_response and not challenge
+    current_parts=urlsplit(url)
+    final_parts=urlsplit(r.url)
+    auth_paths={"/login","/log-in","/signin","/sign-in","/auth","/authenticate","/account/login"}
+    auth_redirect=(same_origin(url,r.url) and current_parts.path.rstrip("/") != final_parts.path.rstrip("/")
+                   and (final_parts.path.lower().rstrip("/") in auth_paths
+                        or any(part in final_parts.path.lower().split("/") for part in ("login","signin","sign-in","authenticate"))))
+    eligible=status_ok and html_response and not challenge and not auth_redirect
     note=""
     if not status_ok: note=f"HTTP status {r.status_code}; content checks skipped."
+    elif auth_redirect: note=f"Public URL redirected to an authentication page ({r.url}); the requested page content was not verified."
     elif xml_resource: note=f"XML/resource response ({content_type or 'URL/body indicates XML'}); HTML checks skipped."
     elif not html_response: note=f"Non-HTML response ({content_type or 'unknown content type'}); HTML checks skipped."
     elif challenge: note="Response resembles a bot challenge or access interstitial; HTML checks skipped."
@@ -234,9 +243,14 @@ def crawl(url:str,page_limit:int=10)->SiteData:
     root=safe_url(url); limit=max(1,min(int(page_limit),30)); start=time.perf_counter(); session=requests.Session()
     q=deque([root]); seen=set(); pages=[]; discovered={root}
     robots_present=False; robots_allowed=True; sitemap_present=False; sitemap_urls=[]
+    robots_status=None; sitemap_status=None; resource_warnings=[]
     try:
         rp=urlsplit(root); robots=urlunsplit((rp.scheme,rp.netloc,"/robots.txt","",""))
-        rr,rb,_,_=fetch(session,robots,10); robots_present=rr.status_code==200
+        rr,rb,_,_=fetch(session,robots,10); robots_status=rr.status_code; robots_present=rr.status_code==200
+        if rr.status_code in {404,410}:
+            resource_warnings.append({"url":robots,"status":rr.status_code,"reason":"robots.txt is confirmed missing by the server."})
+        elif rr.status_code != 200:
+            resource_warnings.append({"url":robots,"status":rr.status_code,"reason":"robots.txt could not be verified; this response does not prove the file is absent."})
         if robots_present:
             lines=rb.decode("utf-8",errors="replace").splitlines()
             robots_allowed=not any("disallow: /" in x.lower().replace(" ","") for x in lines if x.lower().startswith("disallow"))
@@ -281,7 +295,7 @@ def crawl(url:str,page_limit:int=10)->SiteData:
             _record_link_result(target,r.status_code,elapsed,broken,link_warnings)
         except Exception as exc:
             link_warnings.append({"url":target,"status":0,"reason":"The destination could not be checked reliably; this does not confirm that the link is broken.","error_type":type(exc).__name__})
-    warnings=[{"url":p.url,"status":p.status,"final_url":p.final_url,"content_type":p.content_type,"reason":p.crawl_note or "Page content was not eligible for analysis."} for p in pages if not p.analysis_eligible]
-    return SiteData(root,pages,sorted(discovered),broken,robots_present,robots_allowed,sitemap_present,sorted(set(sitemap_found or sitemap_urls)),int((time.perf_counter()-start)*1000),warnings,link_warnings)
+    warnings=resource_warnings+[{"url":p.url,"status":p.status,"final_url":p.final_url,"content_type":p.content_type,"reason":p.crawl_note or "Page content was not eligible for analysis."} for p in pages if not p.analysis_eligible]
+    return SiteData(root,pages,sorted(discovered),broken,robots_present,robots_allowed,sitemap_present,sorted(set(sitemap_found or sitemap_urls)),int((time.perf_counter()-start)*1000),warnings,link_warnings,robots_status,sitemap_status)
 
 def page_json(page:PageData)->dict: return asdict(page)
