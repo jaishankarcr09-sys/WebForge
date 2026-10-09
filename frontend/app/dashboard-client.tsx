@@ -114,7 +114,7 @@ export default function DashboardClient({user}:Props){
   async function runAudit(e?:FormEvent){
     e?.preventDefault();
     if(!url.trim())return;
-    const targetUrl=scheme+"://"+url.trim().replace(/^https?:\\/\\//i,"").replace(/\\/$/,"");
+    const targetUrl=scheme+"://"+url.trim().replace(/^https?:\/\//i,"").replace(/\/$/,"");
     setLoading(true);setError("");setAi(null);setTicket("");setView("overview");
     try{
       setProgress("Validating target and checking crawler access…");
@@ -169,7 +169,7 @@ export default function DashboardClient({user}:Props){
 
       {(view==="overview"||view==="audit")&&<section className="hero-card">
         <div className="hero-copy"><span className="eyebrow">FULL-STACK WEBSITE AUDIT</span><h2>Understand the website before you change it.</h2><p>Enter a public URL and WebForge crawls the experience, measures browser performance, inspects delivery and security signals, classifies the product, and turns findings into a prioritized engineering plan.</p></div>
-        <form className="audit-form" onSubmit={runAudit}><div className="url-input"><select aria-label="URL protocol" className="url-scheme" value={scheme} onChange={e=>setScheme(e.target.value as "https"|"http")}><option value="https">https://</option><option value="http">http://</option></select><input value={url.replace(/^https?:\\/\\//i,"")} onChange={e=>setUrl(e.target.value.replace(/^https?:\\/\\//i,""))} placeholder="yourwebsite.com" required/></div><select value={limit} onChange={e=>setLimit(Number(e.target.value))}>{[5,10,20,30].map(n=><option key={n} value={n}>{n} pages</option>)}</select><button className="primary" disabled={loading}>{loading?"Auditing…":"Analyze website"}</button></form>
+        <form className="audit-form" onSubmit={runAudit}><div className="url-input"><select aria-label="URL protocol" className="url-scheme" value={scheme} onChange={e=>setScheme(e.target.value as "https"|"http")}><option value="https">https://</option><option value="http">http://</option></select><input value={url} onChange={e=>setUrl(e.target.value.replace(/^https?:\/\//i,""))} placeholder="yourwebsite.com" required/></div><select value={limit} onChange={e=>setLimit(Number(e.target.value))}>{[5,10,20,30].map(n=><option key={n} value={n}>{n} pages</option>)}</select><button className="primary" disabled={loading}>{loading?"Auditing…":"Analyze website"}</button></form>
         {loading&&<div className="progress-line"><span></span>{progress}</div>}{error&&<div className="inline-error">{error}</div>}
       </section>}
 
