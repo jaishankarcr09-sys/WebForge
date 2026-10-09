@@ -1,6 +1,8 @@
 from types import SimpleNamespace
 
 from app.analyzers import analyze
+from app.full_analyzer import analyze as analyze_full
+from app.site_scan import _is_xml_resource
 
 
 def make_site(page_or_pages):
@@ -82,3 +84,56 @@ def test_duplicate_page_url_does_not_duplicate_findings_or_title_groups():
     duplicate_titles = [finding for finding in findings if finding.title == "Duplicate page titles"]
     assert len(h1) == 1
     assert duplicate_titles == []
+
+
+
+def test_xml_sitemap_detected_even_if_server_claims_html():
+    url = "https://example.com/jobs/sitemap.xml"
+    assert _is_xml_resource(url, "text/html", b"<urlset><url></url></urlset>")
+
+
+def test_xml_page_never_generates_html_findings_or_backend_size_findings():
+    page = SimpleNamespace(
+        status=200,
+        url="https://example.com/sitemap.xml",
+        final_url="https://example.com/sitemap.xml",
+        analysis_eligible=False,
+        crawl_note="XML/resource response (application/xml); HTML checks skipped.",
+        title="",
+        description="",
+        canonical_count=0,
+        canonical="",
+        noindex=False,
+        h1_count=0,
+        headings=[],
+        images=[],
+        forms_without_labels=0,
+        buttons_without_names=0,
+        lang="",
+        viewport="",
+        og_title="",
+        og_description="",
+        json_ld=0,
+        mixed_content=0,
+        security_headers={},
+        response_ms=100,
+        ttfb_ms=100,
+        html_bytes=700_000,
+        scripts=0,
+        redirect_count=0,
+        content_encoding="",
+        insecure_cookie_count=0,
+    )
+    site = make_site(page)
+    findings = analyze_full(site)
+    invalid_titles = {
+        "Missing page title",
+        "Missing meta description",
+        "Missing H1 heading",
+        "Missing viewport meta tag",
+        "Incomplete social metadata",
+        "No JSON-LD structured data detected",
+        "Large HTML document",
+        "Compression signal missing",
+    }
+    assert not invalid_titles.intersection({finding.title for finding in findings})
