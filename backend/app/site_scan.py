@@ -146,6 +146,14 @@ def parse_page(url:str,r:requests.Response,body:bytes,elapsed:int,ttfb:int)->Pag
         redirect_count=len(r.history),content_type=content_type,analysis_eligible=eligible,crawl_note=note,html_truncated=truncated
     )
 
+def _record_link_result(target:str,status_code:int,response_ms:int,broken:list[dict],warnings:list[dict])->None:
+    """Separate confirmed missing destinations from crawler access/availability failures."""
+    if status_code in {404,410}:
+        broken.append({"url":target,"status":status_code,"response_ms":response_ms,"verification":"confirmed_http_not_found"})
+    elif status_code>=400:
+        warnings.append({"url":target,"status":status_code,"reason":"The destination rejected or failed this crawler request; this does not confirm that the link is broken."})
+
+
 def crawl(url:str,page_limit:int=10)->SiteData:
     root=safe_url(url); limit=max(1,min(int(page_limit),30)); start=time.perf_counter(); session=requests.Session()
     q=deque([root]); seen=set(); pages=[]; discovered={root}
@@ -194,10 +202,7 @@ def crawl(url:str,page_limit:int=10)->SiteData:
         checked.add(target)
         try:
             r,_,elapsed,_=fetch(session,target,10)
-            if r.status_code in {404,410}:
-                broken.append({"url":target,"status":r.status_code,"response_ms":elapsed,"verification":"confirmed_http_not_found"})
-            elif r.status_code>=400:
-                link_warnings.append({"url":target,"status":r.status_code,"reason":"The destination rejected or failed this crawler request; this does not confirm that the link is broken."})
+            _record_link_result(target,r.status_code,elapsed,broken,link_warnings)
         except Exception as exc:
             link_warnings.append({"url":target,"status":0,"reason":"The destination could not be checked reliably; this does not confirm that the link is broken.","error_type":type(exc).__name__})
     warnings=[{"url":p.url,"status":p.status,"final_url":p.final_url,"content_type":p.content_type,"reason":p.crawl_note or "Page content was not eligible for analysis."} for p in pages if not p.analysis_eligible]
