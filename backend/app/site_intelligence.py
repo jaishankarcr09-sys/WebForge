@@ -358,9 +358,13 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
                 crawl_failures += 1
                 verification_status = "crawler-unavailable"
                 logger.debug("Similar-site candidate validation failed for %s (%s)", host, type(exc).__name__)
-        relevance, reason = _relevance(
-            website_type, item.get("name", ""), item.get("snippet", ""), candidate_type
-        )
+        if is_curated:
+            relevance = 72
+            reason = "curated reference in the same broad website category; similarity is not independently verified"
+        else:
+            relevance, reason = _relevance(
+                website_type, item.get("name", ""), item.get("snippet", ""), candidate_type
+            )
         ranked.append({
             "name": item["name"],
             "url": verified_url,
