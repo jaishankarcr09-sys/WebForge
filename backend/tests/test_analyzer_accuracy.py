@@ -58,3 +58,46 @@ def test_sitewide_missing_files_are_not_reported_when_all_pages_are_blocked():
     titles = [item.title for item in analyze(site)]
     assert "robots.txt not detected" not in titles
     assert "Sitemap not detected at common locations" not in titles
+
+
+def test_known_domain_uses_specific_site_category_even_when_crawler_is_blocked():
+    from app.site_intelligence import classify
+
+    site = SimpleNamespace(
+        root_url="https://www.youtube.com/",
+        pages=[SimpleNamespace(status=403, title="Forbidden", description="", headings=[])],
+    )
+    assert classify(site) == "Video / Media Platform"
+
+
+def test_unknown_blocked_site_is_not_classified_from_error_page():
+    from app.site_intelligence import classify
+
+    site = SimpleNamespace(
+        root_url="https://example.org/",
+        pages=[SimpleNamespace(status=403, title="Just a moment", description="", headings=[])],
+    )
+    assert classify(site) == "Unknown / insufficient evidence"
+
+
+def test_specific_content_signal_beats_generic_site_vocabulary():
+    from app.site_intelligence import classify
+
+    page = SimpleNamespace(
+        status=200,
+        title="Search the web",
+        description="Find search results across the web",
+        headings=[("h1", "Search anything")],
+    )
+    site = SimpleNamespace(root_url="https://example.org/", pages=[page])
+    assert classify(site) == "Search Engine"
+
+
+def test_feature_snapshot_ignores_blocked_error_pages():
+    from app.site_intelligence import feature_snapshot
+
+    page = SimpleNamespace(status=403, title="Forbidden", description="", headings=[])
+    snapshot = feature_snapshot(SimpleNamespace(root_url="https://example.org/", pages=[page]))
+    assert snapshot["pages_scanned"] == 0
+    assert snapshot["h1_pages"] == 0
+    assert snapshot["json_ld_pages"] == 0
