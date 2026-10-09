@@ -70,9 +70,12 @@ def _is_xml_resource(url:str, content_type:str="", body:bytes=b"")->bool:
     path=urlsplit(url).path.lower()
     if path.endswith(".xml"):
         return True
-    if "xml" in (content_type or "").lower():
+    mime=(content_type or "").split(";",1)[0].strip().lower()
+    if mime in {"application/xml","text/xml","application/rss+xml","application/atom+xml","image/svg+xml"}:
         return True
-    prefix=body[:2048].decode("utf-8",errors="ignore").lstrip("\\ufeff\\r\\n\\t ").lower()
+    if mime.endswith("+xml") and mime != "application/xhtml+xml":
+        return True
+    prefix=body[:2048].decode("utf-8",errors="ignore").lstrip("\ufeff\r\n\t ").lower()
     return prefix.startswith("<?xml") or prefix.startswith("<urlset") or prefix.startswith("<sitemapindex") or prefix.startswith("<rss") or prefix.startswith("<feed")
 
 
