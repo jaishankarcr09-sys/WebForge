@@ -99,32 +99,53 @@ def _extract_result_url(href: str) -> str:
     return resolved
 
 
-def _search_duckduckgo(query: str, limit: int = 8) -> list[dict]:
-    """Best-effort fallback. HTML markup can change, so empty results are valid."""
-    response = requests.get(
-        "https://html.duckduckgo.com/html/",
-        params={"q": query},
-        headers={"User-Agent": "Mozilla/5.0 (compatible; WebForgeBot/1.2)"},
-        timeout=10,
-    )
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
+def _parse_duckduckgo_results(html: str, limit: int, source: str = "DuckDuckGo") -> list[dict]:
+    soup = BeautifulSoup(html, "html.parser")
     out = []
-    for item in soup.select(".result")[:limit]:
-        anchor = item.select_one(".result__a")
-        snippet = item.select_one(".result__snippet")
-        if not anchor:
-            continue
+    # The standard HTML endpoint and the lite endpoint use different markup.
+    anchors = soup.select(".result__a, a.result-link")
+    seen = set()
+    for anchor in anchors:
         href = _extract_result_url(str(anchor.get("href", "")))
-        if href:
-            out.append({
-                "name": anchor.get_text(" ", strip=True),
-                "url": href,
-                "snippet": snippet.get_text(" ", strip=True) if snippet else "",
-                "source": "DuckDuckGo",
-            })
-    logger.info("Similar-site DuckDuckGo search parsed %d results", len(out))
+        name = anchor.get_text(" ", strip=True)
+        if not href or not name or href in seen:
+            continue
+        seen.add(href)
+        container = anchor.find_parent(class_=re.compile(r"result")) or anchor.parent
+        snippet_node = (
+            container.select_one(".result__snippet")
+            or container.select_one(".result-snippet")
+            or container.select_one(".result-snippet")
+        ) if container else None
+        out.append({
+            "name": name,
+            "url": href,
+            "snippet": snippet_node.get_text(" ", strip=True) if snippet_node else "",
+            "source": source,
+        })
+        if len(out) >= limit:
+            break
     return out
+
+
+def _search_duckduckgo(query: str, limit: int = 8) -> list[dict]:
+    """Best-effort public HTML search with the lite endpoint as a fallback."""
+    headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"}
+    endpoints = [
+        ("https://html.duckduckgo.com/html/", "DuckDuckGo"),
+        ("https://lite.duckduckgo.com/lite/", "DuckDuckGo Lite"),
+    ]
+    for endpoint, source in endpoints:
+        try:
+            response = requests.get(endpoint, params={"q": query}, headers=headers, timeout=10)
+            response.raise_for_status()
+            results = _parse_duckduckgo_results(response.text, limit, source)
+            logger.info("Similar-site %s search parsed %d results", source, len(results))
+            if results:
+                return results
+        except (requests.RequestException, ValueError) as exc:
+            logger.warning("Similar-site %s request failed (%s)", source, type(exc).__name__)
+    return []
 
 
 def _search(query: str, limit: int = 8) -> list[dict]:
@@ -254,6 +275,11 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
         "Similar-site discovery complete: accepted=%d candidate_validation_failures=%d",
         len(ranked), crawl_failures,
     )
+    if candidates and not ranked:
+        logger.warning(
+            "Similar-site discovery found %d unique candidates but none passed candidate validation",
+            len(candidates),
+        )
     return ranked[:max(0, min(int(limit), 20))]
 
 
