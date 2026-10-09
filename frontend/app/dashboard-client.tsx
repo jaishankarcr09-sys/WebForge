@@ -48,7 +48,7 @@ export default function DashboardClient({user}:Props){
   const [view,setView]=useState("overview");
   const [url,setUrl]=useState("");
   const [scheme,setScheme]=useState<"https"|"http">("https");
-  const [limit,setLimit]=useState(10);
+  const [limit,setLimit]=useState(5);
   const [audit,setAudit]=useState<Audit|null>(null);
   const [history,setHistory]=useState<History[]>([]);
   const [filter,setFilter]=useState("all");
@@ -208,7 +208,7 @@ function AuditState({audit,topIssues,onView,onAI}:{audit:Audit|null;topIssues:Is
 function Overview({audit,topIssues,onView,onAI}:{audit:Audit;topIssues:Issue[];onView:(v:string)=>void;onAI:()=>void}){
   const browser=audit.dimensions.browser||{};
   const scoreClass=audit.score>=85?"good":audit.score>=65?"fair":"risk";
-  const verifiedCount=audit.verified_pages??0;
+  const verifiedCount=audit.verified_pages??audit.pages.filter(p=>p.status>=200&&p.status<400).length;
   const scoreUnverified=verifiedCount===0;
   const linkWarnings=audit.link_check_warnings??[];
   return <div>
