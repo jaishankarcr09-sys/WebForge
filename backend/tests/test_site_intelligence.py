@@ -1,4 +1,6 @@
-from app.site_intelligence import _extract_result_url, _host, _parse_duckduckgo_results, _relevance
+from types import SimpleNamespace
+
+from app.site_intelligence import _extract_result_url, _host, _parse_duckduckgo_results, _relevance, discover_similar
 
 
 def test_host_normalizes_www_and_case():
@@ -62,3 +64,15 @@ def test_parse_duckduckgo_results_deduplicates_urls():
     """
     results = _parse_duckduckgo_results(html, 5)
     assert len(results) == 1
+
+
+def test_curated_references_do_not_publish_fake_similarity_percentages(monkeypatch):
+    monkeypatch.setattr("app.site_intelligence._search", lambda query, limit=8: [])
+    target = SimpleNamespace(root_url="https://www.youtube.com/", pages=[])
+    results = discover_similar(target, "Video / Media Platform")
+
+    assert {item["name"] for item in results} >= {"Vimeo", "Dailymotion", "Twitch"}
+    assert all(item["relevance_score"] is None for item in results)
+    assert all(item["verification_status"] == "curated-reference" for item in results)
+    assert next(item for item in results if item["name"] == "Twitch")["match_type"] == "Adjacent alternative"
+    assert all(item["match_type"] == "Category reference" for item in results if item["name"] != "Twitch")
