@@ -81,7 +81,7 @@ def feature_snapshot(site: SiteData) -> dict:
         "pages_scanned": len(pages),
         "h1_pages": sum(1 for p in pages if p.h1_count),
         "avg_response_ms": round(sum(p.response_ms for p in pages) / len(pages)) if pages else 0,
-        "missing_alt_images": sum(sum(1 for x in p.images if not x.get("alt")) for p in pages),
+        "missing_alt_images": sum(sum(1 for x in p.images if not x.get("alt_present", bool(x.get("alt")))) for p in pages),
         "json_ld_pages": sum(1 for p in pages if p.json_ld),
         "social_ready_pages": sum(1 for p in pages if p.og_title and p.og_description),
         "security_header_coverage": round(100 * sum(sum(p.security_headers.values()) for p in pages) / (len(pages) * 6)) if pages else 0,
