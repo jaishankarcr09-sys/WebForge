@@ -73,7 +73,11 @@ def run_and_persist(url: str, page_limit: int, db: Session, user_id: str | None 
             effort=f.effort,priority=f.priority,code_before=f.code_before,code_after=f.code_after,layer=f.layer
         ))
     db.commit()
-    return load_result(db,audit.id,user_id,extra={"site":site,"browser":browser})
+    return load_result(db,audit.id,user_id,extra={
+        "robots_present": site.robots_present,
+        "sitemap_present": site.sitemap_present,
+        "broken_links": site.broken_links,
+    })
 
 def load_result(db: Session, audit_id: int, user_id: str | None = None, extra: dict | None = None) -> dict:
     audit=db.get(Audit,audit_id)
