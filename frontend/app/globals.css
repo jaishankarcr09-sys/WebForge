@@ -74,6 +74,7 @@ a{color:inherit;text-decoration:none}
 .audit-form{display:grid;grid-template-columns:1fr 120px 150px;gap:10px;margin-top:22px}
 .url-input{height:46px;border:1px solid var(--line-strong);border-radius:10px;display:flex;align-items:center;background:#fff;overflow:hidden}
 .url-input span{padding-left:13px;color:var(--subtle);font-size:12px}
+.url-input .url-scheme{height:100%;max-width:94px;border:0;border-right:1px solid var(--line);border-radius:0;background:var(--surface-2);padding:0 7px;color:var(--muted);font-size:11px;outline:none}
 .url-input input{border:0;outline:0;flex:1;height:100%;padding:0 13px;color:var(--text);font-size:13px}
 .audit-form select{height:46px;border:1px solid var(--line-strong);border-radius:10px;background:#fff;padding:0 10px;color:#344054;outline:none}
 .progress-line{display:flex;align-items:center;gap:9px;margin-top:14px;color:var(--muted);font-size:11px}
