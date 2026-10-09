@@ -68,7 +68,7 @@ def analyze(site:SiteData)->list[Finding]:
             prev=int(p.headings[i-1][0][1]); cur=int(p.headings[i][0][1])
             if cur-prev>1:
                 out.append(finding("Accessibility","Heading hierarchy skip","low","Skipped heading levels can make navigation harder for assistive technology.","Avoid jumping more than one heading level.",p.url,f"Observed: {p.headings[i-1][0]} → {p.headings[i][0]}.",95,"low",dimension="accessibility")); break
-        missing=sum(1 for x in p.images if not x.get("alt"))
+        missing=sum(1 for x in p.images if not x.get("alt_present", bool(x.get("alt"))))
         if missing:
             out.append(finding("Accessibility",f"{missing} image(s) missing alt text","medium","Informative images may be inaccessible to screen-reader users.","Add meaningful alt text; use empty alt for decorative images.",p.url,f"Images without alt: {missing}.",100,"low",'<img src="hero.jpg">','<img src="hero.jpg" alt="Descriptive image">',"accessibility"))
         no_dims=sum(1 for x in p.images if not x.get("width") or not x.get("height"))
