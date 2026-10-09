@@ -1,4 +1,4 @@
-from app.site_intelligence import _extract_result_url, _host, _relevance
+from app.site_intelligence import _extract_result_url, _host, _parse_duckduckgo_results, _relevance
 
 
 def test_host_normalizes_www_and_case():
@@ -31,3 +31,34 @@ def test_extract_result_url_rejects_unresolvable_or_non_web_links():
     assert _extract_result_url("/l/?rut=missing-destination") == ""
     assert _extract_result_url("javascript:alert(1)") == ""
     assert _extract_result_url("https://duckduckgo.com/about") == ""
+
+
+def test_parse_duckduckgo_standard_result_markup():
+    html = """
+    <div class="result">
+      <a class="result__a" href="https://example.com/tools">Example Tools</a>
+      <a class="result__snippet">Tools for turning text into visuals</a>
+    </div>
+    """
+    results = _parse_duckduckgo_results(html, 5)
+    assert len(results) == 1
+    assert results[0]["url"] == "https://example.com/tools"
+    assert results[0]["name"] == "Example Tools"
+
+
+def test_parse_duckduckgo_lite_result_markup():
+    html = """
+    <table><tr><td><a class="result-link" href="https://example.org/">Example Org</a></td></tr></table>
+    """
+    results = _parse_duckduckgo_results(html, 5, "DuckDuckGo Lite")
+    assert len(results) == 1
+    assert results[0]["source"] == "DuckDuckGo Lite"
+
+
+def test_parse_duckduckgo_results_deduplicates_urls():
+    html = """
+    <a class="result__a" href="https://example.com/">Example</a>
+    <a class="result__a" href="https://example.com/">Example duplicate</a>
+    """
+    results = _parse_duckduckgo_results(html, 5)
+    assert len(results) == 1
