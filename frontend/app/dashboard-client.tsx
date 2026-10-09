@@ -16,7 +16,7 @@ type Page={
 };
 type Similar={
   name:string; url:string; snippet:string; website_type:string; source?:string;
-  relevance_score?:number; match_reason?:string; verification_status?:string;
+  relevance_score?:number|null; match_reason?:string; match_type?:string; verification_status?:string;
   features?:{pages_scanned:number;avg_response_ms:number;missing_alt_images:number;json_ld_pages:number;social_ready_pages:number;security_header_coverage:number};
 };
 type Audit={
@@ -225,7 +225,31 @@ function Opportunities({audit}:{audit:Audit}){
   return <div className="grid-2">
     <section className="panel"><span className="eyebrow">WEBSITE POSITION</span><h2>{audit.website_type}</h2><p>{audit.intelligence_summary}</p><div className="feature-list">{Object.entries(audit.features).map(([k,v])=><MetricLine key={k} k={k.replaceAll("_"," ")} v={String(v)}/>)}</div></section>
     <section className="panel"><span className="eyebrow">GROWTH OPPORTUNITIES</span><h2>How to improve reach</h2>{audit.opportunities.map((x:any,i:number)=><div className="growth-card" key={i}><span>{String(i+1).padStart(2,"0")}</span><div><b>{x.title}</b><p>{x.reason}</p><small>{x.action}</small></div></div>)}</section>
-    <section className="panel wide"><div className="section-title"><div><span className="eyebrow">COMPETITIVE DISCOVERY</span><h2>Similar websites & patterns</h2><p>Comparable public experiences help reveal the market baseline. The goal is to learn the pattern, then build a differentiated version.</p></div></div><div className="similar-grid">{audit.similar_sites?.length?audit.similar_sites.map((s,i)=><div className="similar-card" key={i}><div className="similar-top"><span className="similar-index">{i+1}</span><div><b>{s.name}</b><small>{s.website_type} · {s.relevance_score??"—"}% relevance</small></div></div><p>{s.snippet||"Comparable public experience discovered during the audit."}</p><p><small>{s.match_reason||"Discovered from public web search"} · Source: {s.source||"Web search"}</small></p><p><small>Verification: {s.verification_status==="crawl-verified"?"page crawl verified":s.verification_status==="curated-reference"?"curated category reference (not live-crawled)":s.verification_status||"search result only"}</small></p>{s.features?.pages_scanned?<div className="similar-metrics"><span>Social {s.features.social_ready_pages??0}</span><span>JSON-LD {s.features.json_ld_pages??0}</span><span>Alt gaps {s.features.missing_alt_images??0}</span><span>Avg {s.features.avg_response_ms??0}ms</span></div>:<p><small>Live metrics unavailable until this reference can be crawled.</small></p>}<a href={s.url} target="_blank" rel="noreferrer">Visit reference ↗</a></div>):<Empty text="No reliable comparable sites were discovered for this target. The rest of the audit still works without them."/>}</div></section>
+    <section className="panel wide similar-discovery-panel">
+      <div className="section-title">
+        <div><span className="eyebrow">COMPETITIVE DISCOVERY</span><h2>Similar websites & patterns</h2><p>Use these references to study market patterns—not as proof that two products are identical.</p></div>
+      </div>
+      <div className="similar-discovery-note flex items-start gap-3 rounded-2xl border border-sky-500/20 bg-sky-500/[0.06] p-4 sm:p-5">
+        <span className="similar-note-icon" aria-hidden="true">✦</span>
+        <div><b className="text-sm font-semibold tracking-tight">Evidence before percentages</b><p className="mt-1 text-sm leading-6">WebForge no longer displays a similarity percentage unless it has a defensible, validated scoring model. Each card tells you whether it is a curated category reference or a candidate found through search, and whether a live crawl succeeded.</p></div>
+      </div>
+      <div className="similar-results-meta"><span>{audit.similar_sites?.length||0} references</span><span>Live metrics shown only after a successful crawl</span></div>
+      <div className="similar-grid">{audit.similar_sites?.length?audit.similar_sites.map((s,i)=><article className="similar-card group rounded-2xl border border-slate-700/70 bg-slate-900/40 p-5 transition duration-200 hover:-translate-y-0.5 hover:border-sky-400/50 hover:bg-slate-900/70 hover:shadow-xl hover:shadow-sky-950/20" key={s.url||i}>
+        <div className="similar-top">
+          <span className="similar-index">{String(i+1).padStart(2,"0")}</span>
+          <div className="min-w-0 flex-1"><b className="block truncate text-base font-semibold tracking-tight">{s.name}</b><small className="mt-1 block text-xs leading-5">{s.website_type}</small></div>
+        </div>
+        <div className="similar-badges">
+          <span className={s.match_type==="Adjacent alternative"?"similar-badge badge-adjacent":"similar-badge"}>{s.match_type||"Search-discovered candidate"}</span>
+          <span className={s.verification_status==="crawl-verified"?"similar-badge badge-verified":"similar-badge badge-unverified"}>{s.verification_status==="crawl-verified"?"Live crawl verified":s.verification_status==="curated-reference"?"Curated reference":s.verification_status?.startsWith("crawler-http-")?"Crawler blocked":s.verification_status==="crawler-unavailable"?"Crawl unavailable":"Search result only"}</span>
+        </div>
+        <p className="similar-snippet">{s.snippet||"A public website surfaced during category-level discovery."}</p>
+        <div className="similar-reason"><span className="similar-reason-label">Why it appears</span><p>{s.match_reason||"Discovered through a public web search. Product-level similarity has not been independently confirmed."}</p></div>
+        <div className="similar-source"><span>Discovery source</span><b>{s.source||"Web search"}</b></div>
+        {s.features && s.features.pages_scanned > 0?<div className="similar-metrics"><span><b>{s.features.social_ready_pages??0}</b> social-ready</span><span><b>{s.features.json_ld_pages??0}</b> JSON-LD</span><span><b>{s.features.missing_alt_images??0}</b> alt gaps</span><span><b>{s.features.avg_response_ms??0}ms</b> avg response</span></div>:<p className="similar-no-metrics">Live metrics unavailable — no successful candidate crawl, so WebForge will not invent measurements.</p>}
+        <a className="similar-link inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-sky-400/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400" href={s.url} target="_blank" rel="noreferrer">Visit website <span aria-hidden="true">↗</span></a>
+      </article>):<Empty text="No candidate websites were discovered for this target. The rest of the audit is still available."/>}</div>
+    </section>
   </div>
 }
 

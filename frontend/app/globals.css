@@ -1,3 +1,6 @@
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities);
+
 :root{
   --bg:#f5f7fb;
   --surface:#ffffff;
@@ -227,3 +230,45 @@ a{color:inherit;text-decoration:none}
 .similar-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
 .similar-card{min-width:0;overflow-wrap:anywhere}
 @media(max-width:1100px){.reach-panel{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Similar-site discovery: clearer provenance, match type, and responsive card rhythm. */
+.similar-discovery-panel{overflow:hidden}
+.similar-discovery-note{margin:18px 0 14px;color:var(--muted)}
+.similar-note-icon{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border:1px solid rgba(56,189,248,.25);border-radius:10px;background:rgba(14,165,233,.1);color:#38bdf8;font-size:17px}
+.similar-results-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0 12px;color:var(--subtle);font-size:11px;font-weight:650;letter-spacing:.02em}
+.similar-results-meta span:first-child{color:var(--text);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:6px 10px}
+.similar-grid{align-items:stretch;gap:14px}
+.similar-card{display:flex;flex-direction:column;gap:13px;background:linear-gradient(155deg,rgba(255,255,255,.035),rgba(255,255,255,.012)),var(--surface);border-color:var(--line);box-shadow:0 2px 12px rgba(16,24,40,.025);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.similar-card:hover{transform:translateY(-2px);border-color:rgba(21,94,239,.35);box-shadow:var(--shadow)}
+.similar-top{display:flex;align-items:center;gap:12px;min-width:0}
+.similar-top>div{min-width:0}
+.similar-top b{font-size:15px;letter-spacing:-.015em}
+.similar-top small{color:var(--muted);font-size:11px;line-height:1.5}
+.similar-index{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:11px;border:1px solid var(--line);background:var(--surface-2);color:var(--primary);font-size:11px;font-weight:800}
+.similar-badges{display:flex;flex-wrap:wrap;gap:7px}
+.similar-badge{display:inline-flex;align-items:center;gap:5px;max-width:100%;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--muted);font-size:10px;font-weight:750;line-height:1.4}
+.badge-adjacent{border-color:rgba(180,83,9,.22);background:rgba(245,158,11,.08);color:#b45309}
+.badge-verified{border-color:rgba(6,118,71,.22);background:rgba(18,183,106,.08);color:var(--success)}
+.badge-unverified{background:var(--surface-2)}
+.similar-snippet{margin:0;color:var(--text);font-size:13px;line-height:1.65}
+.similar-reason{border-left:2px solid rgba(21,94,239,.45);padding:2px 0 2px 11px}
+.similar-reason-label{display:block;margin-bottom:4px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.similar-reason p{margin:0;color:var(--muted);font-size:11px;line-height:1.65}
+.similar-source{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-top:10px;border-top:1px solid var(--line);font-size:10px}
+.similar-source span{color:var(--subtle)}
+.similar-source b{color:var(--muted);text-align:right;overflow-wrap:anywhere}
+.similar-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:0;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.similar-metrics span{display:flex;flex-direction:column;gap:3px;color:var(--muted);font-size:10px}
+.similar-metrics b{color:var(--text);font-size:13px;font-variant-numeric:tabular-nums}
+.similar-no-metrics{margin:0;padding:10px 11px;border:1px dashed var(--line-strong);border-radius:11px;color:var(--muted);font-size:11px;line-height:1.6}
+.similar-link{align-self:flex-start;margin-top:auto;color:var(--primary);font-size:12px}
+.similar-link:hover{color:var(--primary-dark)}
+@media(max-width:780px){
+  .similar-results-meta{align-items:flex-start;flex-direction:column;gap:8px}
+  .similar-card{padding:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  .similar-card,.similar-link{transition:none}
+  .similar-card:hover{transform:none}
+}

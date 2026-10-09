@@ -359,11 +359,21 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
                 verification_status = "crawler-unavailable"
                 logger.debug("Similar-site candidate validation failed for %s (%s)", host, type(exc).__name__)
         if is_curated:
-            relevance = 72
-            reason = "curated reference in the same broad website category; similarity is not independently verified"
+            if item.get("name") == "Twitch":
+                match_type = "Adjacent alternative"
+                reason = "Especially relevant to live streaming and creator communities; broader YouTube similarity is not verified."
+            else:
+                match_type = "Category reference"
+                reason = "Curated example in the same broad category; product overlap has not been independently verified."
+            ranking_score = 72  # Internal ordering only; never presented as a measured percentage.
         else:
-            relevance, reason = _relevance(
+            ranking_score, reason = _relevance(
                 website_type, item.get("name", ""), item.get("snippet", ""), candidate_type
+            )
+            match_type = (
+                "Same-category candidate"
+                if verification_status == "crawl-verified" and candidate_type == website_type
+                else "Search-discovered candidate"
             )
         ranked.append({
             "name": item["name"],
@@ -373,11 +383,15 @@ def discover_similar(site: SiteData, website_type: str, limit: int = 10) -> list
             "website_type": candidate_type,
             "verification_status": verification_status,
             "features": features,
-            "relevance_score": relevance,
+            "relevance_score": None,
+            "match_type": match_type,
             "match_reason": reason,
+            "_ranking_score": ranking_score,
         })
-    # Python sorting is stable: preserve curated ordering when relevance ties.
-    ranked.sort(key=lambda row: -row["relevance_score"])
+    # A private heuristic can order candidates, but it is not a user-facing similarity percentage.
+    ranked.sort(key=lambda row: -row["_ranking_score"])
+    for row in ranked:
+        row.pop("_ranking_score", None)
     logger.info(
         "Similar-site discovery complete: accepted=%d candidate_validation_failures=%d",
         len(ranked), crawl_failures,
