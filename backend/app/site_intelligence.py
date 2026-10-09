@@ -28,6 +28,7 @@ def classify(site: SiteData) -> str:
         "napkin.ai": "AI Visual Communication Tool",
         "leetcode.com": "Coding Practice / Education",
         "github.com": "Developer Platform",
+        "python.org": "Programming Language / Documentation",
         "wikipedia.org": "Reference / Encyclopedia",
         "reddit.com": "Community / Discussion",
         "linkedin.com": "Professional Network",
@@ -71,7 +72,9 @@ def classify(site: SiteData) -> str:
     if not scores:
         return "General Website"
     best_category, best_score = max(scores.items(), key=lambda item: item[1])
-    return best_category if best_score >= 3 else "Unknown / insufficient evidence"
+    # A verified page with weak category signals is still a real site; reserve
+    # the insufficient-evidence label for crawls with no verified HTML above.
+    return best_category if best_score >= 3 else "General Website"
 
 
 def feature_snapshot(site: SiteData) -> dict:

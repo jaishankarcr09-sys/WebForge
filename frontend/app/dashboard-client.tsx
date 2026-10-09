@@ -47,7 +47,8 @@ const nav=[
 export default function DashboardClient({user}:Props){
   const [view,setView]=useState("overview");
   const [url,setUrl]=useState("");
-  const [limit,setLimit]=useState(10);
+  const [scheme,setScheme]=useState<"https"|"http">("https");
+  const [limit,setLimit]=useState(5);
   const [audit,setAudit]=useState<Audit|null>(null);
   const [history,setHistory]=useState<History[]>([]);
   const [filter,setFilter]=useState("all");
@@ -67,7 +68,17 @@ export default function DashboardClient({user}:Props){
     ()=>audit?.issues.filter(x=>(filter==="all"||x.severity===filter)&&(layerFilter==="all"||x.layer===layerFilter))??[],
     [audit,filter,layerFilter]
   );
-  const topIssues=useMemo(()=>audit?.issues.slice().sort((a,b)=>b.priority-a.priority).slice(0,5)??[],[audit]);
+  const topIssues=useMemo(()=>{
+    if(!audit)return [];
+    const grouped=new Map<string,Issue&{occurrences:number}>();
+    for(const issue of audit.issues){
+      const key=issue.title+"|"+issue.layer;
+      const existing=grouped.get(key);
+      if(existing){existing.occurrences+=1;if(issue.priority>existing.priority){existing.priority=issue.priority;existing.page_url=issue.page_url;existing.evidence=issue.evidence;}}
+      else grouped.set(key,{...issue,occurrences:1});
+    }
+    return Array.from(grouped.values()).sort((a,b)=>b.priority-a.priority).slice(0,5);
+  },[audit]);
 
   useEffect(()=>{
     let active=true;
@@ -103,10 +114,11 @@ export default function DashboardClient({user}:Props){
   async function runAudit(e?:FormEvent){
     e?.preventDefault();
     if(!url.trim())return;
+    const targetUrl=scheme+"://"+url.trim().replace(/^https?:\/\//i,"").replace(/\/$/,"");
     setLoading(true);setError("");setAi(null);setTicket("");setView("overview");
     try{
       setProgress("Validating target and checking crawler access…");
-      const start=await fetch("/api/audits/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url,page_limit:limit})});
+      const start=await fetch("/api/audits/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:targetUrl,page_limit:limit})});
       const startData=await start.json();
       if(!start.ok)throw new Error(startData.detail||"Could not start audit.");
       for(let i=0;i<180;i++){
@@ -157,7 +169,7 @@ export default function DashboardClient({user}:Props){
 
       {(view==="overview"||view==="audit")&&<section className="hero-card">
         <div className="hero-copy"><span className="eyebrow">FULL-STACK WEBSITE AUDIT</span><h2>Understand the website before you change it.</h2><p>Enter a public URL and WebForge crawls the experience, measures browser performance, inspects delivery and security signals, classifies the product, and turns findings into a prioritized engineering plan.</p></div>
-        <form className="audit-form" onSubmit={runAudit}><div className="url-input"><span>https://</span><input value={url.replace(/^https?:\/\//,"")} onChange={e=>setUrl("https://"+e.target.value.replace(/^https?:\/\//,""))} placeholder="yourwebsite.com" required/></div><select value={limit} onChange={e=>setLimit(Number(e.target.value))}>{[5,10,20,30].map(n=><option key={n} value={n}>{n} pages</option>)}</select><button className="primary" disabled={loading}>{loading?"Auditing…":"Analyze website"}</button></form>
+        <form className="audit-form" onSubmit={runAudit}><div className="url-input"><select aria-label="URL protocol" className="url-scheme" value={scheme} onChange={e=>setScheme(e.target.value as "https"|"http")}><option value="https">https://</option><option value="http">http://</option></select><input value={url} onChange={e=>setUrl(e.target.value.replace(/^https?:\/\//i,""))} placeholder="yourwebsite.com" required/></div><select value={limit} onChange={e=>setLimit(Number(e.target.value))}>{[5,10,20,30].map(n=><option key={n} value={n}>{n} pages</option>)}</select><button className="primary" disabled={loading}>{loading?"Auditing…":"Analyze website"}</button></form>
         {loading&&<div className="progress-line"><span></span>{progress}</div>}{error&&<div className="inline-error">{error}</div>}
       </section>}
 
@@ -196,16 +208,17 @@ function AuditState({audit,topIssues,onView,onAI}:{audit:Audit|null;topIssues:Is
 function Overview({audit,topIssues,onView,onAI}:{audit:Audit;topIssues:Issue[];onView:(v:string)=>void;onAI:()=>void}){
   const browser=audit.dimensions.browser||{};
   const scoreClass=audit.score>=85?"good":audit.score>=65?"fair":"risk";
-  const scoreUnverified=audit.score_status==="insufficient_verified_data";
+  const verifiedCount=audit.verified_pages??audit.pages.filter(p=>p.status>=200&&p.status<400).length;
+  const scoreUnverified=verifiedCount===0;
   const linkWarnings=audit.link_check_warnings??[];
   return <div>
     {(scoreUnverified||(audit.unverified_pages??0)>0)&&<section className="panel crawl-warning"><span className="eyebrow">CRAWL RELIABILITY</span><h2>{scoreUnverified?"Health score unavailable":"Partial crawl coverage"}</h2><p>{scoreUnverified?"WebForge could not verify any page content, so it cannot produce a trustworthy health score. Findings from blocked, challenge, non-HTML, or incomplete responses were skipped.":"Verified HTML pages: "+(audit.verified_pages??0)+" • Unverified pages: "+(audit.unverified_pages??0)+". Findings are based only on pages that passed crawl validation."}</p>{(audit.crawl_warnings??[]).slice(0,4).map((w:any,i:number)=><small key={i}>{w.url}: {w.reason}</small>)}</section>}{linkWarnings.length>0&&<section className="panel crawl-warning"><span className="eyebrow">LINK CHECK LIMITATIONS</span><h2>{linkWarnings.length} destination(s) could not be verified</h2><p>These responses may reflect access restrictions, rate limits, or network failures. WebForge does not count them as confirmed broken links.</p>{linkWarnings.slice(0,4).map((w:any,i:number)=><small key={i}>{w.url}: {w.reason}</small>)}</section>}
     <div className="summary-grid">
       <section className={"panel score-panel "+scoreClass}><div className={"score-ring "+(scoreUnverified?"unverified":"")} style={{"--score":scoreUnverified?0:audit.score} as React.CSSProperties}><div><strong>{scoreUnverified?"—":audit.score}</strong><small>{scoreUnverified?"unverified":"/100"}</small></div></div><div><span className="eyebrow">OVERALL HEALTH</span><h2>{audit.website_type}</h2><p>{audit.intelligence_summary}</p><div className="score-note">{scoreUnverified?"Insufficient verified data":audit.score>=85?"Healthy baseline":audit.score>=65?"Needs focused improvement":"High-priority improvement required"}</div></div></section>
-      <section className="panel"><div className="section-title"><div><span className="eyebrow">FULL-STACK VIEW</span><h2>Where the weakness lives</h2></div></div><div className="layer-cards"><Metric title="Frontend" value={audit.frontend_score} text="SEO, UX, accessibility and browser experience"/><Metric title="Backend" value={audit.backend_score} text="Delivery, security, caching and server behavior"/><Metric title="Reach" value={audit.reach_score} text="Search readiness, shareability and discoverability"/></div></section>
+      <section className="panel"><div className="section-title"><div><span className="eyebrow">FULL-STACK VIEW</span><h2>Where the weakness lives</h2></div></div><div className="layer-cards"><Metric title="Frontend" value={scoreUnverified?null:audit.frontend_score} text="SEO, UX, accessibility and browser experience"/><Metric title="Backend" value={scoreUnverified?null:audit.backend_score} text="Delivery, security, caching and server behavior"/><Metric title="Reach" value={scoreUnverified?null:audit.reach_score} text="Search readiness, shareability and discoverability"/></div></section>
     </div>
     <div className="grid-2">
-      <section className="panel"><div className="section-title"><div><span className="eyebrow">WHY USERS MAY STRUGGLE</span><h2>Top weaknesses</h2></div><button className="link-btn" onClick={()=>onView("issues")}>View all</button></div>{topIssues.map((x,i)=><div className="compact-issue" key={i}><span className={"severity-dot "+x.severity}></span><div><b>{x.title}</b><small>{x.layer} • P{x.priority} • {x.confidence}% confidence</small></div><span className="issue-arrow">→</span></div>)}{audit.issues.length===0&&<Empty text="No actionable weaknesses were detected in the current rule set."/>}</section>
+      <section className="panel"><div className="section-title"><div><span className="eyebrow">WHY USERS MAY STRUGGLE</span><h2>Top weaknesses</h2></div><button className="link-btn" onClick={()=>onView("issues")}>View all</button></div>{topIssues.map((x,i)=><div className="compact-issue" key={i}><span className={"severity-dot "+x.severity}></span><div><b>{x.title}</b><small>{x.layer} • P{x.priority} • {x.confidence}% confidence{(x as Issue&{occurrences?:number}).occurrences&&((x as Issue&{occurrences?:number}).occurrences!>1)?` • ${(x as Issue&{occurrences:number}).occurrences} occurrences`:""}</small></div><span className="issue-arrow">→</span></div>)}{audit.issues.length===0&&<Empty text="No actionable weaknesses were detected in the current rule set."/>}</section>
       <section className="panel"><div className="section-title"><div><span className="eyebrow">BROWSER REALITY</span><h2>Performance snapshot</h2></div></div><div className="metric-table"><MetricLine k="FCP" v={browser.fcpMs==null?"—":browser.fcpMs+" ms"}/><MetricLine k="LCP" v={browser.lcpMs==null?"—":browser.lcpMs+" ms"}/><MetricLine k="CLS" v={browser.cls??"—"}/><MetricLine k="Page load" v={browser.loadMs==null?"—":browser.loadMs+" ms"}/><MetricLine k="TTFB" v={audit.pages[0]?.ttfb_ms==null?"—":audit.pages[0].ttfb_ms+" ms"}/><MetricLine k="Resources" v={browser.resourceCount??"—"}/></div><button className="secondary full" onClick={()=>onView("pages")}>Open page measurements</button></section>
     </div>
     <section className="panel reach-panel"><div><span className="eyebrow">MAX-REACH PLAYBOOK</span><h2>What should improve next</h2><p>Opportunity-level recommendations connect reach, trust and product clarity to concrete work.</p></div><div className="opportunity-list">{audit.opportunities.slice(0,4).map((x:any,i:number)=><div key={i}><span>{String(i+1).padStart(2,"0")}</span><b>{x.title}</b><p>{x.action}</p></div>)}</div><button className="secondary" onClick={()=>onAI()}>Get AI engineering brief</button></section>
@@ -299,7 +312,7 @@ function EmptyPage({title,text,action,actionLabel}:{title:string;text:string;act
 }
 
 function Concept({title,text}:{title:string;text:string}){return <div className="concept panel"><span className="eyebrow">{title.toUpperCase()}</span><h3>{title}</h3><p>{text}</p></div>}
-function Metric({title,value,text}:{title:string;value:number;text:string}){return <div className="layer-card"><div className="layer-top"><span>{title}</span><b>{value}</b></div><div className="meter"><span style={{width:value+"%"}}></span></div><p>{text}</p></div>}
+function Metric({title,value,text}:{title:string;value:number|null;text:string}){return <div className="layer-card"><div className="layer-top"><span>{title}</span><b>{value===null?"—":value}</b></div>{value!==null&&<div className="meter"><span style={{width:value+"%"}}></span></div>}<p>{value===null?"Insufficient verified page evidence":text}</p></div>}
 function MetricLine({k,v}:{k:string;v:string|number}){return <div className="metric-line"><span>{k}</span><b>{v}</b></div>}
 function Empty({text}:{text:string}){return <div className="empty-state">{text}</div>}
 function Icon({name}:{name:string}){const d:Record<string,string>={grid:"M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z",scan:"M4 7V4h3M17 4h3v3M20 17v3h-3M7 20H4v-3",issue:"M12 4l8 16H4L12 4zM12 9v5m0 3h.01",pages:"M6 4h12v16H6zM9 8h6M9 12h6M9 16h4",spark:"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z",history:"M4 12a8 8 0 108-8M4 4v5h5",workspace:"M4 7h16v13H4zM8 4h8v3H8z",book:"M5 4h12v16H5zM8 8h6M8 12h6M8 16h4"};return <span className="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d={d[name]}/></svg></span>}
