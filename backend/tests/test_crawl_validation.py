@@ -275,6 +275,10 @@ def test_analyzer_does_not_flag_explicit_empty_alt_as_missing():
 
 def test_optional_seo_recommendations_do_not_reduce_layer_scores():
     page = valid_page()
+    page.redirect_count = 0
+    page.content_encoding = "gzip"
+    page.html_bytes = 1000
+    page.insecure_cookie_count = 0
     page.title = "Example"
     page.description = ""
     page.canonical_count = 0
