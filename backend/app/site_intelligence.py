@@ -232,6 +232,43 @@ def _keywords(site: SiteData) -> list[str]:
     return [word for word, _ in sorted(counts.items(), key=lambda pair: (-pair[1], pair[0]))[:6]]
 
 
+def _curated_comparables(site_type: str) -> list[dict]:
+    """Small transparent fallback catalog for common categories when web search fails."""
+    kind = site_type.lower()
+    catalogs = [
+        (("video", "media", "streaming"), [
+            ("Vimeo", "https://vimeo.com/", "Video hosting and creator-focused publishing.", "Video / Media Platform"),
+            ("Dailymotion", "https://www.dailymotion.com/", "Video discovery and publishing platform.", "Video / Media Platform"),
+            ("Twitch", "https://www.twitch.tv/", "Live-streaming and creator community platform.", "Video / Media Platform"),
+        ]),
+        (("search engine",), [
+            ("Bing", "https://www.bing.com/", "Web search and discovery.", "Search Engine"),
+            ("DuckDuckGo", "https://duckduckgo.com/", "Privacy-focused web search.", "Search Engine"),
+            ("Brave Search", "https://search.brave.com/", "Independent web search.", "Search Engine"),
+        ]),
+        (("ai visual", "visual communication", "diagram", "whiteboard"), [
+            ("Canva", "https://www.canva.com/", "Visual design and presentation creation.", "AI Visual Communication Tool"),
+            ("Miro", "https://miro.com/", "Collaborative visual whiteboards and diagramming.", "AI Visual Communication Tool"),
+            ("Whimsical", "https://whimsical.com/", "Flowcharts, wireframes, and visual collaboration.", "AI Visual Communication Tool"),
+            ("Lucidchart", "https://www.lucidchart.com/", "Diagramming and visual documentation.", "AI Visual Communication Tool"),
+        ]),
+        (("coding practice", "education", "programming"), [
+            ("HackerRank", "https://www.hackerrank.com/", "Programming challenges and technical skills practice.", "Coding Practice / Education"),
+            ("Codewars", "https://www.codewars.com/", "Community-driven coding kata and practice.", "Coding Practice / Education"),
+            ("Codeforces", "https://codeforces.com/", "Competitive programming contests and problems.", "Coding Practice / Education"),
+            ("CodeChef", "https://www.codechef.com/", "Programming practice and competitive contests.", "Coding Practice / Education"),
+        ]),
+        (("e-commerce", "commerce", "online store"), [
+            ("Etsy", "https://www.etsy.com/", "Online marketplace for independent sellers.", "E-commerce"),
+            ("eBay", "https://www.ebay.com/", "Online marketplace for new and used goods.", "E-commerce"),
+            ("Shopify", "https://www.shopify.com/", "Tools for building and operating online stores.", "E-commerce"),
+        ]),
+    ]
+    for triggers, entries in catalogs:
+        if any(trigger in kind for trigger in triggers):
+            return [{"name": name, "url": url, "snippet": snippet, "source": "WebForge curated baseline", "website_type": category} for name, url, snippet, category in entries]
+    return []
+
 def _relevance(site_type: str, title: str, snippet: str, candidate_type: str) -> tuple[int, str]:
     text = (title + " " + snippet).lower()
     score = 35
