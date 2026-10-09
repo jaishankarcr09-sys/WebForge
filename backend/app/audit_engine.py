@@ -66,7 +66,9 @@ def run_and_persist(url: str, page_limit: int, db: Session, user_id: str | None 
     growth=opportunities(features,similar,website_type)
     frontend_score=int(dimensions.get("frontend",dimensions.get("seo",0)))
     backend_score=int(dimensions.get("backend",dimensions.get("security",0)))
-    reach_score=round((int(dimensions.get("seo",0))*0.65)+((100 if site.sitemap_present else 55)*0.15)+(100 if site.robots_present else 55)*0.1+(int(dimensions.get("accessibility",0))*0.1))
+    sitemap_quality=100 if site.sitemap_present or site.sitemap_status not in {404,410} else 55
+    robots_quality=100 if site.robots_present or site.robots_status not in {404,410} else 55
+    reach_score=round((int(dimensions.get("seo",0))*0.65)+(sitemap_quality*0.15)+(robots_quality*0.1)+(int(dimensions.get("accessibility",0))*0.1))
     intelligence=AuditIntelligence(
         audit_id=audit.id,
         website_type=website_type,
@@ -96,6 +98,8 @@ def run_and_persist(url: str, page_limit: int, db: Session, user_id: str | None 
         "verified_pages": verified_pages,
         "unverified_pages": unverified_pages,
         "score_status": score_status,
+        "robots_status": site.robots_status,
+        "sitemap_status": site.sitemap_status,
     })
 
 def load_result(db: Session, audit_id: int, user_id: str | None = None, extra: dict | None = None) -> dict:
