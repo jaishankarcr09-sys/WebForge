@@ -297,11 +297,27 @@ def crawl(url:str,page_limit:int=10)->SiteData:
             pages.append(PageData(url=current,final_url=current,status=0,response_ms=0,ttfb_ms=0,html_bytes=0,title="",description="",canonical="",canonical_count=0,h1_count=0,headings=[],images=[],internal_links=[],external_links=[],scripts=0,lang="",viewport="",og_title="",og_description="",twitter_card="",json_ld=0,noindex=False,mixed_content=0,security_headers={},forms_without_labels=0,buttons_without_names=0,server="",cache_control="",content_encoding="",etag=False,set_cookie_count=0,insecure_cookie_count=0,redirect_count=0,content_type="",analysis_eligible=False,crawl_note="Crawler request failed; page content was not verified."))
     targets=[]; broken=[]; link_warnings=[]; checked=set()
     for p in pages: targets += p.internal_links[:80] + p.external_links[:20]
+    browser_link_retries=0
+    max_browser_link_retries=3
     for target in targets:
         if target in checked: continue
         checked.add(target)
         try:
-            r,_,elapsed,_=fetch(session,target,10)
+            r,body,elapsed,ttfb=fetch(session,target,10)
+            # Some sites reject the lightweight HTTP client but serve their public
+            # pages to a browser. Retry only a few same-origin 403s; never use this
+            # fallback to probe third-party links or to treat challenge/login pages
+            # as verified destinations. The browser keeps the existing SSRF guard.
+            if r.status_code==403 and same_origin(target,root) and browser_link_retries<max_browser_link_retries:
+                browser_link_retries+=1
+                try:
+                    br,bb,be,bt=_browser_fetch(target,8)
+                    browser_page=parse_page(target,br,bb,be,bt)
+                    if 200 <= br.status_code < 400 and browser_page.analysis_eligible:
+                        r,body,elapsed,ttfb=br,bb,be,bt
+                except Exception:
+                    # Keep the original 403 as an unverified-link warning.
+                    pass
             _record_link_result(target,r.status_code,elapsed,broken,link_warnings)
         except Exception as exc:
             link_warnings.append({"url":target,"status":0,"reason":"The destination could not be checked reliably; this does not confirm that the link is broken.","error_type":type(exc).__name__})
