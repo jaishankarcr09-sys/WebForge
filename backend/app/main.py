@@ -17,6 +17,7 @@ from .models import Audit, Project, Schedule, UserAudit, UserProject, UserWebsit
 from .redis_client import ping
 from .schemas import AuditRequest, AuditResponse, ScanJobResponse
 from .troubleshooting import build_troubleshooting_context
+from .similarity_service import model_status, rank_metadata
 
 app=FastAPI(title="WebForge API",version="0.6.0")
 app.add_middleware(CORSMiddleware,allow_origins=settings.cors_origin_list,allow_credentials=True,allow_methods=["*"],allow_headers=["*"])
@@ -36,6 +37,22 @@ def run_job(job_id:str,url:str,page_limit:int,user_id:str):
     except Exception as exc:
         db.rollback(); update_job(job_id,"failed",error=str(exc)[:500])
     finally: db.close()
+
+@app.get("/api/v1/similarity/status")
+def similarity_status(user_id: str = Depends(current_user)):
+    # Authentication matches the other user-facing API endpoints.
+    return model_status()
+
+
+@app.post("/api/v1/similarity/rank")
+def similarity_rank(payload: dict, user_id: str = Depends(current_user)):
+    try:
+        return rank_metadata(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
 
 @app.get("/health")
 def health(db:Session=Depends(get_db)):
