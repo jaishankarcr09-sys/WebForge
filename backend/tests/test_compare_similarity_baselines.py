@@ -58,3 +58,22 @@ def test_compare_runs_both_rankers_on_same_heldout_pairs(monkeypatch):
     assert report["pair_count"] == 4
     assert set(report["baselines"]) == {"classical", "semantic_zero_shot"}
     assert "ndcg_at_5" in report["baselines"]["classical"]["ranking_metrics"]["metrics"]
+
+
+def test_validation_rejects_non_http_urls_and_embedded_credentials():
+    with pytest.raises(ValueError, match="absolute HTTP"):
+        _validate_rows([row("file:///tmp/site", "https://candidate.example", 1)])
+    with pytest.raises(ValueError, match="embedded credentials"):
+        _validate_rows([row("https://user:secret@source.example", "https://candidate.example", 1)])
+
+
+def test_validation_rejects_same_hostname_even_if_paths_differ():
+    with pytest.raises(ValueError, match="same hostname"):
+        _validate_rows([row("https://source.example/home", "https://source.example/about", 1)])
+
+
+def test_validation_rejects_duplicate_pairs_in_either_order():
+    first = row("https://source.example", "https://candidate.example", 1)
+    second = row("https://candidate.example", "https://source.example", 0)
+    with pytest.raises(ValueError, match="duplicates an earlier"):
+        _validate_rows([first, second])
