@@ -21,7 +21,8 @@ def test_domain_evaluation_requires_enough_domains():
     rows = [
         {"label":i%2, "source_url":f"https://domain{i%3}.example/",
          "source_name":"source text", "source_category":"tools", "source_description":"source tool",
-         "candidate_name":f"candidate {i}", "candidate_category":"tools", "candidate_description":"candidate tool",\n         "candidate_url":f"https://candidate{i}.example/"}
+         "candidate_name":f"candidate {i}", "candidate_category":"tools", "candidate_description":"candidate tool",
+         "candidate_url":f"https://candidate{i}.example/"}
         for i in range(40)
     ]
     with pytest.raises(ValueError, match="five distinct source domains"):
