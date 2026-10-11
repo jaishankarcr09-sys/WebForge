@@ -303,3 +303,8 @@ a{color:inherit;text-decoration:none}
 .troubleshooting-recommendations article>b{font-size:12px}
 .troubleshooting-recommendations article p,.troubleshooting-recommendations>p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.65}
 .troubleshooting-ai-note{display:block;margin-top:12px;color:var(--muted);font-size:11px}
+
+/* Similar Websites workbench motion and form layout */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.similarity-workbench-enter{animation:fadeInUp .24s ease both}
+@media (prefers-reduced-motion:reduce){.similarity-workbench-enter{animation:none}}
