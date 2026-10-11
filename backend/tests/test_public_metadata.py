@@ -105,7 +105,7 @@ def test_pair_builder_deduplicates_unordered_domain_pairs():
     ]
     pairs = build_review_pairs(records, max_pairs=100)
     domain_pairs = {
-        tuple(sorted((row["source_url"].split("/")[2], row["candidate_url"].split("/")[2]))
+        tuple(sorted([row["source_url"].split("/")[2], row["candidate_url"].split("/")[2]]))
         for row in pairs
     }
     assert len(pairs) == len(domain_pairs)
