@@ -195,7 +195,7 @@ export default function DashboardClient({user}:Props){
 
       <div className="view-body">
         {view==="overview"&&<OverviewState audit={audit} topIssues={topIssues} onView={setView} onAI={askAI} onTroubleshoot={askTroubleshooting} troubleshootingLoading={troubleshootingLoading} troubleshootingError={troubleshootingError}/>}
-        {view==="audit"&&<AuditState audit={audit} topIssues={topIssues} onView={setView} onAI={askAI}/>}
+        {view==="audit"&&<AuditState audit={audit} topIssues={topIssues} onView={setView} onAI={askAI} onTroubleshoot={askTroubleshooting} troubleshootingLoading={troubleshootingLoading} troubleshootingError={troubleshootingError}/>}
         {view==="issues"&&(audit?<Issues audit={audit} filter={filter} setFilter={setFilter} layerFilter={layerFilter} setLayerFilter={setLayerFilter} issues={filteredIssues} onTicket={makeTicket}/>:<EmptyPage title="Run an audit first" text="Your findings will appear here after WebForge measures a website." action={()=>setView("audit")} actionLabel="Start audit"/>)}
         {view==="pages"&&(audit?<Pages audit={audit}/>:<EmptyPage title="No page measurements yet" text="Run your first website audit to populate the page evidence table." action={()=>setView("audit")} actionLabel="Measure a website"/>)}
         {view==="opportunities"&&(audit?<Opportunities audit={audit}/>:<EmptyPage title="No opportunities yet" text="WebForge will classify the website, compare patterns and build reach opportunities after your first audit." action={()=>setView("audit")} actionLabel="Find opportunities"/>)}
