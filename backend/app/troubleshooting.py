@@ -92,7 +92,10 @@ def build_troubleshooting_context(audit: dict) -> dict:
             "allowed_actions": _next_actions(reason_code),
         })
 
-    warnings = audit.get("crawl_warnings")
+    reliability = audit.get("dimensions", {}).get("audit_reliability", {})
+    if not isinstance(reliability, dict):
+        reliability = {}
+    warnings = audit.get("crawl_warnings", reliability.get("crawl_warnings", []))
     if not isinstance(warnings, list):
         warnings = []
     sanitized_warnings = [
@@ -104,9 +107,6 @@ def build_troubleshooting_context(audit: dict) -> dict:
         for item in warnings[:20]
         if isinstance(item, dict)
     ]
-    reliability = audit.get("dimensions", {}).get("audit_reliability", {})
-    if not isinstance(reliability, dict):
-        reliability = {}
     return {
         "audit_id": audit.get("audit_id"),
         "requested_url": str(audit.get("url") or "")[:500],
