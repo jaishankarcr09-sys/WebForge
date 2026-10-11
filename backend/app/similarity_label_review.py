@@ -99,5 +99,5 @@ def import_reviewed_csv(input_path: str | Path) -> list[dict[str, Any]]:
 def write_jsonl(rows: list[dict[str, Any]], output_path: str | Path) -> None:
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("".join(json.dumps(row, ensure_ascii=False) + "\\n" for row in rows),
+    path.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows),
                     encoding="utf-8")
