@@ -248,7 +248,7 @@ function Opportunities({audit}:{audit:Audit}){
       <div className="section-title">
         <div><span className="eyebrow">COMPETITIVE DISCOVERY</span><h2>Similar websites & patterns</h2><p>Use these references to study market patterns—not as proof that two products are identical.</p></div>
       </div>
-      <div className="similar-discovery-note flex items-start gap-3 rounded-2xl border border-sky-500/20 bg-sky-500/[0.06] p-4 sm:p-5">
+      <div className="similar-discovery-note flex items-start gap-3 rounded-2xl border border-sky-500/20 bg-sky-500/6 p-4 sm:p-5">
         <span className="similar-note-icon" aria-hidden="true">✦</span>
         <div><b className="text-sm font-semibold tracking-tight">Evidence before percentages</b><p className="mt-1 text-sm leading-6">WebForge no longer displays a similarity percentage unless it has a defensible, validated scoring model. Each card tells you whether it is a curated category reference or a candidate found through search, and whether a live crawl succeeded.</p></div>
       </div>
@@ -266,7 +266,7 @@ function Opportunities({audit}:{audit:Audit}){
         <div className="similar-reason"><span className="similar-reason-label">Why it appears</span><p>{s.match_reason||"Discovered through a public web search. Product-level similarity has not been independently confirmed."}</p></div>
         <div className="similar-source"><span>Discovery source</span><b>{s.source||"Web search"}</b></div>
         {s.features && s.features.pages_scanned > 0?<div className="similar-metrics"><span><b>{s.features.social_ready_pages??0}</b> social-ready</span><span><b>{s.features.json_ld_pages??0}</b> JSON-LD</span><span><b>{s.features.missing_alt_images??0}</b> alt gaps</span><span><b>{s.features.avg_response_ms??0}ms</b> avg response</span></div>:<p className="similar-no-metrics">Live metrics unavailable — no successful candidate crawl, so WebForge will not invent measurements.</p>}
-        <a className="similar-link inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-sky-400/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400" href={s.url} target="_blank" rel="noreferrer">Visit website <span aria-hidden="true">↗</span></a>
+        <a className="similar-link inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-sky-400/10 focus-visible:outline-2 focus-visible:outline-sky-400" href={s.url} target="_blank" rel="noreferrer">Visit website <span aria-hidden="true">↗</span></a>
       </article>):<Empty text="No candidate websites were discovered for this target. The rest of the audit is still available."/>}</div>
     </section>
   </div>
