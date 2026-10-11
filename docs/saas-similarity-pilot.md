@@ -48,18 +48,11 @@ Suggested review target: 30–45 reviewed pairs across the available source doma
 
 ## Step 4 — Validate and import reviewed labels
 
-After saving the reviewed CSV, validate it using the existing import helper. From the repository root:
+After saving the reviewed CSV, run the existing label importer through the repository script:
 
 ```bash
-python - <<'PY'
-from app.similarity_label_review import import_reviewed_csv, write_jsonl
-rows = import_reviewed_csv("backend/data/saas_similarity_pilot_review.csv")
-write_jsonl(rows, "backend/data/saas_similarity_pilot_human_reviewed.jsonl")
-print(f"Validated {len(rows)} human-reviewed pairs")
-PY
+python backend/scripts/import_similarity_review_csv.py --input backend/data/saas_similarity_pilot_review.csv --output backend/data/saas_similarity_pilot_human_reviewed.jsonl
 ```
-
-Run that snippet from the `backend` directory (so `app` is importable), adjusting paths accordingly, or use `PYTHONPATH=backend` from the repository root.
 
 The importer rejects blank/non-binary labels, missing reviewer/date, invalid URLs, self-pairs, duplicate unordered domain pairs, and datasets without both classes. Uncertain rows must be resolved or removed before import.
 
