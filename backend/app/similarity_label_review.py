@@ -59,9 +59,11 @@ def import_reviewed_csv(input_path: str | Path) -> list[dict[str, Any]]:
             seen.add(key)
             rows.append({
                 "source_name": source_name,
+                "source_url": (raw.get("source_url") or "").strip(),
                 "source_category": (raw.get("source_category") or "").strip(),
                 "source_description": (raw.get("source_description") or "").strip(),
                 "candidate_name": candidate_name,
+                "candidate_url": (raw.get("candidate_url") or "").strip(),
                 "candidate_category": (raw.get("candidate_category") or "").strip(),
                 "candidate_description": (raw.get("candidate_description") or "").strip(),
                 "label": int(label_text),
