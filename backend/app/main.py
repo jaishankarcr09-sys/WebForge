@@ -16,6 +16,7 @@ from .job_store import create_job, get_job, update_job
 from .models import Audit, Project, Schedule, UserAudit, UserProject, UserWebsite, Website
 from .redis_client import ping
 from .schemas import AuditRequest, AuditResponse, ScanJobResponse
+from .troubleshooting import build_troubleshooting_context
 
 app=FastAPI(title="WebForge API",version="0.6.0")
 app.add_middleware(CORSMiddleware,allow_origins=settings.cors_origin_list,allow_credentials=True,allow_methods=["*"],allow_headers=["*"])
@@ -64,6 +65,14 @@ def job_status(job_id:str,user_id:str=Depends(current_user)):
 def audit_detail(audit_id:int,db:Session=Depends(get_db),user_id:str=Depends(current_user)):
     try:return load_result(db,audit_id,user_id)
     except ValueError as exc: raise HTTPException(status_code=404,detail=str(exc)) from exc
+
+@app.get("/api/v1/audits/{audit_id}/troubleshooting")
+def audit_troubleshooting(audit_id:int,db:Session=Depends(get_db),user_id:str=Depends(current_user)):
+    try:
+        result=load_result(db,audit_id,user_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404,detail="Audit not found") from exc
+    return build_troubleshooting_context(result)
 
 @app.get("/api/v1/audits/{audit_id}/backlog")
 def audit_backlog(audit_id:int,db:Session=Depends(get_db),user_id:str=Depends(current_user)):
