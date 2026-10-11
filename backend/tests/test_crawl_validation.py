@@ -27,7 +27,7 @@ def test_http_200_bot_challenge_is_not_analyzed_as_real_page():
     )
 
     assert analyze(make_site(page)) == []
-    
+
 def test_parse_page_marks_http_200_bot_challenge_ineligible():
     response = SimpleNamespace(
         url="https://example.com/",
