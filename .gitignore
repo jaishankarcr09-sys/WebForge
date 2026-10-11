@@ -21,3 +21,6 @@ pnpm-debug.log*
 Thumbs.db
 
 *.tsbuildinfo
+
+# Local environment variables
+frontend/.env.local
