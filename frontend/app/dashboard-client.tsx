@@ -57,6 +57,9 @@ export default function DashboardClient({user}:Props){
   const [progress,setProgress]=useState("Ready to scan.");
   const [error,setError]=useState("");
   const [ai,setAi]=useState<any>(null);
+  const [troubleshooting,setTroubleshooting]=useState<any>(null);
+  const [troubleshootingLoading,setTroubleshootingLoading]=useState(false);
+  const [troubleshootingError,setTroubleshootingError]=useState("");
   const [ticket,setTicket]=useState("");
   const [projectName,setProjectName]=useState("");
   const [workspaceMsg,setWorkspaceMsg]=useState("");
@@ -115,7 +118,7 @@ export default function DashboardClient({user}:Props){
     e?.preventDefault();
     if(!url.trim())return;
     const targetUrl=scheme+"://"+url.trim().replace(/^https?:\/\//i,"").replace(/\/$/,"");
-    setLoading(true);setError("");setAi(null);setTicket("");setView("overview");
+    setLoading(true);setError("");setAi(null);setTroubleshooting(null);setTroubleshootingError("");setTicket("");setView("overview");
     try{
       setProgress("Validating target and checking crawler access…");
       const start=await fetch("/api/audits/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:targetUrl,page_limit:limit})});
@@ -143,6 +146,17 @@ export default function DashboardClient({user}:Props){
   }
 
   async function askAI(){if(!audit)return;const r=await fetch("/api/audits/ai?audit_id="+audit.audit_id,{method:"POST"});setAi(await r.json());}
+  async function askTroubleshooting(){
+    if(!audit||troubleshootingLoading)return;
+    setTroubleshootingLoading(true);setTroubleshootingError("");
+    try{
+      const response=await fetch("/api/audits/troubleshooting?audit_id="+audit.audit_id,{method:"POST",cache:"no-store"});
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.detail||"Could not load troubleshooting guidance.");
+      setTroubleshooting(data);
+    }catch(err){setTroubleshootingError(err instanceof Error?err.message:"Troubleshooting request failed.");}
+    finally{setTroubleshootingLoading(false);}
+  }
   async function makeTicket(index:number){if(!audit)return;const r=await fetch("/api/audits/ticket?audit_id="+audit.audit_id+"&issue_index="+index+"&kind=github");const data=await r.json();setTicket(data.markdown||"");}
   async function createProject(e:FormEvent){
     e.preventDefault();if(!projectName.trim())return;
@@ -215,7 +229,8 @@ function Overview({audit,topIssues,onView,onAI}:{audit:Audit;topIssues:Issue[];o
   const scoreLabel=scoreUnverified?"Insufficient verified data":partialCoverage?"Partial coverage — score applies only to verified pages":findingsCount>=20?"High findings volume — review priorities":findingsCount>=10?"Review findings before calling this healthy":audit.score>=85?"Healthy baseline":audit.score>=65?"Needs focused improvement":"High-priority improvement required";
   const linkWarnings=audit.link_check_warnings??[];
   return <div>
-    {(scoreUnverified||(audit.unverified_pages??0)>0)&&<section className="panel crawl-warning"><span className="eyebrow">CRAWL RELIABILITY</span><h2>{scoreUnverified?"Health score unavailable":"Partial crawl coverage"}</h2><p>{scoreUnverified?"WebForge could not verify any page content, so it cannot produce a trustworthy health score. Findings from blocked, challenge, non-HTML, or incomplete responses were skipped.":"Verified HTML pages: "+(audit.verified_pages??0)+" • Unverified pages: "+(audit.unverified_pages??0)+". Findings are based only on pages that passed crawl validation."}</p>{(audit.crawl_warnings??[]).slice(0,4).map((w:any,i:number)=><small key={i}>{w.url}: {w.reason}</small>)}</section>}{linkWarnings.length>0&&<section className="panel crawl-warning"><span className="eyebrow">LINK CHECK LIMITATIONS</span><h2>{linkWarnings.length} destination(s) could not be verified</h2><p>These responses may reflect access restrictions, rate limits, or network failures. WebForge does not count them as confirmed broken links.</p>{linkWarnings.slice(0,4).map((w:any,i:number)=><small key={i}>{w.url}: {w.reason}</small>)}</section>}
+    {(scoreUnverified||(audit.unverified_pages??0)>0)&&<section className="panel crawl-warning"><span className="eyebrow">CRAWL RELIABILITY</span><h2>{scoreUnverified?"Health score unavailable":"Partial crawl coverage"}</h2><p>{scoreUnverified?"WebForge could not verify any page content, so it cannot produce a trustworthy health score. Findings from blocked, challenge, non-HTML, or incomplete responses were skipped.":"Verified HTML pages: "+(audit.verified_pages??0)+" • Unverified pages: "+(audit.unverified_pages??0)+". Findings are based only on pages that passed crawl validation."}</p>{(audit.crawl_warnings??[]).slice(0,4).map((w:any,i:number)=><small key={i}>{w.url}: {w.reason}</small>)}<button className="secondary troubleshooting-trigger" onClick={askTroubleshooting} disabled={troubleshootingLoading}>{troubleshootingLoading?"Preparing guidance…":"Troubleshoot this audit"}</button>{troubleshootingError&&<small role="alert">{troubleshootingError}</small>}</section>}{linkWarnings.length>0&&<section className="panel crawl-warning"><span className="eyebrow">LINK CHECK LIMITATIONS</span><h2>{linkWarnings.length} destination(s) could not be verified</h2><p>These responses may reflect access restrictions, rate limits, or network failures. WebForge does not count them as confirmed broken links.</p>{linkWarnings.slice(0,4).map((w:any,i:number)=><small key={i}>{w.url}: {w.reason}</small>)}</section>}
+    {troubleshooting&&<section className="panel troubleshooting-panel"><div className="section-title"><div><span className="eyebrow">EVIDENCE-BASED ASSISTANT</span><h2>Audit troubleshooting</h2></div><button className="secondary" onClick={()=>setTroubleshooting(null)}>Close</button></div><p className="troubleshooting-summary">{troubleshooting.summary}</p><div className="troubleshooting-meta"><span>Score status: <b>{troubleshooting.troubleshooting?.score_status||"unknown"}</b></span><span>Verified pages: <b>{troubleshooting.troubleshooting?.verified_pages??0}</b></span><span>Unverified pages: <b>{troubleshooting.troubleshooting?.unverified_pages??0}</b></span></div>{(troubleshooting.troubleshooting?.page_failures??[]).length===0&&<p>No page-level failure was classified from the available records. Review the crawl warnings below and rerun only if appropriate.</p>}<div className="troubleshooting-failures">{(troubleshooting.troubleshooting?.page_failures??[]).map((failure:any,i:number)=><article className="troubleshooting-failure" key={failure.url+"-"+i}><b>{failure.reason_code.replaceAll("_"," ")}</b><small>{failure.http_status?("HTTP "+failure.http_status+" • "):""}{failure.url}</small>{failure.crawl_note&&<p>{failure.crawl_note}</p>}<div className="troubleshooting-actions">{(failure.allowed_actions??[]).map((action:string)=><span key={action}>{action.replaceAll("_"," ")}</span>)}</div></article>)}</div>{(troubleshooting.troubleshooting?.crawl_warnings??[]).length>0&&<div className="troubleshooting-warnings"><b>Recorded crawl warnings</b>{troubleshooting.troubleshooting.crawl_warnings.map((w:any,i:number)=><small key={w.url+"-"+i}>{w.url}: {w.reason}</small>)}</div>}<div className="troubleshooting-recommendations"><b>Recommended next steps</b>{(troubleshooting.recommendations??[]).length>0?(troubleshooting.recommendations.map((item:any,i:number)=><article key={i}><b>{item.title||"Recommendation"}</b><p>{item.action||item.why||item.recommendation||"Review the recorded evidence before proceeding."}</p></article>)):<p>{troubleshooting.troubleshooting?.page_failures?.length?"Use the safe actions listed above. Do not bypass authentication, CAPTCHA, bot protection, or access controls.":"No additional recommendations were returned. Check the audit warnings and retry later if appropriate."}</p>}</div>{troubleshooting.ai_error&&<small className="troubleshooting-ai-note">AI note: {troubleshooting.ai_error}</small>}</section>}
     <div className="summary-grid">
       <section className={"panel score-panel "+scoreClass}><div className={"score-ring "+(scoreUnverified?"unverified":scoreClass)} style={{"--score":scoreUnverified?0:audit.score} as React.CSSProperties}><div><strong>{scoreUnverified?"—":audit.score}</strong><small>{scoreUnverified?"unverified":"/100"}</small></div></div><div><span className="eyebrow">OVERALL HEALTH</span><h2>{audit.website_type}</h2><p>{audit.intelligence_summary}</p><div className="score-note">{scoreLabel}</div></div></section>
       <section className="panel"><div className="section-title"><div><span className="eyebrow">FULL-STACK VIEW</span><h2>Where the weakness lives</h2></div></div><div className="layer-cards"><Metric title="Frontend" value={scoreUnverified?null:audit.frontend_score} text="SEO, UX, accessibility and browser experience"/><Metric title="Backend" value={scoreUnverified?null:audit.backend_score} text="Delivery, security, caching and server behavior"/><Metric title="Reach" value={scoreUnverified?null:audit.reach_score} text="Search readiness, shareability and discoverability"/></div></section>
