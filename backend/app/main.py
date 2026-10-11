@@ -16,6 +16,7 @@ from .job_store import create_job, get_job, update_job
 from .models import Audit, Project, Schedule, UserAudit, UserProject, UserWebsite, Website
 from .redis_client import ping
 from .schemas import AuditRequest, AuditResponse, ScanJobResponse
+from .troubleshooting import build_troubleshooting_context
 
 app=FastAPI(title="WebForge API",version="0.6.0")
 app.add_middleware(CORSMiddleware,allow_origins=settings.cors_origin_list,allow_credentials=True,allow_methods=["*"],allow_headers=["*"])
@@ -64,6 +65,36 @@ def job_status(job_id:str,user_id:str=Depends(current_user)):
 def audit_detail(audit_id:int,db:Session=Depends(get_db),user_id:str=Depends(current_user)):
     try:return load_result(db,audit_id,user_id)
     except ValueError as exc: raise HTTPException(status_code=404,detail=str(exc)) from exc
+
+@app.get("/api/v1/audits/{audit_id}/troubleshooting")
+def audit_troubleshooting(audit_id:int,db:Session=Depends(get_db),user_id:str=Depends(current_user)):
+    try:
+        result=load_result(db,audit_id,user_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404,detail="Audit not found") from exc
+    return build_troubleshooting_context(result)
+
+@app.post("/api/v1/audits/{audit_id}/troubleshooting/assistant")
+def audit_troubleshooting_assistant(audit_id:int,db:Session=Depends(get_db),user_id:str=Depends(current_user)):
+    try:
+        result=load_result(db,audit_id,user_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404,detail="Audit not found") from exc
+    evidence=build_troubleshooting_context(result)
+    recommendations=generate_ai_backlog(result)
+    return {
+        "audit_id": audit_id,
+        "mode": recommendations.get("mode", "deterministic"),
+        "summary": (
+            "This audit has verified crawl evidence. Review the recorded crawl warnings and page failures below before relying on its score."
+            if evidence["score_status"] == "verified"
+            else "This audit has insufficient verified page data for a reliable score. Resolve the recorded crawl limitations and rerun the audit before treating the score as meaningful."
+        ),
+        "troubleshooting": evidence,
+        "recommendations": recommendations.get("items", []),
+        "ai_error": recommendations.get("error"),
+    }
+
 
 @app.get("/api/v1/audits/{audit_id}/backlog")
 def audit_backlog(audit_id:int,db:Session=Depends(get_db),user_id:str=Depends(current_user)):
