@@ -5,6 +5,19 @@ import csv
 import json
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
+
+def _validated_website_url(value: Any, line: int, field: str) -> tuple[str, str]:
+    url = str(value or "").strip()
+    parsed = urlparse(url)
+    if (parsed.scheme.lower() not in {"http", "https"} or not parsed.hostname
+            or parsed.username is not None or parsed.password is not None):
+        raise ValueError(
+            f"Line {line}: {field} must be an absolute HTTP(S) URL without embedded credentials"
+        )
+    host = parsed.hostname.lower().rstrip(".").removeprefix("www.")
+    return url, host
+
 
 FIELDS = [
     "source_name", "source_category", "source_description", "source_url",
@@ -51,19 +64,23 @@ def import_reviewed_csv(input_path: str | Path) -> list[dict[str, Any]]:
             candidate_name = (raw.get("candidate_name") or "").strip()
             if not source_name or not candidate_name:
                 raise ValueError(f"Line {line}: source_name and candidate_name are required")
-            if source_name.casefold() == candidate_name.casefold():
-                raise ValueError(f"Line {line}: a website cannot be compared with itself")
-            key = tuple(sorted((source_name.casefold(), candidate_name.casefold())))
+            source_url, source_host = _validated_website_url(raw.get("source_url"), line, "source_url")
+            candidate_url, candidate_host = _validated_website_url(
+                raw.get("candidate_url"), line, "candidate_url"
+            )
+            if source_host == candidate_host:
+                raise ValueError(f"Line {line}: a website cannot be compared with itself (same hostname)")
+            key = tuple(sorted((source_host, candidate_host)))
             if key in seen:
                 raise ValueError(f"Line {line}: duplicate website pair")
             seen.add(key)
             rows.append({
                 "source_name": source_name,
-                "source_url": (raw.get("source_url") or "").strip(),
+                "source_url": source_url,
                 "source_category": (raw.get("source_category") or "").strip(),
                 "source_description": (raw.get("source_description") or "").strip(),
                 "candidate_name": candidate_name,
-                "candidate_url": (raw.get("candidate_url") or "").strip(),
+                "candidate_url": candidate_url,
                 "candidate_category": (raw.get("candidate_category") or "").strip(),
                 "candidate_description": (raw.get("candidate_description") or "").strip(),
                 "label": int(label_text),
@@ -82,5 +99,5 @@ def import_reviewed_csv(input_path: str | Path) -> list[dict[str, Any]]:
 def write_jsonl(rows: list[dict[str, Any]], output_path: str | Path) -> None:
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("".join(json.dumps(row, ensure_ascii=False) + "\\n" for row in rows),
+    path.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows),
                     encoding="utf-8")
