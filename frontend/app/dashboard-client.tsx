@@ -173,6 +173,7 @@ export default function DashboardClient({user}:Props){
     <aside className="sidebar">
       <a className="sidebar-brand" href="/"><span className="brand-mark">W</span><span><b>WebForge</b><small>Audit Intelligence</small></span></a>
       <div className="sidebar-section"><small>Audit workspace</small>{nav.slice(0,6).map(item=><button key={item.id} className={"nav-item "+(view===item.id?"active":"")} onClick={()=>setView(item.id)}><Icon name={item.icon}/><span>{item.label}</span>{item.id==="issues"&&audit?<em>{audit.issues.length}</em>:null}</button>)}</div>
+      <a className="nav-item" href="/similar-websites"><Icon name="spark"/><span>Similar websites</span></a>
       <div className="sidebar-section"><small>Workspace</small>{nav.slice(6).map(item=><button key={item.id} className={"nav-item "+(view===item.id?"active":"")} onClick={()=>setView(item.id)}><Icon name={item.icon}/><span>{item.label}</span></button>)}</div>
       <div className="sidebar-help"><span className="help-icon">?</span><div><b>What is WebForge?</b><p>Measure first. Fix second. Every recommendation is tied to evidence.</p></div></div>
       <div className="sidebar-user"><div className="avatar">{user.avatar?<img src={user.avatar} alt=""/>:user.name.slice(0,1).toUpperCase()}</div><div className="user-meta"><b>{user.name}</b><span>{user.email}</span></div><button className="icon-btn" onClick={signOut} title="Sign out">↗</button></div>
