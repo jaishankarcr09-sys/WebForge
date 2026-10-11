@@ -88,3 +88,25 @@ def test_collector_does_not_follow_redirect_to_private_network(monkeypatch):
     assert "redirect target" in result["reason"]
     assert not any("127.0.0.1" in url for url, _ in session.calls)
     assert all(kwargs.get("allow_redirects") is False for _, kwargs in session.calls)
+
+
+def test_pair_builder_deduplicates_unordered_domain_pairs():
+    from app.pair_review import build_review_pairs
+
+    records = [
+        {"status": "collected", "url": "http://z.example/", "hostname": "z.example",
+         "title": "Z HTTP", "description": "site z", "category": "tools"},
+        {"status": "collected", "url": "https://a.example/", "hostname": "a.example",
+         "title": "A HTTPS", "description": "site a", "category": "tools"},
+        {"status": "collected", "url": "http://a.example/", "hostname": "a.example",
+         "title": "A HTTP", "description": "site a", "category": "tools"},
+        {"status": "collected", "url": "https://z.example/", "hostname": "z.example",
+         "title": "Z HTTPS", "description": "site z", "category": "tools"},
+    ]
+    pairs = build_review_pairs(records, max_pairs=100)
+    domain_pairs = {
+        tuple(sorted((row["source_url"].split("/")[2], row["candidate_url"].split("/")[2]))
+        for row in pairs
+    }
+    assert len(pairs) == len(domain_pairs)
+    assert len(pairs) == 1
