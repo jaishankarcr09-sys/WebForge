@@ -7,16 +7,42 @@ rather than full page bodies. Use only URLs you are permitted to access.
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
+import socket
 import time
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
 
 import requests
 from bs4 import BeautifulSoup
 
 USER_AGENT = "WebForgeResearchBot/0.1 (+https://github.com/jaishankarcr09-sys/WebForge; public metadata research)"
+
+
+def is_public_http_url(url: str) -> bool:
+    """Best-effort SSRF guard: accept HTTP(S) URLs resolving only to public IPs."""
+    try:
+        parsed = urlparse(url)
+        if (parsed.scheme.lower() not in {"http", "https"} or not parsed.hostname
+                or parsed.username is not None or parsed.password is not None):
+            return False
+        host = parsed.hostname.rstrip(".").lower()
+        if host in {"localhost"} or host.endswith((".localhost", ".local", ".internal", ".test")):
+            return False
+        try:
+            addresses = {ipaddress.ip_address(host)}
+        except ValueError:
+            try:
+                answers = socket.getaddrinfo(host, parsed.port or (443 if parsed.scheme.lower() == "https" else 80),
+                                             type=socket.SOCK_STREAM)
+            except (OSError, ValueError):
+                return False
+            addresses = {ipaddress.ip_address(answer[4][0]) for answer in answers}
+        return bool(addresses) and all(address.is_global for address in addresses)
+    except (ValueError, UnicodeError):
+        return False
 
 
 def parse_metadata(html: str, url: str, category: str = "") -> dict:
@@ -48,12 +74,18 @@ def parse_metadata(html: str, url: str, category: str = "") -> dict:
 
 
 def robots_allows(url: str, session: requests.Session, timeout: float = 8.0) -> bool:
+    if not is_public_http_url(url):
+        return False
     parsed = urlparse(url)
     robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
     parser = RobotFileParser()
     parser.set_url(robots_url)
     try:
-        response = session.get(robots_url, timeout=timeout, headers={"User-Agent": USER_AGENT})
+        response = session.get(robots_url, timeout=timeout, allow_redirects=False,
+                              headers={"User-Agent": USER_AGENT})
+        if 300 <= response.status_code < 400:
+            # Do not follow robots redirects to an unvalidated host.
+            return False
         if response.status_code == 404:
             return True
         if response.status_code >= 400:
@@ -68,21 +100,42 @@ def robots_allows(url: str, session: requests.Session, timeout: float = 8.0) -> 
 def collect_one(url: str, category: str = "", session: requests.Session | None = None,
                 timeout: float = 10.0) -> dict:
     session = session or requests.Session()
-    parsed = urlparse(url)
-    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
-        return {"url": url, "status": "rejected", "reason": "only absolute HTTP(S) URLs are accepted"}
+    if not is_public_http_url(url):
+        return {"url": url, "status": "rejected",
+                "reason": "URL must be HTTP(S), contain no credentials, and resolve only to public IP addresses"}
     if not robots_allows(url, session, timeout=min(timeout, 8.0)):
         return {"url": url, "status": "skipped", "reason": "robots policy disallows access or could not be checked"}
+    current_url = url
     try:
-        response = session.get(url, timeout=timeout, allow_redirects=True,
-                               headers={"User-Agent": USER_AGENT, "Accept": "text/html"})
+        response = None
+        for _ in range(6):
+            # Revalidate each redirect target before issuing any request to it.
+            if not is_public_http_url(current_url):
+                return {"url": url, "status": "rejected",
+                        "reason": "redirect target is not a validated public HTTP(S) URL"}
+            response = session.get(current_url, timeout=timeout, allow_redirects=False,
+                                   headers={"User-Agent": USER_AGENT, "Accept": "text/html"})
+            if response.status_code not in {301, 302, 303, 307, 308}:
+                break
+            location = response.headers.get("location")
+            if not location:
+                return {"url": url, "status": "skipped", "reason": "redirect_missing_location"}
+            current_url = urljoin(current_url, location)
+            if not is_public_http_url(current_url):
+                return {"url": url, "status": "rejected",
+                        "reason": "redirect target is not a validated public HTTP(S) URL"}
+            if not robots_allows(current_url, session, timeout=min(timeout, 8.0)):
+                return {"url": url, "status": "skipped",
+                        "reason": "redirect target robots policy disallows access or could not be checked"}
+        else:
+            return {"url": url, "status": "skipped", "reason": "too_many_redirects"}
+        assert response is not None
         content_type = response.headers.get("content-type", "").lower()
         if response.status_code >= 400:
             return {"url": url, "status": "skipped", "reason": f"http_{response.status_code}"}
         if "text/html" not in content_type:
             return {"url": url, "status": "skipped", "reason": "non_html_response"}
-        final_url = response.url
-        return {"status": "collected", **parse_metadata(response.text[:1_500_000], final_url, category)}
+        return {"status": "collected", **parse_metadata(response.text[:1_500_000], current_url, category)}
     except requests.RequestException as exc:
         return {"url": url, "status": "error", "reason": type(exc).__name__}
 

@@ -36,3 +36,55 @@ def test_pair_builder_respects_max_pairs():
         for name in ["a","b","c","d"]
     ]
     assert len(build_review_pairs(records, max_pairs=2)) == 2
+
+
+def test_public_url_guard_rejects_local_and_private_targets(monkeypatch):
+    from app.public_metadata import is_public_http_url
+
+    assert not is_public_http_url("http://127.0.0.1/admin")
+    assert not is_public_http_url("http://[::1]/admin")
+    assert not is_public_http_url("http://localhost/")
+    assert not is_public_http_url("http://user:secret@example.com/")
+
+
+def test_public_url_guard_rejects_hostnames_resolving_to_private_ip(monkeypatch):
+    import socket
+    from app.public_metadata import is_public_http_url
+
+    monkeypatch.setattr(socket, "getaddrinfo", lambda *args, **kwargs: [
+        (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("10.0.0.8", 80)),
+    ])
+    assert not is_public_http_url("http://internal.example/")
+
+
+def test_collector_does_not_follow_redirect_to_private_network(monkeypatch):
+    import socket
+    from app.public_metadata import collect_one
+
+    monkeypatch.setattr(socket, "getaddrinfo", lambda *args, **kwargs: [
+        (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 80)),
+    ])
+
+    class Response:
+        def __init__(self, status_code, text="", headers=None, url=""):
+            self.status_code = status_code
+            self.text = text
+            self.headers = headers or {}
+            self.url = url
+
+    class Session:
+        def __init__(self):
+            self.calls = []
+
+        def get(self, url, **kwargs):
+            self.calls.append((url, kwargs))
+            if url.endswith("/robots.txt"):
+                return Response(200, "User-agent: *\\nAllow: /")
+            return Response(302, headers={"location": "http://127.0.0.1:8080/admin"}, url=url)
+
+    session = Session()
+    result = collect_one("https://public.example/", session=session)
+    assert result["status"] == "rejected"
+    assert "redirect target" in result["reason"]
+    assert not any("127.0.0.1" in url for url, _ in session.calls)
+    assert all(kwargs.get("allow_redirects") is False for _, kwargs in session.calls)
