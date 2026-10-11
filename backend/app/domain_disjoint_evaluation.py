@@ -24,12 +24,42 @@ from sklearn.svm import SVC
 from app.similarity_model import _text, pair_features
 
 
+def _normalized_host(value: Any, row_number: int, field: str) -> str:
+    url = str(value or "").strip()
+    parsed = urlparse(url)
+    if (parsed.scheme.lower() not in {"http", "https"} or not parsed.hostname
+            or parsed.username is not None or parsed.password is not None):
+        raise ValueError(
+            f"Evaluation row {row_number}: {field} must be an absolute HTTP(S) URL "
+            "without embedded credentials."
+        )
+    return parsed.hostname.lower().rstrip(".").removeprefix("www.")
+
+
 def _source_domain(row: dict[str, Any]) -> str:
-    url = str(row.get("source_url") or "").strip()
-    host = (urlparse(url).hostname or "").lower().removeprefix("www.")
-    if not host:
-        raise ValueError("Domain-disjoint evaluation requires source_url on every reviewed pair.")
-    return host
+    return _normalized_host(row.get("source_url"), 1, "source_url")
+
+
+def _validate_records(records: list[dict[str, Any]]) -> None:
+    seen_pairs: set[tuple[str, str]] = set()
+    required = ("source_name", "candidate_name", "label", "source_url", "candidate_url")
+    for index, row in enumerate(records, start=1):
+        if not isinstance(row, dict):
+            raise ValueError(f"Evaluation row {index} must be a JSON object.")
+        missing = [field for field in required if row.get(field) in (None, "")]
+        if missing:
+            raise ValueError(f"Evaluation row {index} is missing required fields: {', '.join(missing)}")
+        label = row["label"]
+        if isinstance(label, bool) or str(label).strip() not in {"0", "1"}:
+            raise ValueError(f"Evaluation row {index} label must be 0 or 1.")
+        source_host = _normalized_host(row["source_url"], index, "source_url")
+        candidate_host = _normalized_host(row["candidate_url"], index, "candidate_url")
+        if source_host == candidate_host:
+            raise ValueError(f"Evaluation row {index} compares a website with itself (same hostname).")
+        pair = tuple(sorted((source_host, candidate_host)))
+        if pair in seen_pairs:
+            raise ValueError(f"Evaluation row {index} duplicates an unordered domain pair.")
+        seen_pairs.add(pair)
 
 
 def _features(rows: list[dict[str, Any]], word: TfidfVectorizer,
@@ -40,6 +70,7 @@ def _features(rows: list[dict[str, Any]], word: TfidfVectorizer,
 def benchmark_domain_disjoint(records: list[dict[str, Any]], random_state: int = 42) -> dict[str, Any]:
     if len(records) < 30:
         raise ValueError("At least 30 reviewed pairs are required for domain-disjoint evaluation.")
+    _validate_records(records)
     labels = np.asarray([int(row["label"]) for row in records], dtype=int)
     if set(labels.tolist()) != {0, 1}:
         raise ValueError("Evaluation needs both positive and negative reviewed pairs.")
