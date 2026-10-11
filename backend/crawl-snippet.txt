@@ -1,0 +1,41 @@
+        except Exception as exc:
+            sitemap_statuses.append(0)
+            resource_warnings.append({"url":sm,"status":0,"reason":"Sitemap could not be checked reliably; absence is unverified.","error_type":type(exc).__name__})
+    if not sitemap_present and sitemap_statuses:
+        if all(status in {404,410} for status in sitemap_statuses):
+            resource_warnings.append({"url":sitemap_urls[0],"status":sitemap_statuses[0],"reason":"No sitemap was found at the checked sitemap URLs; the server returned 404/410."})
+        elif any(status not in {404,410} for status in sitemap_statuses) and not any(w.get("url") in sitemap_urls for w in resource_warnings):
+            resource_warnings.append({"url":sitemap_urls[0],"status":sitemap_statuses[0],"reason":"Sitemap availability could not be confirmed; this does not prove that no sitemap exists."})
+    for x in sitemap_found[:limit]:
+        # Sitemap indexes and XML feeds are crawl resources, not HTML pages to audit.
+        if same_origin(x,root) and not _is_xml_resource(x):
+            q.append(x); discovered.add(x)
+    while q and len(pages)<limit:
+        current=norm(q.popleft())
+        if current in seen or not same_origin(current,root): continue
+        seen.add(current)
+        try:
+            r,b,elapsed,ttfb=_fetch_with_browser_fallback(session,current)
+            page=parse_page(current,r,b,elapsed,ttfb); pages.append(page)
+            for target in page.internal_links:
+                # XML sitemaps/feeds are linked resources, not HTML pages for the page-limit queue.
+                if _is_xml_resource(target):
+                    continue
+                discovered.add(target)
+                if target not in seen and len(discovered)<limit*5: q.append(target)
+        except Exception:
+            pages.append(PageData(url=current,final_url=current,status=0,response_ms=0,ttfb_ms=0,html_bytes=0,title="",description="",canonical="",canonical_count=0,h1_count=0,headings=[],images=[],internal_links=[],external_links=[],scripts=0,lang="",viewport="",og_title="",og_description="",twitter_card="",json_ld=0,noindex=False,mixed_content=0,security_headers={},forms_without_labels=0,buttons_without_names=0,server="",cache_control="",content_encoding="",etag=False,set_cookie_count=0,insecure_cookie_count=0,redirect_count=0,content_type="",analysis_eligible=False,crawl_note="Crawler request failed; page content was not verified."))
+    targets=[]; broken=[]; link_warnings=[]; checked=set()
+    for p in pages: targets += p.internal_links[:80] + p.external_links[:20]
+    for target in targets:
+        if target in checked: continue
+        checked.add(target)
+        try:
+            r,_,elapsed,_=fetch(session,target,10)
+            _record_link_result(target,r.status_code,elapsed,broken,link_warnings)
+        except Exception as exc:
+            link_warnings.append({"url":target,"status":0,"reason":"The destination could not be checked reliably; this does not confirm that the link is broken.","error_type":type(exc).__name__})
+    warnings=resource_warnings+[{"url":p.url,"status":p.status,"final_url":p.final_url,"content_type":p.content_type,"reason":p.crawl_note or "Page content was not eligible for analysis."} for p in pages if not p.analysis_eligible]
+    return SiteData(root,pages,sorted(discovered),broken,robots_present,robots_allowed,sitemap_present,sorted(set(sitemap_found or sitemap_urls)),int((time.perf_counter()-start)*1000),warnings,link_warnings,robots_status,sitemap_status)
+
+def page_json(page:PageData)->dict: return asdict(page)

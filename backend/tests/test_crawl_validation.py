@@ -27,6 +27,33 @@ def test_http_200_bot_challenge_is_not_analyzed_as_real_page():
     )
 
     assert analyze(make_site(page)) == []
+    
+def test_parse_page_marks_http_200_bot_challenge_ineligible():
+    response = SimpleNamespace(
+        url="https://example.com/",
+        status_code=200,
+        headers={"content-type": "text/html; charset=utf-8"},
+        encoding="utf-8",
+        history=[],
+        raw=SimpleNamespace(headers={}),
+    )
+
+    body = (
+        b"<html><head><title>Just a moment...</title></head>"
+        b"<body><h1>Checking your browser</h1>"
+        b"<p>Verify you are human</p></body></html>"
+    )
+
+    page = parse_page(
+        "https://example.com/",
+        response,
+        body,
+        10,
+        5,
+    )
+
+    assert page.analysis_eligible is False
+    assert "challenge" in page.crawl_note.lower()
 
 
 def test_non_html_success_response_is_not_analyzed_for_missing_h1():
