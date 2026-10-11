@@ -22,7 +22,8 @@ def build_review_pairs(records: list[dict], max_pairs: int = 5000) -> list[dict]
         right_host = (right.get("hostname") or "").lower()
         if not left_host or not right_host or left_host == right_host:
             continue
-        key = (left_host, right_host)
+        # Treat a domain pair as unordered so reversing URL order cannot create duplicates.
+        key = tuple(sorted((left_host, right_host)))
         if key in seen_domains:
             continue
         seen_domains.add(key)
