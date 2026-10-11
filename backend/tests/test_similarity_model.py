@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from backend.app.similarity_model import load_model, rank_candidates, train_model
+from app.similarity_model import load_model, rank_candidates, train_model
 
 ROOT = Path(__file__).resolve().parents[1]
 
