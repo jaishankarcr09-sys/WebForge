@@ -19,3 +19,8 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+*.tsbuildinfo
+
+# Local environment variables
+frontend/.env.local

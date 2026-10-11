@@ -248,7 +248,7 @@ function Opportunities({audit}:{audit:Audit}){
       <div className="section-title">
         <div><span className="eyebrow">COMPETITIVE DISCOVERY</span><h2>Similar websites & patterns</h2><p>Use these references to study market patterns—not as proof that two products are identical.</p></div>
       </div>
-      <div className="similar-discovery-note flex items-start gap-3 rounded-2xl border border-sky-500/20 bg-sky-500/[0.06] p-4 sm:p-5">
+      <div className="similar-discovery-note flex items-start gap-3 rounded-2xl border border-sky-500/20 bg-sky-500/6 p-4 sm:p-5">
         <span className="similar-note-icon" aria-hidden="true">✦</span>
         <div><b className="text-sm font-semibold tracking-tight">Evidence before percentages</b><p className="mt-1 text-sm leading-6">WebForge no longer displays a similarity percentage unless it has a defensible, validated scoring model. Each card tells you whether it is a curated category reference or a candidate found through search, and whether a live crawl succeeded.</p></div>
       </div>
