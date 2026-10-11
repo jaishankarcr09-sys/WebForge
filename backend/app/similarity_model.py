@@ -54,6 +54,26 @@ def pair_features(source: dict[str, Any], candidate: dict[str, Any],
 def train_model(records: list[dict[str, Any]], output_path: str | Path) -> dict[str, Any]:
     if len(records) < 8:
         raise ValueError("At least 8 reviewed website pairs are required.")
+    required_fields = (
+        "source_name", "source_category", "source_description",
+        "candidate_name", "candidate_category", "candidate_description", "label",
+    )
+    for index, row in enumerate(records, start=1):
+        missing = [field for field in required_fields if field not in row]
+        if missing:
+            raise ValueError(f"Training row {index}: missing fields: {', '.join(missing)}")
+        label = row["label"]
+        if isinstance(label, bool) or str(label).strip() not in {"0", "1"}:
+            raise ValueError(f"Training row {index}: label must be 0 or 1")
+        if not str(row.get("source_name") or "").strip():
+            raise ValueError(f"Training row {index}: source_name is required")
+        if not str(row.get("candidate_name") or "").strip():
+            raise ValueError(f"Training row {index}: candidate_name is required")
+        if str(row["source_name"]).strip().casefold() == str(row["candidate_name"]).strip().casefold():
+            raise ValueError(f"Training row {index}: a website cannot be compared with itself")
+        if not _text(row, "source") or not _text(row, "candidate"):
+            raise ValueError(f"Training row {index}: source and candidate text cannot both be empty")
+
     labels = np.asarray([int(row["label"]) for row in records], dtype=int)
     if set(labels.tolist()) != {0, 1}:
         raise ValueError("Training data must include both similar (1) and dissimilar (0) pairs.")
