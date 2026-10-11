@@ -6,6 +6,10 @@ venv/
 .env
 .pytest_cache/
 
+# Generated ML artifacts
+backend/models/*.joblib
+backend/models/*.pkl
+
 # Node
 node_modules/
 .next/
