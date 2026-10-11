@@ -83,7 +83,7 @@ export default function SimilarWebsitesPage() {
       <section>
         <div className="section-title"><div><span className="eyebrow">STEP 2</span><h2>Add candidate websites</h2><p>Use public, factual descriptions. Include plausible alternatives and clear non-alternatives when testing.</p></div><button className="secondary" type="button" disabled={candidates.length >= 10} onClick={() => setCandidates(current => [...current, blankSite()])}>+ Add candidate</button></div>
         <div style={{ display: "grid", gap: 14 }}>
-          {candidates.map((site, index) => <article key={index} className="panel" style={{ padding: 16, animation: "fadeInUp .24s ease both" }}>
+          {candidates.map((site, index) => <article key={index} className="panel similarity-workbench-enter" style={{ padding: 16 }}>
             <div className="section-title"><h3>Candidate {index + 1}</h3>{candidates.length > 1 && <button className="secondary" type="button" onClick={() => setCandidates(current => current.filter((_, i) => i !== index))}>Remove</button>}</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 12 }}>
               <label>Name<input required value={site.name} onChange={e => updateCandidate(index, "name", e.target.value)} placeholder="Website name" /></label>
@@ -101,7 +101,7 @@ export default function SimilarWebsitesPage() {
 
     {results.length > 0 && <section className="panel" style={{ marginTop: 20 }}>
       <div className="section-title"><div><span className="eyebrow">RANKING RESULTS</span><h2>Closest candidates first</h2></div></div>
-      <div style={{ display: "grid", gap: 12 }}>{results.map((item, index) => <article key={item.name + index} className="panel" style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 12, alignItems: "center", animation: "fadeInUp .24s ease both" }}><strong>#{index + 1}</strong><div><h3>{item.name}</h3><p>{item.category}</p><small>{item.description}</small></div><strong>{Number(item.score).toFixed(3)}</strong></article>)}</div>
+      <div style={{ display: "grid", gap: 12 }}>{results.map((item, index) => <article key={item.name + index} className="panel similarity-workbench-enter" style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 12, alignItems: "center" }}><strong>#{index + 1}</strong><div><h3>{item.name}</h3><p>{item.category}</p><small>{item.description}</small></div><strong>{Number(item.score).toFixed(3)}</strong></article>)}</div>
     </section>}
     <p style={{ marginTop: 16, opacity: .75, fontSize: 13 }}>Early-stage feature: a trained artifact must be configured before scores are available. Do not treat seed-data results as production quality.</p>
   </main>;
