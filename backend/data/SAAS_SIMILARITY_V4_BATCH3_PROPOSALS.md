@@ -3,7 +3,7 @@
 These six assistant-proposed labels are not user-approved or expert-verified ground truth. They remain separate from the blank review worksheet and combined training data.
 
 ## Proposed decisions
-- Wrike vs Asana — 1: project/work management alternatives.
+- Wrike vs Airtable — 0: project/work management vs structured-data/workflow apps.
 - Salesforce vs Intercom — 0: broad CRM/customer platform vs messaging/support automation.
 - HubSpot vs Intercom — 0: broad CRM/marketing/sales suite vs customer messaging/support automation.
 - Miro vs Basecamp — 0: visual collaboration canvas vs project/team workspace.
