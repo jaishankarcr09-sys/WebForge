@@ -1,0 +1,80 @@
+﻿pair_id,original_suggested_label,original_review_notes,original_reviewer,original_reviewed_at,original_provenance
+0ebd89595526e6eb,0,GitLab focuses on DevOps and software delivery; Asana focuses on work management.,reviewer1,2026-10-11,human_reviewed
+23fbf19395c9823e,0,GitLab focuses on software development; Coda focuses on collaborative documents and workflows.,reviewer1,2026-10-11,human_reviewed
+7cce16babb042576,0,GitLab focuses on DevOps; Discord focuses on community communication.,reviewer1,2026-10-11,human_reviewed
+1d31d280bcdb9b45,1,Both platforms support software development and developer collaboration.,reviewer1,2026-10-11,human_reviewed
+2e3e402d0ee31e13,0,GitLab focuses on DevOps; Slack focuses on team communication.,reviewer1,2026-10-11,human_reviewed
+4b395aced137fc86,0,GitLab focuses on software development; Stripe provides payment infrastructure.,reviewer1,2026-10-11,human_reviewed
+5f6104af0c2e4baf,0,GitLab focuses on DevOps; Trello focuses on task and project management.,reviewer1,2026-10-11,human_reviewed
+b88e331fa93b258f,0,GitLab focuses on DevOps; Microsoft Teams focuses on meetings and team communication.,reviewer1,2026-10-11,human_reviewed
+5d99d556252e8eca,0,GitLab focuses on software development and DevOps; Notion focuses on productivity and knowledge management.,reviewer1,2026-10-11,human_reviewed
+1d21fa38ca7ea909,1,"Both support collaborative work and team workflows, although their approaches differ.",reviewer1,2026-10-11,human_reviewed
+151ab4ed93c1683e,0,Asana focuses on work and project management; Discord focuses on community communication.,reviewer1,2026-10-11,human_reviewed
+d20f74b050765905,0,Asana manages team projects; GitHub primarily supports software development and code collaboration.,reviewer1,2026-10-11,human_reviewed
+ba0c143c1a8147be,0,Asana focuses on project management; Slack primarily focuses on team messaging and communication.,reviewer1,2026-10-11,human_reviewed
+fb895846ef53abd4,0,Asana manages work and projects; Stripe provides payments infrastructure.,reviewer1,2026-10-11,human_reviewed
+20f6bb6f5ed6a766,1,"Both offer task and project management for teams, making them plausible alternatives.",reviewer1,2026-10-11,human_reviewed
+33d33bd56aa5ae12,0,Asana focuses on work and project management; Microsoft Teams primarily focuses on communication and meetings.,reviewer1,2026-10-11,human_reviewed
+bd0421718303a1a5,1,"Both can support team productivity, planning, and organizing work.",reviewer1,2026-10-11,human_reviewed
+e815fa2d6b38eeb9,0,Coda focuses on collaborative documents and workflows; Discord focuses on community communication.,reviewer1,2026-10-11,human_reviewed
+698d7bcc20bcd346,0,Coda focuses on collaborative documents and workflows; GitHub focuses on software development and code collaboration.,reviewer1,2026-10-11,human_reviewed
+06c1cf07a549b8a2,0,Coda focuses on documents and structured workflows; Slack focuses on team messaging.,reviewer1,2026-10-11,human_reviewed
+316d206972bd9c37,0,Coda focuses on collaborative workspaces; Stripe provides payments infrastructure.,reviewer1,2026-10-11,human_reviewed
+95fa12f46c1ce7bc,1,"Both can organize team work and workflows, although their approaches differ.",reviewer1,2026-10-11,human_reviewed
+e94c3c9023a0ca17,0,Coda focuses on collaborative documents and workflows; Microsoft Teams focuses on meetings and communication.,reviewer1,2026-10-11,human_reviewed
+9a3354443f877ba9,1,"Both provide collaborative workspaces, documents, and workflow capabilities.",reviewer1,2026-10-11,human_reviewed
+937128622887c882,0,Discord focuses on community communication; GitHub focuses on software development and code collaboration.,reviewer1,2026-10-11,human_reviewed
+6561ef10a42ce85f,1,"Both support group communication and communities, although their audiences and workflows differ.",reviewer1,2026-10-11,human_reviewed
+28b43117f6de9804,0,Discord focuses on communication; Stripe provides payments infrastructure.,reviewer1,2026-10-11,human_reviewed
+44ccb21da413feca,0,Discord focuses on communication; Trello focuses on task and project management.,reviewer1,2026-10-11,human_reviewed
+0377801644308e35,1,"Both support team communication, though Microsoft Teams emphasizes workplace meetings and collaboration.",reviewer1,2026-10-11,human_reviewed
+92e8600441f15d5d,0,Discord focuses on community communication; Notion focuses on productivity and knowledge management.,reviewer1,2026-10-11,human_reviewed
+05dc4546c03bfe6c,0,GitHub focuses on software development and code collaboration; Slack focuses on team messaging.,reviewer1,2026-10-11,human_reviewed
+830f0a29701f9486,0,GitHub focuses on software development; Stripe provides payments infrastructure.,reviewer1,2026-10-11,human_reviewed
+c46785744c05693d,0,GitHub focuses on code collaboration; Trello focuses on task and project management.,reviewer1,2026-10-11,human_reviewed
+77270ad7bc26485a,0,GitHub focuses on software development; Microsoft Teams focuses on meetings and communication.,reviewer1,2026-10-11,human_reviewed
+ddf6d7748631ec5d,0,GitHub focuses on software development and code collaboration; Notion focuses on productivity and knowledge management.,reviewer1,2026-10-11,human_reviewed
+dc0523ac1928d16d,0,Slack focuses on team communication; Stripe provides payments infrastructure.,reviewer1,2026-10-11,human_reviewed
+9bb7d38e87260977,0,Slack focuses on team messaging; Trello focuses on task and project management.,reviewer1,2026-10-11,human_reviewed
+71724718f29cb677,1,"Both support workplace communication and collaboration, although their features differ.",reviewer1,2026-10-11,human_reviewed
+f49fdedbcc556e92,0,Slack focuses on real-time team communication; Notion focuses on knowledge management and a productivity workspace.,reviewer1,2026-10-11,human_reviewed
+fac9d5607d317fe5,0,Stripe provides payments infrastructure; Trello focuses on task and project management.,reviewer1,2026-10-11,human_reviewed
+855942ae65029e28,0,Stripe provides payments infrastructure; Microsoft Teams focuses on meetings and communication.,reviewer1,2026-10-11,human_reviewed
+466acf728c1bbd11,0,Stripe provides payments infrastructure; Notion focuses on productivity and knowledge management.,reviewer1,2026-10-11,human_reviewed
+75e68d05405b0b4c,0,Trello focuses on task and project management; Microsoft Teams focuses on meetings and team communication.,reviewer1,2026-10-11,human_reviewed
+cc288e78740dfbac,0,Trello focuses on visual task management; Notion focuses on a broader productivity and knowledge workspace.,reviewer1,2026-10-11,human_reviewed
+51b123f27d2eb955,0,Microsoft Teams primarily focuses on workplace communication and meetings; Notion focuses on knowledge management and a productivity workspace.,reviewer1,2026-10-11,human_reviewed
+3e95cbc23ca013dd,1,Both support software development workflows and developer collaboration.,reviewer1,2026-10-11,human_reviewed
+e27aec591f57f66a,0,Not a close substitute for the full Azure DevOps platform.,reviewer1,2026-10-11,human_reviewed
+e89625607a39a374,0,Azure DevOps focuses on DevOps workflows; Mattermost focuses on team communication.,reviewer1,2026-10-11,human_reviewed
+d25e9ec04a11c036,0,Azure DevOps focuses on software development and DevOps; monday.com is a broad work-management platform.,reviewer1,2026-10-11,human_reviewed
+49ef607628ec1f98,0,Azure DevOps focuses on DevOps workflows; Slite focuses on knowledge management.,reviewer1,2026-10-11,human_reviewed
+2da246937baf1e9b,0,Azure DevOps focuses on software development and DevOps workflows; Confluence focuses on documentation and knowledge management.,reviewer1,2026-10-11,human_reviewed
+8dd6e95705dfc9fe,0,Azure DevOps focuses on DevOps workflows; Zoom focuses on video meetings.,reviewer1,2026-10-11,human_reviewed
+9918ca2cb9228ba2,0,Bitbucket focuses on code hosting; Linear focuses on issue and project tracking.,reviewer1,2026-10-11,human_reviewed
+4c116cf989d087bc,0,Bitbucket focuses on code hosting; Mattermost focuses on team communication.,reviewer1,2026-10-11,human_reviewed
+393ac1a2ba379f3d,0,Bitbucket focuses on code hosting; monday.com focuses on work management.,reviewer1,2026-10-11,human_reviewed
+5c64b8cd3e96c2d1,0,Bitbucket focuses on code hosting; Slite focuses on knowledge management.,reviewer1,2026-10-11,human_reviewed
+fde091234fcd1779,0,Bitbucket focuses on code hosting; Confluence focuses on documentation and knowledge management.,reviewer1,2026-10-11,human_reviewed
+46fc2d1532ec54d9,0,Bitbucket focuses on code hosting; Zoom focuses on video meetings.,reviewer1,2026-10-11,human_reviewed
+e9e874f64b8d3ad0,0,Linear focuses on issue and project tracking; Mattermost focuses on team communication.,reviewer1,2026-10-11,human_reviewed
+882000d7fd96e6fd,0,Different primary workflows; shared project tracking alone is insufficient.,reviewer1,2026-10-11,human_reviewed
+f5b67903e9890451,0,Linear focuses on project and issue tracking; Slite focuses on knowledge management.,reviewer1,2026-10-11,human_reviewed
+8e061b2ddeaade9f,0,Linear focuses on project and issue tracking; Confluence focuses on documentation.,reviewer1,2026-10-11,human_reviewed
+69ca9503c9c1ddb3,0,Linear focuses on product development tracking; Zoom focuses on video meetings.,reviewer1,2026-10-11,human_reviewed
+8bdc19b7985fc430,0,Mattermost focuses on team communication; monday.com focuses on work management.,reviewer1,2026-10-11,human_reviewed
+1e78f8d667cb42d6,0,Mattermost focuses on team communication; Slite focuses on knowledge management.,reviewer1,2026-10-11,human_reviewed
+824ebbf4bf972b59,0,Mattermost focuses on team communication; Confluence focuses on documentation.,reviewer1,2026-10-11,human_reviewed
+e92403fa29350f66,0,Mattermost focuses on team messaging; Zoom primarily focuses on video meetings.,reviewer1,2026-10-11,human_reviewed
+95467b96b46a0b40,0,monday.com focuses on work management; Slite focuses on knowledge management.,reviewer1,2026-10-11,human_reviewed
+2d3a913ea3769d5b,0,monday.com focuses on work management; Confluence focuses on documentation.,reviewer1,2026-10-11,human_reviewed
+4e9e483469ca3340,0,monday.com focuses on work management; Zoom focuses on video meetings.,reviewer1,2026-10-11,human_reviewed
+825beb9872d17565,1,Both support team knowledge management and documentation.,reviewer1,2026-10-11,human_reviewed
+0b9e7427d728e3e5,0,Slite focuses on knowledge management; Zoom focuses on video meetings.,reviewer1,2026-10-11,human_reviewed
+9302b69619344181,0,Confluence focuses on documentation; Zoom focuses on video meetings.,reviewer1,2026-10-11,human_reviewed
+33cb40dfa0c54eb9,0,Work management and team knowledge base are different primary needs.,reviewer1,2026-10-11,human_reviewed
+3680f752ac5accb1,1,Both can be alternatives for project and issue management; review the workflow overlap.,reviewer1,2026-10-11,human_reviewed
+22212d71530239c6,0,Work management and team knowledge management are different primary needs.,reviewer1,2026-10-11,human_reviewed
+7188159e1721c999,0,Team knowledge base versus project and issue tracking.,reviewer1,2026-10-11,human_reviewed
+d84ce4c901478f23,1,Both focus on team knowledge bases and internal documentation.,reviewer1,2026-10-11,human_reviewed
+1739f7a4ca0e7157,0,Project and issue tracking versus team knowledge management.,reviewer1,2026-10-11,human_reviewed

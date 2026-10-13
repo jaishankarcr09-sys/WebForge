@@ -1,0 +1,72 @@
+{
+  "evaluation_protocol": "source_domain_disjoint_group_holdout",
+  "train_pairs": 47,
+  "test_pairs": 32,
+  "train_source_domains": [
+    "atlassian.com",
+    "bitbucket.org",
+    "coda.io",
+    "discord.com",
+    "linear.app",
+    "mattermost.com",
+    "microsoft.com",
+    "monday.com",
+    "slab.com",
+    "slack.com",
+    "slite.com",
+    "stripe.com",
+    "trello.com"
+  ],
+  "test_source_domains": [
+    "about.gitlab.com",
+    "asana.com",
+    "azure.microsoft.com",
+    "clickup.com",
+    "github.com"
+  ],
+  "source_domain_overlap": [],
+  "algorithms": [
+    {
+      "algorithm": "extra_trees",
+      "accuracy": 0.875,
+      "precision": 0.6667,
+      "recall": 0.6667,
+      "f1": 0.6667,
+      "roc_auc": 0.8109
+    },
+    {
+      "algorithm": "rbf_svc",
+      "accuracy": 0.875,
+      "precision": 0.75,
+      "recall": 0.5,
+      "f1": 0.6,
+      "roc_auc": 0.8141
+    },
+    {
+      "algorithm": "random_forest",
+      "accuracy": 0.8438,
+      "precision": 0.6,
+      "recall": 0.5,
+      "f1": 0.5455,
+      "roc_auc": 0.7853
+    },
+    {
+      "algorithm": "logistic_regression",
+      "accuracy": 0.875,
+      "precision": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5,
+      "roc_auc": 0.8654
+    },
+    {
+      "algorithm": "hist_gradient_boosting",
+      "accuracy": 0.8125,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": 0.641
+    }
+  ],
+  "provisional_leader": "extra_trees",
+  "warning": "Results are meaningful only with sufficiently large, representative, independently reviewed labels. Candidate catalogues may overlap by design; source query domains do not overlap."
+}

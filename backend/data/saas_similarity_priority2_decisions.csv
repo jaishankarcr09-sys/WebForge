@@ -1,0 +1,8 @@
+﻿pair_id,source_name,candidate_name,original_label,assistant_proposed_label,recommended_label,recommendation_reason,reviewer_decision,reviewer_notes,review_status
+1d31d280bcdb9b45,GitLab - Speed with control for agentic software engineering,GitHub · Change is constant. GitHub keeps you ahead. · GitHub · GitHub,1,1,1,Developer platforms for building and delivering software.,,,pending_human_review
+20f6bb6f5ed6a766,Work & Project Management for Human-Agent Teams • Asana,"Capture, organize, and tackle your to-dos from anywhere",1,1,1,Task and project management alternatives.,,,pending_human_review
+3680f752ac5accb1,"ClickUp™ | Maximize productivity • Software, AI, and humans converge",Jira | Project Management for the AI Era | Atlassian,1,1,1,"Project planning, task tracking, and team coordination.",,,pending_human_review
+71724718f29cb677,Slack | AI work platform and productivity tools,"Video Conferencing, Meetings, Calling | Microsoft Teams",1,1,1,Workplace messaging and collaboration.,,,pending_human_review
+825beb9872d17565,Slite | Self-maintaining AI knowledge base,Confluence | AI Workspace for Knowledge & Collaboration,1,1,1,Team knowledge management and documentation.,,,pending_human_review
+9a3354443f877ba9,Coda: Your all-in-one collaborative workspace.,The AI workspace that works for you. | Notion,1,1,1,Flexible collaborative workspace alternatives.,,,pending_human_review
+d84ce4c901478f23,Slab - Knowledge Base & Wiki Software,Nuclino | Your team’s collective brain,1,1,1,Team knowledge base and documentation alternatives.,,,pending_human_review
