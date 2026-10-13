@@ -1,6 +1,6 @@
 pair_id,product_a,product_b,final_label,reviewer_type,reviewer,rationale,review_status
 proposal-001,Basecamp,Wrike,1,user_confirmed,repository_user,"Both Basecamp and Wrike are prominent project management and team collaboration platforms. Teams frequently evaluate them as direct alternatives for the same core project coordination problems.",user_approved
-proposal-002,HubSpot,Salesforce,0,user_confirmed,repository_user,"Both are CRM platforms and can be compared as alternatives for managing customer relationships and sales.",user_approved
+proposal-002,HubSpot,Salesforce,1,user_confirmed,repository_user,"Both are CRM platforms with overlapping core capabilities in customer relationship management and sales, so they are alternatives for the same primary problem.",user_approved
 proposal-003,Zendesk,Intercom,1,user_confirmed,repository_user,"Both products help businesses manage customer support and conversations, so they can be alternatives for the same primary need.",user_approved
 proposal-004,Vercel,Netlify,1,user_confirmed,repository_user,"Both platforms help developers deploy and host web applications, so they can be alternatives for the same primary need.",user_approved
 proposal-005,Miro,Figma,0,user_confirmed,repository_user,"Miro mainly supports visual collaboration and workshops, while Figma mainly supports interface design and prototyping. They overlap, but their primary problems differ.",user_approved
@@ -61,12 +61,12 @@ proposal-044,Airtable,Netlify,0,user_confirmed,repository_user,"Structured datab
 proposal-045,Airtable,Sentry,0,user_confirmed,repository_user,"Structured databases do not overlap with error tracking and debugging.",user_approved
 proposal-046,HubSpot,Salesforce,1,user_confirmed,repository_user,"As your validation note correctly points out, both are primarily CRM, sales, and marketing platforms. Because they are direct competitors with highly overlapping core capabilities, this should be labeled as a 1.",user_approved
 proposal-047,HubSpot,Zendesk,0,user_confirmed,repository_user,"Core platforms serve different primary domains (CRM vs. Support).",user_approved
-proposal-048,HubSpot,Intercom,1,user_confirmed,repository_user,"Core platforms serve different primary domains (CRM vs. Support).",user_approved
+proposal-048,HubSpot,Intercom,0,user_confirmed,repository_user,"Core platforms serve different primary domains: HubSpot focuses on CRM, sales, and marketing, while Intercom focuses on customer messaging and support.",user_approved
 proposal-049,HubSpot,Vercel,0,user_confirmed,repository_user,"CRM and marketing software does not overlap with web deployment.",user_approved
 proposal-050,HubSpot,Netlify,0,user_confirmed,repository_user,"CRM and marketing software does not overlap with web deployment.",user_approved
 proposal-051,HubSpot,Sentry,0,user_confirmed,repository_user,"CRM and marketing software does not overlap with error tracking.",user_approved
 proposal-052,Salesforce,Zendesk,0,user_confirmed,repository_user,"Core platforms serve different primary domains (CRM vs. Support).",user_approved
-proposal-053,Salesforce,Intercom,1,user_confirmed,repository_user,"Core platforms serve different primary domains (CRM vs. Support).",user_approved
+proposal-053,Salesforce,Intercom,0,user_confirmed,repository_user,"Core platforms serve different primary domains: Salesforce focuses on CRM and sales relationship management, while Intercom focuses on customer messaging and support.",user_approved
 proposal-054,Salesforce,Vercel,0,user_confirmed,repository_user,"CRM and sales software does not overlap with web deployment.",user_approved
 proposal-055,Salesforce,Netlify,0,user_confirmed,repository_user,"CRM and sales software does not overlap with web deployment.",user_approved
 proposal-056,Salesforce,Sentry,0,user_confirmed,repository_user,"CRM and sales software does not overlap with error tracking.",user_approved
