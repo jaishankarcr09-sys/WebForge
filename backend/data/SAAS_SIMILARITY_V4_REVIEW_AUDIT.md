@@ -1,25 +1,43 @@
 # SaaS Similarity V4 — Review CSV Consistency Audit
 
 Audit date: 2026-10-13  
-Branch: `data/saas-similarity-expansion-v4`  
-Scope:
-- `backend/data/saas_similarity_pilot_v4_user_review_decisions.csv`
-- `backend/data/saas_similarity_pilot_review_v4.csv`
+Branch: `data/saas-similarity-expansion-v4`
 
-## Summary
+## Scope
 
-- User-decision CSV rows: **81**
-- Unique unordered product pairs represented: **64**
+- `backend/data/saas_similarity_pilot_v4_user_review_decisions.csv` — review-decision history
+- `backend/data/saas_similarity_pilot_review_v4.csv` — 66-pair baseline review queue
+- `backend/data/saas_similarity_pilot_v4_canonical.csv` — canonical one-row-per-pair dataset
+- `backend/data/similarity_training_pairs.jsonl` — checked only to confirm it remains unchanged; not edited
+
+## Current verified status
+
+- User-decision history rows (excluding header): **83**
+- Unique unordered product pairs in the decision history: **66**
 - Baseline review queue pairs: **66**
-- Duplicate product-pair groups: **17** (each duplicate group currently has the same label across its rows)
+- Canonical dataset rows: **66**, representing **66 unique unordered pairs**
+- Baseline pairs covered by the canonical dataset: **66 of 66**
+- Missing baseline decisions: **0**
+- Duplicate product-pair groups in the history: **17**
 - Conflicting labels within duplicate product-pair groups: **0**
-- Missing decisions relative to the baseline queue: **2**
-- Malformed/incomplete decision rows (missing rationale, invalid label, or wrong review status/type): **0**
-- Duplicate pair IDs reused across different product pairs: **15 IDs**
+- Malformed/incomplete decision rows found by the audit checks: **0**
+- Reused `pair_id` identifiers across different product pairs: **15 IDs**
+- Canonical label distribution: **62 Label 0**, **4 Label 1**
+- Training JSONL: **32 lines**, unchanged
+
+The two previously missing decisions have now been explicitly recorded:
+- Basecamp vs HubSpot — Label 0
+- Basecamp vs Salesforce — Label 0
+
+## Canonical dataset
+
+The canonical file is `backend/data/saas_similarity_pilot_v4_canonical.csv`. It contains one row per normalized unordered product pair, keeps the latest explicit user decision, and retains provenance through source pair IDs, source-row count, and baseline pair ID/status.
+
+Use the normalized unordered product pair as the deduplication key. Do not treat `pair_id` as globally unique.
 
 ## Duplicate product pairs
 
-The decision log contains duplicate entries for these 17 unordered product pairs. The duplicate entries have matching labels, so no label conflict was found, but the raw review log should be preserved as history rather than silently deleting prior user-confirmed rows.
+The history contains duplicate entries for these 17 unordered pairs. Each duplicate group has matching labels; no label conflicts were found:
 
 1. HubSpot vs Salesforce — Label 1
 2. Zendesk vs Intercom — Label 1
@@ -39,33 +57,26 @@ The decision log contains duplicate entries for these 17 unordered product pairs
 16. HubSpot vs Vercel — Label 0
 17. Salesforce vs Sentry — Label 0
 
-## Missing decisions
-
-The following pairs appear in the 66-pair baseline queue but do not have a user-confirmed decision row:
-
-- Basecamp vs HubSpot
-- Basecamp vs Salesforce
-
-These remain **unreviewed**. Do not convert assistant proposals into user-confirmed decisions without explicit user approval.
+Preserve the raw decision history, including duplicate rows. Use the canonical CSV for one-row-per-pair downstream review and analysis.
 
 ## Label–rationale consistency
 
-- The three previously identified contradictions were corrected in commit `9265e5fa47129b7137ada90196c2b9ee097fbb30`.
-- The latest rows for HubSpot vs Salesforce use Label 1 with a rationale explaining overlapping CRM/sales capabilities.
+- The three previously identified label–rationale contradictions were corrected in commit `9265e5fa47129b7137ada90196c2b9ee097fbb30`.
+- HubSpot vs Salesforce uses Label 1 with a rationale describing overlapping CRM/sales capabilities.
 - HubSpot vs Intercom and Salesforce vs Intercom use Label 0 with rationales distinguishing CRM/sales from customer messaging/support.
-- No remaining obvious label–rationale contradictions were detected in this audit. This is a text consistency check, not independent product-domain ground truth.
+- Basecamp vs HubSpot and Basecamp vs Salesforce are now explicitly recorded as Label 0 with rationales explaining their different primary problems.
+- No remaining obvious label–rationale contradictions were detected by the text consistency check. This is a consistency check, not independent product-domain ground truth.
 
 ## Identifier quality
 
-The `pair_id` field is not globally unique: 15 identifiers are reused for different product pairs because earlier review IDs and later batch IDs overlapped. Do not use `pair_id` alone as a primary key. Use the normalized unordered product pair as the deduplication key, and preserve the original IDs as source-history metadata.
+The `pair_id` field is not globally unique: **15 identifiers are reused across different product pairs**, because earlier review IDs and later batch IDs overlapped. Do not use `pair_id` alone as a primary key. Use the normalized unordered product pair as the deduplication key, while retaining original IDs as source-history metadata.
 
 ## Recommended next steps
 
-1. Keep the existing user-decision CSV as the append-only review history; do not delete duplicate historical decisions.
-2. Create a separate canonical dataset with one row per normalized unordered product pair, keeping the latest explicit user decision and retaining provenance to the source row(s).
-3. Ask the user to decide the two missing Basecamp pairs.
-4. Only after review, run training-data validation. This audit does not modify training pairs or runtime behavior.
+1. Treat the canonical CSV as the reviewed one-row-per-pair representation, while preserving the decision-history CSV as history.
+2. If preparing training data in a later, explicitly approved step, validate against the canonical labels and rationale; do not assume that this audit changed training data.
+3. Keep assistant proposals distinct from user-confirmed decisions.
 
 ## Scope / safety
 
-This audit did not merge the pull request, deploy services, or modify `similarity_training_pairs.jsonl`.
+This audit-report refresh updates **only this Markdown report**. It does not merge PR #50, deploy services, or modify `backend/data/similarity_training_pairs.jsonl`.
