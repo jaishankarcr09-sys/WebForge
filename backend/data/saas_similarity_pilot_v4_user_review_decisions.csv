@@ -1,0 +1,2 @@
+pair_id,product_a,product_b,final_label,reviewer_type,reviewer,rationale,review_status
+proposal-001,Basecamp,Wrike,1,user_confirmed,repository_user,"Both Basecamp and Wrike are prominent project management and team collaboration platforms. Teams frequently evaluate them as direct alternatives for the same core project coordination problems.",user_approved
