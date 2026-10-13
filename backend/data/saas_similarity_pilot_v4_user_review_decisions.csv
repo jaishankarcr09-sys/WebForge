@@ -4,3 +4,4 @@ proposal-002,HubSpot,Salesforce,0,user_confirmed,repository_user,"Both are CRM p
 proposal-003,Zendesk,Intercom,1,user_confirmed,repository_user,"Both products help businesses manage customer support and conversations, so they can be alternatives for the same primary need.",user_approved
 proposal-004,Vercel,Netlify,1,user_confirmed,repository_user,"Both platforms help developers deploy and host web applications, so they can be alternatives for the same primary need.",user_approved
 proposal-005,Miro,Figma,0,user_confirmed,repository_user,"Miro mainly supports visual collaboration and workshops, while Figma mainly supports interface design and prototyping. They overlap, but their primary problems differ.",user_approved
+proposal-006,Airtable,Miro,0,user_confirmed,repository_user,"Airtable focuses on structured data and workflow apps, while Miro focuses on visual collaboration and whiteboarding. Their primary problems differ.",user_approved
