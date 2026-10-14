@@ -1,0 +1,7 @@
+﻿pair_id,source_name,candidate_name,original_label,assistant_proposed_label,recommended_label,recommendation_reason,reviewer_decision,reviewer_notes,review_status
+0377801644308e35,Discord - Group Chat That’s All Fun & Games,"Video Conferencing, Meetings, Calling | Microsoft Teams",1,0,0,Community communication vs workplace collaboration and meetings.,,,pending_human_review
+1d21fa38ca7ea909,Work & Project Management for Human-Agent Teams • Asana,Coda: Your all-in-one collaborative workspace.,1,0,0,Project/task management vs flexible docs-and-apps workspace.,,,pending_human_review
+3e95cbc23ca013dd,Azure DevOps | Microsoft Azure,Bitbucket | Git solution for teams using Jira,1,0,0,Broader development lifecycle platform vs Git repository hosting; reconsider if the task is specifically Git hosting alternatives.,,,pending_human_review
+6561ef10a42ce85f,Discord - Group Chat That’s All Fun & Games,Slack | AI work platform and productivity tools,1,0,0,Community-oriented chat vs workplace messaging and collaboration.,,,pending_human_review
+95fa12f46c1ce7bc,Coda: Your all-in-one collaborative workspace.,"Capture, organize, and tackle your to-dos from anywhere",1,0,0,Flexible collaborative workspace vs visual task/project management.,,,pending_human_review
+bd0421718303a1a5,Work & Project Management for Human-Agent Teams • Asana,The AI workspace that works for you. | Notion,1,0,0,Project execution and task tracking vs broader documents and knowledge workspace.,,,pending_human_review

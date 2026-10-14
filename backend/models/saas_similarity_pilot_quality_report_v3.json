@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "rows": 6,
+  "label_counts": {
+    "0": 4,
+    "1": 2
+  },
+  "distinct_source_domains": 3,
+  "distinct_candidate_domains": 3,
+  "source_candidate_domain_overlap": 2,
+  "duplicate_unordered_pairs": 0,
+  "self_pairs": 0,
+  "rows_missing_valid_urls": 0,
+  "rows_missing_review_provenance": 0,
+  "errors": [],
+  "warnings": [],
+  "interpretation": "Passing these checks does not prove labels are correct or that the model generalizes; use a domain-disjoint holdout and inspect representative examples."
+}

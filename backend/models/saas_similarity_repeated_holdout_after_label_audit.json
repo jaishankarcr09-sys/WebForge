@@ -1,0 +1,6838 @@
+{
+  "evaluation_protocol": "repeated_source_domain_disjoint_group_holdout",
+  "requested_splits": 100,
+  "successful_splits": 100,
+  "skipped_splits": 0,
+  "test_size": 0.25,
+  "random_state": 42,
+  "total_pairs": 79,
+  "label_counts": {
+    "0": 69,
+    "1": 10
+  },
+  "models": [
+    {
+      "algorithm": "rbf_svc",
+      "successful_splits": 100,
+      "accuracy_mean": 0.8532,
+      "accuracy_std": 0.0866,
+      "accuracy_min": 0.5,
+      "accuracy_max": 1.0,
+      "precision_mean": 0.5029,
+      "precision_std": 0.1765,
+      "precision_min": 0.2,
+      "precision_max": 1.0,
+      "recall_mean": 0.9605,
+      "recall_std": 0.1388,
+      "recall_min": 0.2,
+      "recall_max": 1.0,
+      "f1_mean": 0.6402,
+      "f1_std": 0.1582,
+      "f1_min": 0.2,
+      "f1_max": 1.0,
+      "roc_auc_mean": 0.9148,
+      "roc_auc_std": 0.0649,
+      "roc_auc_min": 0.625,
+      "roc_auc_max": 1.0
+    },
+    {
+      "algorithm": "extra_trees",
+      "successful_splits": 100,
+      "accuracy_mean": 0.8746,
+      "accuracy_std": 0.0704,
+      "accuracy_min": 0.6667,
+      "accuracy_max": 1.0,
+      "precision_mean": 0.5557,
+      "precision_std": 0.2367,
+      "precision_min": 0.0,
+      "precision_max": 1.0,
+      "recall_mean": 0.816,
+      "recall_std": 0.2766,
+      "recall_min": 0.0,
+      "recall_max": 1.0,
+      "f1_mean": 0.6183,
+      "f1_std": 0.198,
+      "f1_min": 0.0,
+      "f1_max": 1.0,
+      "roc_auc_mean": 0.9385,
+      "roc_auc_std": 0.0479,
+      "roc_auc_min": 0.81,
+      "roc_auc_max": 1.0
+    },
+    {
+      "algorithm": "logistic_regression",
+      "successful_splits": 100,
+      "accuracy_mean": 0.9284,
+      "accuracy_std": 0.0444,
+      "accuracy_min": 0.8235,
+      "accuracy_max": 1.0,
+      "precision_mean": 0.7696,
+      "precision_std": 0.4141,
+      "precision_min": 0.0,
+      "precision_max": 1.0,
+      "recall_mean": 0.4602,
+      "recall_std": 0.3252,
+      "recall_min": 0.0,
+      "recall_max": 1.0,
+      "f1_mean": 0.5518,
+      "f1_std": 0.3372,
+      "f1_min": 0.0,
+      "f1_max": 1.0,
+      "roc_auc_mean": 0.9642,
+      "roc_auc_std": 0.0321,
+      "roc_auc_min": 0.8485,
+      "roc_auc_max": 1.0
+    },
+    {
+      "algorithm": "random_forest",
+      "successful_splits": 100,
+      "accuracy_mean": 0.8514,
+      "accuracy_std": 0.0772,
+      "accuracy_min": 0.5833,
+      "accuracy_max": 1.0,
+      "precision_mean": 0.4918,
+      "precision_std": 0.2792,
+      "precision_min": 0.0,
+      "precision_max": 1.0,
+      "recall_mean": 0.636,
+      "recall_std": 0.3387,
+      "recall_min": 0.0,
+      "recall_max": 1.0,
+      "f1_mean": 0.5015,
+      "f1_std": 0.2338,
+      "f1_min": 0.0,
+      "f1_max": 1.0,
+      "roc_auc_mean": 0.9216,
+      "roc_auc_std": 0.0636,
+      "roc_auc_min": 0.7368,
+      "roc_auc_max": 1.0
+    },
+    {
+      "algorithm": "hist_gradient_boosting",
+      "successful_splits": 100,
+      "accuracy_mean": 0.8265,
+      "accuracy_std": 0.0767,
+      "accuracy_min": 0.625,
+      "accuracy_max": 0.95,
+      "precision_mean": 0.2038,
+      "precision_std": 0.2562,
+      "precision_min": 0.0,
+      "precision_max": 1.0,
+      "recall_mean": 0.407,
+      "recall_std": 0.4648,
+      "recall_min": 0.0,
+      "recall_max": 1.0,
+      "f1_mean": 0.2505,
+      "f1_std": 0.2846,
+      "f1_min": 0.0,
+      "f1_max": 0.8,
+      "roc_auc_mean": 0.8825,
+      "roc_auc_std": 0.084,
+      "roc_auc_min": 0.5781,
+      "roc_auc_max": 1.0
+    }
+  ],
+  "split_details": [
+    {
+      "split": 1,
+      "train_pairs": 47,
+      "test_pairs": 32,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "atlassian.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "github.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.90625,
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9555555555555555
+        },
+        "random_forest": {
+          "accuracy": 0.8125,
+          "precision": 0.4,
+          "recall": 0.4,
+          "f1": 0.4,
+          "roc_auc": 0.9148148148148149
+        },
+        "extra_trees": {
+          "accuracy": 0.84375,
+          "precision": 0.5,
+          "recall": 0.6,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.9444444444444444
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.84375,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.837037037037037
+        },
+        "rbf_svc": {
+          "accuracy": 0.8125,
+          "precision": 0.45454545454545453,
+          "recall": 1.0,
+          "f1": 0.625,
+          "roc_auc": 0.9407407407407407
+        }
+      }
+    },
+    {
+      "split": 2,
+      "train_pairs": 57,
+      "test_pairs": 22,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9545454545454546,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9545454545454546,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9090909090909091,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9750000000000001
+        },
+        "rbf_svc": {
+          "accuracy": 0.9090909090909091,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.925
+        }
+      }
+    },
+    {
+      "split": 3,
+      "train_pairs": 53,
+      "test_pairs": 26,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "clickup.com",
+        "mattermost.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9615384615384616,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9565217391304348
+        },
+        "random_forest": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.4,
+          "recall": 0.6666666666666666,
+          "f1": 0.5,
+          "roc_auc": 0.8985507246376812
+        },
+        "extra_trees": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9130434782608695
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.826086956521739
+        },
+        "rbf_svc": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.927536231884058
+        }
+      }
+    },
+    {
+      "split": 4,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "clickup.com",
+        "discord.com",
+        "mattermost.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.96,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9782608695652174
+        },
+        "random_forest": {
+          "accuracy": 0.96,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9782608695652173
+        },
+        "extra_trees": {
+          "accuracy": 0.96,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9782608695652174
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.92,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8478260869565217
+        },
+        "rbf_svc": {
+          "accuracy": 0.88,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 1.0
+        }
+      }
+    },
+    {
+      "split": 5,
+      "train_pairs": 49,
+      "test_pairs": 30,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9333333333333333,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9642857142857143
+        },
+        "random_forest": {
+          "accuracy": 0.9,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9642857142857143
+        },
+        "extra_trees": {
+          "accuracy": 0.9,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9642857142857143
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9333333333333333,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8750000000000001
+        },
+        "rbf_svc": {
+          "accuracy": 0.8666666666666667,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9285714285714286
+        }
+      }
+    },
+    {
+      "split": 6,
+      "train_pairs": 63,
+      "test_pairs": 16,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "slab.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.875,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9375
+        },
+        "random_forest": {
+          "accuracy": 0.75,
+          "precision": 0.5,
+          "recall": 0.75,
+          "f1": 0.6,
+          "roc_auc": 0.875
+        },
+        "extra_trees": {
+          "accuracy": 0.75,
+          "precision": 0.5,
+          "recall": 0.75,
+          "f1": 0.6,
+          "roc_auc": 0.9166666666666666
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.75,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8750000000000001
+        },
+        "rbf_svc": {
+          "accuracy": 0.8125,
+          "precision": 0.5714285714285714,
+          "recall": 1.0,
+          "f1": 0.7272727272727273,
+          "roc_auc": 0.9791666666666666
+        }
+      }
+    },
+    {
+      "split": 7,
+      "train_pairs": 61,
+      "test_pairs": 18,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "clickup.com",
+        "microsoft.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9444444444444444,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9333333333333333
+        },
+        "random_forest": {
+          "accuracy": 0.6666666666666666,
+          "precision": 0.2857142857142857,
+          "recall": 0.6666666666666666,
+          "f1": 0.4,
+          "roc_auc": 0.8
+        },
+        "extra_trees": {
+          "accuracy": 0.8333333333333334,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.8666666666666667
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.6666666666666666,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.7666666666666666
+        },
+        "rbf_svc": {
+          "accuracy": 0.7222222222222222,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8222222222222223
+        }
+      }
+    },
+    {
+      "split": 8,
+      "train_pairs": 52,
+      "test_pairs": 27,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "github.com",
+        "monday.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8888888888888888,
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4,
+          "roc_auc": 0.9021739130434783
+        },
+        "random_forest": {
+          "accuracy": 0.8148148148148148,
+          "precision": 0.42857142857142855,
+          "recall": 0.75,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8478260869565217
+        },
+        "extra_trees": {
+          "accuracy": 0.8518518518518519,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.8695652173913043
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8518518518518519,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9347826086956521
+        },
+        "rbf_svc": {
+          "accuracy": 0.8148148148148148,
+          "precision": 0.4444444444444444,
+          "recall": 1.0,
+          "f1": 0.6153846153846154,
+          "roc_auc": 0.8260869565217391
+        }
+      }
+    },
+    {
+      "split": 9,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "clickup.com",
+        "monday.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9,
+          "precision": 0.75,
+          "recall": 0.75,
+          "f1": 0.75,
+          "roc_auc": 0.9375
+        },
+        "random_forest": {
+          "accuracy": 0.7,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.828125
+        },
+        "extra_trees": {
+          "accuracy": 0.8,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.875
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.65,
+          "precision": 0.36363636363636365,
+          "recall": 1.0,
+          "f1": 0.5333333333333333,
+          "roc_auc": 0.7421875
+        },
+        "rbf_svc": {
+          "accuracy": 0.65,
+          "precision": 0.36363636363636365,
+          "recall": 1.0,
+          "f1": 0.5333333333333333,
+          "roc_auc": 0.75
+        }
+      }
+    },
+    {
+      "split": 10,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "monday.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "discord.com",
+        "microsoft.com",
+        "slab.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.95,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9722222222222222
+        },
+        "random_forest": {
+          "accuracy": 0.85,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9444444444444444
+        },
+        "extra_trees": {
+          "accuracy": 0.95,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9722222222222222
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.875
+        },
+        "rbf_svc": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9722222222222222
+        }
+      }
+    },
+    {
+      "split": 11,
+      "train_pairs": 55,
+      "test_pairs": 24,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "discord.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.875,
+          "precision": 0.3333333333333333,
+          "recall": 0.5,
+          "f1": 0.4,
+          "roc_auc": 0.9318181818181819
+        },
+        "extra_trees": {
+          "accuracy": 0.875,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9318181818181819
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.875,
+          "precision": 0.3333333333333333,
+          "recall": 0.5,
+          "f1": 0.4,
+          "roc_auc": 0.9318181818181818
+        },
+        "rbf_svc": {
+          "accuracy": 0.875,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.8636363636363636
+        }
+      }
+    },
+    {
+      "split": 12,
+      "train_pairs": 65,
+      "test_pairs": 14,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "monday.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "linear.app",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9285714285714286,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9696969696969697
+        },
+        "random_forest": {
+          "accuracy": 0.8571428571428571,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9696969696969697
+        },
+        "extra_trees": {
+          "accuracy": 0.9285714285714286,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.9393939393939393
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8571428571428571,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.8939393939393939
+        },
+        "rbf_svc": {
+          "accuracy": 0.8571428571428571,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9393939393939393
+        }
+      }
+    },
+    {
+      "split": 13,
+      "train_pairs": 62,
+      "test_pairs": 17,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "github.com",
+        "monday.com",
+        "slab.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9411764705882353,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9285714285714286
+        },
+        "random_forest": {
+          "accuracy": 0.7058823529411765,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.9047619047619048
+        },
+        "extra_trees": {
+          "accuracy": 0.7058823529411765,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.9523809523809523
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7058823529411765,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.7738095238095238
+        },
+        "rbf_svc": {
+          "accuracy": 0.7058823529411765,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8571428571428572
+        }
+      }
+    },
+    {
+      "split": 14,
+      "train_pairs": 63,
+      "test_pairs": 16,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "slab.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "discord.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9375,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9375,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9375,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9666666666666667
+        },
+        "rbf_svc": {
+          "accuracy": 0.9375,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9333333333333333
+        }
+      }
+    },
+    {
+      "split": 15,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "linear.app",
+        "monday.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.95,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9722222222222222
+        },
+        "random_forest": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9722222222222222
+        },
+        "extra_trees": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9722222222222222
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9444444444444444
+        },
+        "rbf_svc": {
+          "accuracy": 0.85,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9166666666666666
+        }
+      }
+    },
+    {
+      "split": 16,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "mattermost.com",
+        "microsoft.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.95,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "rbf_svc": {
+          "accuracy": 0.95,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        }
+      }
+    },
+    {
+      "split": 17,
+      "train_pairs": 60,
+      "test_pairs": 19,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "coda.io",
+        "slab.com",
+        "slack.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8947368421052632,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9666666666666667
+        },
+        "random_forest": {
+          "accuracy": 0.6842105263157895,
+          "precision": 0.3333333333333333,
+          "recall": 0.5,
+          "f1": 0.4,
+          "roc_auc": 0.8333333333333334
+        },
+        "extra_trees": {
+          "accuracy": 0.7368421052631579,
+          "precision": 0.4,
+          "recall": 0.5,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.8500000000000001
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7368421052631579,
+          "precision": 0.4444444444444444,
+          "recall": 1.0,
+          "f1": 0.6153846153846154,
+          "roc_auc": 0.8916666666666666
+        },
+        "rbf_svc": {
+          "accuracy": 0.7368421052631579,
+          "precision": 0.42857142857142855,
+          "recall": 0.75,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8500000000000001
+        }
+      }
+    },
+    {
+      "split": 18,
+      "train_pairs": 50,
+      "test_pairs": 29,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "bitbucket.org",
+        "coda.io",
+        "github.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9655172413793104,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9444444444444444
+        },
+        "random_forest": {
+          "accuracy": 0.8620689655172413,
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.8888888888888888
+        },
+        "extra_trees": {
+          "accuracy": 0.896551724137931,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9074074074074073
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.896551724137931,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9166666666666667
+        },
+        "rbf_svc": {
+          "accuracy": 0.896551724137931,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9074074074074073
+        }
+      }
+    },
+    {
+      "split": 19,
+      "train_pairs": 58,
+      "test_pairs": 21,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "discord.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9047619047619048,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8947368421052632
+        },
+        "random_forest": {
+          "accuracy": 0.7619047619047619,
+          "precision": 0.2,
+          "recall": 0.5,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.7894736842105263
+        },
+        "extra_trees": {
+          "accuracy": 0.8095238095238095,
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.8421052631578947
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8095238095238095,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8947368421052632
+        },
+        "rbf_svc": {
+          "accuracy": 0.8571428571428571,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.8947368421052632
+        }
+      }
+    },
+    {
+      "split": 20,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "discord.com",
+        "slab.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.92,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9761904761904762
+        },
+        "random_forest": {
+          "accuracy": 0.8,
+          "precision": 0.3333333333333333,
+          "recall": 0.25,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.9166666666666666
+        },
+        "extra_trees": {
+          "accuracy": 0.88,
+          "precision": 0.6,
+          "recall": 0.75,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9047619047619048
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.84,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8511904761904762
+        },
+        "rbf_svc": {
+          "accuracy": 0.92,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9047619047619048
+        }
+      }
+    },
+    {
+      "split": 21,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "clickup.com",
+        "coda.io",
+        "linear.app",
+        "slab.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.88,
+          "precision": 0.6666666666666666,
+          "recall": 0.8,
+          "f1": 0.7272727272727273,
+          "roc_auc": 0.98
+        },
+        "random_forest": {
+          "accuracy": 0.8,
+          "precision": 0.5,
+          "recall": 0.6,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8700000000000001
+        },
+        "extra_trees": {
+          "accuracy": 0.76,
+          "precision": 0.42857142857142855,
+          "recall": 0.6,
+          "f1": 0.5,
+          "roc_auc": 0.8099999999999999
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8400000000000001
+        },
+        "rbf_svc": {
+          "accuracy": 0.76,
+          "precision": 0.42857142857142855,
+          "recall": 0.6,
+          "f1": 0.5,
+          "roc_auc": 0.82
+        }
+      }
+    },
+    {
+      "split": 22,
+      "train_pairs": 57,
+      "test_pairs": 22,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "linear.app",
+        "monday.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9545454545454546,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9298245614035088
+        },
+        "random_forest": {
+          "accuracy": 0.7727272727272727,
+          "precision": 0.3333333333333333,
+          "recall": 0.6666666666666666,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.8070175438596492
+        },
+        "extra_trees": {
+          "accuracy": 0.7727272727272727,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8596491228070176
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7272727272727273,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8157894736842105
+        },
+        "rbf_svc": {
+          "accuracy": 0.7727272727272727,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.7894736842105263
+        }
+      }
+    },
+    {
+      "split": 23,
+      "train_pairs": 48,
+      "test_pairs": 31,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "github.com",
+        "mattermost.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9032258064516129,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9880952380952381
+        },
+        "random_forest": {
+          "accuracy": 0.8709677419354839,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9285714285714286
+        },
+        "extra_trees": {
+          "accuracy": 0.8709677419354839,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9404761904761905
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8064516129032258,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7678571428571428
+        },
+        "rbf_svc": {
+          "accuracy": 0.8387096774193549,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.9761904761904762
+        }
+      }
+    },
+    {
+      "split": 24,
+      "train_pairs": 62,
+      "test_pairs": 17,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8235294117647058,
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9666666666666667
+        },
+        "random_forest": {
+          "accuracy": 0.7647058823529411,
+          "precision": 0.6666666666666666,
+          "recall": 0.4,
+          "f1": 0.5,
+          "roc_auc": 0.9333333333333333
+        },
+        "extra_trees": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091,
+          "roc_auc": 0.95
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7058823529411765,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9249999999999999
+        },
+        "rbf_svc": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091,
+          "roc_auc": 0.9166666666666666
+        }
+      }
+    },
+    {
+      "split": 25,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "bitbucket.org",
+        "github.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.95,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9722222222222222
+        },
+        "random_forest": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9444444444444444
+        },
+        "extra_trees": {
+          "accuracy": 0.95,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9722222222222222
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9166666666666666
+        },
+        "rbf_svc": {
+          "accuracy": 0.95,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9722222222222222
+        }
+      }
+    },
+    {
+      "split": 26,
+      "train_pairs": 60,
+      "test_pairs": 19,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "github.com",
+        "slab.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.7894736842105263,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7647058823529411
+        },
+        "extra_trees": {
+          "accuracy": 0.7894736842105263,
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.8529411764705882
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7368421052631579,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7941176470588235
+        },
+        "rbf_svc": {
+          "accuracy": 0.8421052631578947,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.8235294117647058
+        }
+      }
+    },
+    {
+      "split": 27,
+      "train_pairs": 56,
+      "test_pairs": 23,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "bitbucket.org",
+        "mattermost.com",
+        "microsoft.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9565217391304348,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9565217391304348,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9545454545454546
+        },
+        "extra_trees": {
+          "accuracy": 0.9565217391304348,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9545454545454546
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8260869565217391,
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.8636363636363636
+        },
+        "rbf_svc": {
+          "accuracy": 0.8695652173913043,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.9545454545454546
+        }
+      }
+    },
+    {
+      "split": 28,
+      "train_pairs": 58,
+      "test_pairs": 21,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "azure.microsoft.com",
+        "coda.io",
+        "slite.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8571428571428571,
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4,
+          "roc_auc": 0.9852941176470588
+        },
+        "random_forest": {
+          "accuracy": 0.8571428571428571,
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9047619047619048,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8095238095238095,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9705882352941176
+        },
+        "rbf_svc": {
+          "accuracy": 0.9047619047619048,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9705882352941176
+        }
+      }
+    },
+    {
+      "split": 29,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "mattermost.com",
+        "slab.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.88,
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.94
+        },
+        "random_forest": {
+          "accuracy": 0.8,
+          "precision": 0.5,
+          "recall": 0.4,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.8899999999999999
+        },
+        "extra_trees": {
+          "accuracy": 0.84,
+          "precision": 0.5714285714285714,
+          "recall": 0.8,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.88
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.86
+        },
+        "rbf_svc": {
+          "accuracy": 0.88,
+          "precision": 0.625,
+          "recall": 1.0,
+          "f1": 0.7692307692307693,
+          "roc_auc": 0.85
+        }
+      }
+    },
+    {
+      "split": 30,
+      "train_pairs": 61,
+      "test_pairs": 18,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "linear.app",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "discord.com",
+        "github.com",
+        "microsoft.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9444444444444444,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9411764705882353
+        },
+        "random_forest": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8823529411764706
+        },
+        "extra_trees": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9411764705882353
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9411764705882353
+        },
+        "rbf_svc": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9411764705882353
+        }
+      }
+    },
+    {
+      "split": 31,
+      "train_pairs": 62,
+      "test_pairs": 17,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "github.com",
+        "mattermost.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8823529411764706,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "rbf_svc": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        }
+      }
+    },
+    {
+      "split": 32,
+      "train_pairs": 57,
+      "test_pairs": 22,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "slite.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8636363636363636,
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9882352941176471
+        },
+        "random_forest": {
+          "accuracy": 0.8636363636363636,
+          "precision": 0.75,
+          "recall": 0.6,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9294117647058824
+        },
+        "extra_trees": {
+          "accuracy": 0.9090909090909091,
+          "precision": 1.0,
+          "recall": 0.6,
+          "f1": 0.75,
+          "roc_auc": 0.9764705882352941
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7727272727272727,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8823529411764706
+        },
+        "rbf_svc": {
+          "accuracy": 0.7727272727272727,
+          "precision": 0.5,
+          "recall": 0.4,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.9294117647058824
+        }
+      }
+    },
+    {
+      "split": 33,
+      "train_pairs": 67,
+      "test_pairs": 12,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "monday.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9166666666666666,
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.96875
+        },
+        "random_forest": {
+          "accuracy": 0.5833333333333334,
+          "precision": 0.42857142857142855,
+          "recall": 0.75,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8125
+        },
+        "extra_trees": {
+          "accuracy": 0.6666666666666666,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.96875
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.6666666666666666,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.578125
+        },
+        "rbf_svc": {
+          "accuracy": 0.6666666666666666,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.625
+        }
+      }
+    },
+    {
+      "split": 34,
+      "train_pairs": 64,
+      "test_pairs": 15,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9333333333333333,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9230769230769231
+        },
+        "random_forest": {
+          "accuracy": 0.8666666666666667,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9230769230769231
+        },
+        "extra_trees": {
+          "accuracy": 0.8,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9230769230769231
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.923076923076923
+        },
+        "rbf_svc": {
+          "accuracy": 0.8,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.8461538461538461
+        }
+      }
+    },
+    {
+      "split": 35,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "coda.io",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.96,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9696969696969697
+        },
+        "random_forest": {
+          "accuracy": 0.88,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.8787878787878788
+        },
+        "extra_trees": {
+          "accuracy": 0.88,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9393939393939393
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.88,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9090909090909091
+        },
+        "rbf_svc": {
+          "accuracy": 0.88,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9090909090909091
+        }
+      }
+    },
+    {
+      "split": 36,
+      "train_pairs": 52,
+      "test_pairs": 27,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "monday.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9629629629629629,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9444444444444444
+        },
+        "random_forest": {
+          "accuracy": 0.8148148148148148,
+          "precision": 0.3333333333333333,
+          "recall": 0.6666666666666666,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.8888888888888888
+        },
+        "extra_trees": {
+          "accuracy": 0.7777777777777778,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9027777777777778
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7777777777777778,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9166666666666666
+        },
+        "rbf_svc": {
+          "accuracy": 0.8148148148148148,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.875
+        }
+      }
+    },
+    {
+      "split": 37,
+      "train_pairs": 60,
+      "test_pairs": 19,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "clickup.com",
+        "microsoft.com",
+        "monday.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9473684210526315,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9705882352941176
+        },
+        "random_forest": {
+          "accuracy": 0.8947368421052632,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9411764705882353
+        },
+        "extra_trees": {
+          "accuracy": 0.8947368421052632,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9411764705882353
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7368421052631579,
+          "precision": 0.2857142857142857,
+          "recall": 1.0,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.7941176470588236
+        },
+        "rbf_svc": {
+          "accuracy": 0.6842105263157895,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.9411764705882353
+        }
+      }
+    },
+    {
+      "split": 38,
+      "train_pairs": 53,
+      "test_pairs": 26,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "asana.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "coda.io",
+        "microsoft.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9772727272727273
+        },
+        "random_forest": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8636363636363635
+        },
+        "extra_trees": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8977272727272727
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8076923076923077,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7727272727272727
+        },
+        "rbf_svc": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.5714285714285714,
+          "recall": 1.0,
+          "f1": 0.7272727272727273,
+          "roc_auc": 0.9772727272727273
+        }
+      }
+    },
+    {
+      "split": 39,
+      "train_pairs": 49,
+      "test_pairs": 30,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "bitbucket.org",
+        "discord.com",
+        "linear.app",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9333333333333333,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9876543209876544
+        },
+        "random_forest": {
+          "accuracy": 0.9666666666666667,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.9876543209876544
+        },
+        "extra_trees": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 0.6666666666666666,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9753086419753086
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8333333333333334
+        },
+        "rbf_svc": {
+          "accuracy": 0.8666666666666667,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.9753086419753088
+        }
+      }
+    },
+    {
+      "split": 40,
+      "train_pairs": 63,
+      "test_pairs": 16,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "mattermost.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9375,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9743589743589745
+        },
+        "random_forest": {
+          "accuracy": 0.75,
+          "precision": 0.4,
+          "recall": 0.6666666666666666,
+          "f1": 0.5,
+          "roc_auc": 0.9230769230769231
+        },
+        "extra_trees": {
+          "accuracy": 0.9375,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.9743589743589743
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.625,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7307692307692307
+        },
+        "rbf_svc": {
+          "accuracy": 0.75,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.9487179487179488
+        }
+      }
+    },
+    {
+      "split": 41,
+      "train_pairs": 53,
+      "test_pairs": 26,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "coda.io",
+        "discord.com",
+        "monday.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9615384615384616,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9166666666666667
+        },
+        "random_forest": {
+          "accuracy": 0.8076923076923077,
+          "precision": 0.2,
+          "recall": 0.5,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.8125
+        },
+        "extra_trees": {
+          "accuracy": 0.8076923076923077,
+          "precision": 0.2857142857142857,
+          "recall": 1.0,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.875
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7307692307692307,
+          "precision": 0.14285714285714285,
+          "recall": 0.5,
+          "f1": 0.2222222222222222,
+          "roc_auc": 0.8125
+        },
+        "rbf_svc": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.875
+        }
+      }
+    },
+    {
+      "split": 42,
+      "train_pairs": 56,
+      "test_pairs": 23,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "linear.app",
+        "microsoft.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9130434782608695,
+          "precision": 1.0,
+          "recall": 0.6,
+          "f1": 0.75,
+          "roc_auc": 0.9777777777777777
+        },
+        "random_forest": {
+          "accuracy": 0.782608695652174,
+          "precision": 0.5,
+          "recall": 0.4,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.9055555555555556
+        },
+        "extra_trees": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.7142857142857143,
+          "recall": 1.0,
+          "f1": 0.8333333333333334,
+          "roc_auc": 0.9388888888888889
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8260869565217391,
+          "precision": 1.0,
+          "recall": 0.2,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.9333333333333333
+        },
+        "rbf_svc": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.7142857142857143,
+          "recall": 1.0,
+          "f1": 0.8333333333333334,
+          "roc_auc": 0.8888888888888888
+        }
+      }
+    },
+    {
+      "split": 43,
+      "train_pairs": 56,
+      "test_pairs": 23,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "coda.io",
+        "monday.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.880952380952381
+        },
+        "random_forest": {
+          "accuracy": 0.8260869565217391,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8809523809523809
+        },
+        "extra_trees": {
+          "accuracy": 0.8260869565217391,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9047619047619048
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7391304347826086,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.880952380952381
+        },
+        "rbf_svc": {
+          "accuracy": 0.6956521739130435,
+          "precision": 0.2222222222222222,
+          "recall": 1.0,
+          "f1": 0.36363636363636365,
+          "roc_auc": 0.9047619047619049
+        }
+      }
+    },
+    {
+      "split": 44,
+      "train_pairs": 56,
+      "test_pairs": 23,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "monday.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9565217391304348,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9833333333333333
+        },
+        "random_forest": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.95
+        },
+        "extra_trees": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9833333333333333
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8695652173913043,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.95
+        },
+        "rbf_svc": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9333333333333333
+        }
+      }
+    },
+    {
+      "split": 45,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "azure.microsoft.com",
+        "github.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.85,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9607843137254902
+        },
+        "random_forest": {
+          "accuracy": 0.85,
+          "precision": 0.5,
+          "recall": 0.3333333333333333,
+          "f1": 0.4,
+          "roc_auc": 0.9411764705882353
+        },
+        "extra_trees": {
+          "accuracy": 0.9,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9411764705882353
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.85,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9117647058823529
+        },
+        "rbf_svc": {
+          "accuracy": 0.9,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9411764705882353
+        }
+      }
+    },
+    {
+      "split": 46,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "discord.com",
+        "linear.app",
+        "slack.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.88,
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4,
+          "roc_auc": 0.9761904761904762
+        },
+        "random_forest": {
+          "accuracy": 0.84,
+          "precision": 0.5,
+          "recall": 0.25,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.9404761904761905
+        },
+        "extra_trees": {
+          "accuracy": 0.92,
+          "precision": 0.75,
+          "recall": 0.75,
+          "f1": 0.75,
+          "roc_auc": 0.9642857142857142
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.84,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9285714285714286
+        },
+        "rbf_svc": {
+          "accuracy": 0.96,
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1": 0.8888888888888888,
+          "roc_auc": 0.9523809523809523
+        }
+      }
+    },
+    {
+      "split": 47,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "discord.com",
+        "microsoft.com",
+        "monday.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.8,
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.8611111111111112
+        },
+        "extra_trees": {
+          "accuracy": 0.85,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9166666666666667
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.85,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.875
+        },
+        "rbf_svc": {
+          "accuracy": 0.85,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.8333333333333334
+        }
+      }
+    },
+    {
+      "split": 48,
+      "train_pairs": 61,
+      "test_pairs": 18,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "github.com",
+        "microsoft.com",
+        "monday.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9375
+        },
+        "random_forest": {
+          "accuracy": 0.8333333333333334,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9375
+        },
+        "extra_trees": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "roc_auc": 0.96875
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "roc_auc": 0.953125
+        },
+        "rbf_svc": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9375
+        }
+      }
+    },
+    {
+      "split": 49,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "discord.com",
+        "microsoft.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.88,
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4,
+          "roc_auc": 0.9761904761904762
+        },
+        "random_forest": {
+          "accuracy": 0.84,
+          "precision": 0.5,
+          "recall": 0.25,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.9285714285714286
+        },
+        "extra_trees": {
+          "accuracy": 0.84,
+          "precision": 0.5,
+          "recall": 0.25,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.9523809523809523
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.76,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7619047619047619
+        },
+        "rbf_svc": {
+          "accuracy": 0.92,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9523809523809523
+        }
+      }
+    },
+    {
+      "split": 50,
+      "train_pairs": 63,
+      "test_pairs": 16,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9375,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9285714285714286
+        },
+        "random_forest": {
+          "accuracy": 0.8125,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.8571428571428571
+        },
+        "extra_trees": {
+          "accuracy": 0.8125,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.8571428571428571
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8125,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9107142857142857
+        },
+        "rbf_svc": {
+          "accuracy": 0.875,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.8571428571428572
+        }
+      }
+    },
+    {
+      "split": 51,
+      "train_pairs": 55,
+      "test_pairs": 24,
+      "train_positive_pairs": 4,
+      "test_positive_pairs": 6,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8333333333333334,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9629629629629629
+        },
+        "random_forest": {
+          "accuracy": 0.7916666666666666,
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.8703703703703703
+        },
+        "extra_trees": {
+          "accuracy": 0.875,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9629629629629629
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.75,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.712962962962963
+        },
+        "rbf_svc": {
+          "accuracy": 0.875,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9259259259259259
+        }
+      }
+    },
+    {
+      "split": 52,
+      "train_pairs": 60,
+      "test_pairs": 19,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "discord.com",
+        "slab.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9473684210526315,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9473684210526315,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8947368421052632,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9791666666666667
+        },
+        "rbf_svc": {
+          "accuracy": 0.9473684210526315,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.9791666666666666
+        }
+      }
+    },
+    {
+      "split": 53,
+      "train_pairs": 60,
+      "test_pairs": 19,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "bitbucket.org",
+        "coda.io",
+        "slite.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9473684210526315,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9473684210526315,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9705882352941176
+        },
+        "extra_trees": {
+          "accuracy": 0.9473684210526315,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9473684210526315,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9705882352941175
+        },
+        "rbf_svc": {
+          "accuracy": 0.8947368421052632,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9411764705882353
+        }
+      }
+    },
+    {
+      "split": 54,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "asana.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "mattermost.com",
+        "monday.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.88,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9545454545454546
+        },
+        "random_forest": {
+          "accuracy": 0.84,
+          "precision": 0.3333333333333333,
+          "recall": 0.3333333333333333,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.9090909090909091
+        },
+        "extra_trees": {
+          "accuracy": 0.8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8636363636363635
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7727272727272727
+        },
+        "rbf_svc": {
+          "accuracy": 0.8,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8787878787878787
+        }
+      }
+    },
+    {
+      "split": 55,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "discord.com",
+        "monday.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.92,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9565217391304348
+        },
+        "random_forest": {
+          "accuracy": 0.92,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "roc_auc": 0.9782608695652174
+        },
+        "extra_trees": {
+          "accuracy": 0.92,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "roc_auc": 0.9565217391304348
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.92,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9130434782608695
+        },
+        "rbf_svc": {
+          "accuracy": 0.92,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9565217391304348
+        }
+      }
+    },
+    {
+      "split": 56,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "bitbucket.org",
+        "discord.com",
+        "mattermost.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.95,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "rbf_svc": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        }
+      }
+    },
+    {
+      "split": 57,
+      "train_pairs": 61,
+      "test_pairs": 18,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9444444444444444,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9411764705882353
+        },
+        "random_forest": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8823529411764706
+        },
+        "extra_trees": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9411764705882353
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9411764705882353
+        },
+        "rbf_svc": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9411764705882353
+        }
+      }
+    },
+    {
+      "split": 58,
+      "train_pairs": 57,
+      "test_pairs": 22,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "discord.com",
+        "mattermost.com",
+        "slab.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.8181818181818182,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.875
+        },
+        "extra_trees": {
+          "accuracy": 0.8181818181818182,
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.875
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8181818181818182,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7250000000000001
+        },
+        "rbf_svc": {
+          "accuracy": 0.8636363636363636,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.85
+        }
+      }
+    },
+    {
+      "split": 59,
+      "train_pairs": 53,
+      "test_pairs": 26,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "coda.io",
+        "linear.app",
+        "monday.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9230769230769231,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9420289855072463
+        },
+        "random_forest": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.927536231884058
+        },
+        "extra_trees": {
+          "accuracy": 0.7692307692307693,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.927536231884058
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7692307692307693,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8913043478260869
+        },
+        "rbf_svc": {
+          "accuracy": 0.7692307692307693,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8985507246376812
+        }
+      }
+    },
+    {
+      "split": 60,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "coda.io",
+        "monday.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.88,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8484848484848484
+        },
+        "random_forest": {
+          "accuracy": 0.8,
+          "precision": 0.375,
+          "recall": 1.0,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.8939393939393938
+        },
+        "extra_trees": {
+          "accuracy": 0.84,
+          "precision": 0.4,
+          "recall": 0.6666666666666666,
+          "f1": 0.5,
+          "roc_auc": 0.8787878787878787
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.68,
+          "precision": 0.2727272727272727,
+          "recall": 1.0,
+          "f1": 0.42857142857142855,
+          "roc_auc": 0.8181818181818181
+        },
+        "rbf_svc": {
+          "accuracy": 0.84,
+          "precision": 0.4,
+          "recall": 0.6666666666666666,
+          "f1": 0.5,
+          "roc_auc": 0.8333333333333334
+        }
+      }
+    },
+    {
+      "split": 61,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "linear.app",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "monday.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.96,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9583333333333334
+        },
+        "random_forest": {
+          "accuracy": 0.92,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9583333333333334
+        },
+        "extra_trees": {
+          "accuracy": 0.92,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9583333333333334
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.92,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9583333333333334
+        },
+        "rbf_svc": {
+          "accuracy": 0.88,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.9583333333333334
+        }
+      }
+    },
+    {
+      "split": 62,
+      "train_pairs": 60,
+      "test_pairs": 19,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "mattermost.com",
+        "slab.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8947368421052632,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9666666666666667
+        },
+        "random_forest": {
+          "accuracy": 0.7894736842105263,
+          "precision": 0.5,
+          "recall": 0.75,
+          "f1": 0.6,
+          "roc_auc": 0.9
+        },
+        "extra_trees": {
+          "accuracy": 0.8421052631578947,
+          "precision": 0.6666666666666666,
+          "recall": 0.5,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9333333333333333
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8421052631578947,
+          "precision": 0.5714285714285714,
+          "recall": 1.0,
+          "f1": 0.7272727272727273,
+          "roc_auc": 0.9083333333333333
+        },
+        "rbf_svc": {
+          "accuracy": 0.8947368421052632,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9166666666666667
+        }
+      }
+    },
+    {
+      "split": 63,
+      "train_pairs": 53,
+      "test_pairs": 26,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "coda.io",
+        "linear.app",
+        "monday.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8461538461538461,
+          "precision": 1.0,
+          "recall": 0.2,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.9428571428571428
+        },
+        "random_forest": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.6666666666666666,
+          "recall": 0.4,
+          "f1": 0.5,
+          "roc_auc": 0.9142857142857143
+        },
+        "extra_trees": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.75,
+          "recall": 0.6,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9333333333333333
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8076923076923077,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8571428571428571
+        },
+        "rbf_svc": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.6,
+          "recall": 0.6,
+          "f1": 0.6,
+          "roc_auc": 0.9238095238095239
+        }
+      }
+    },
+    {
+      "split": 64,
+      "train_pairs": 45,
+      "test_pairs": 34,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "coda.io",
+        "discord.com",
+        "linear.app"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8823529411764706,
+          "precision": 1.0,
+          "recall": 0.2,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.9862068965517242
+        },
+        "random_forest": {
+          "accuracy": 0.8823529411764706,
+          "precision": 1.0,
+          "recall": 0.2,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.9724137931034483
+        },
+        "extra_trees": {
+          "accuracy": 0.8529411764705882,
+          "precision": 0.5,
+          "recall": 0.2,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.9586206896551724
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7647058823529411,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.7586206896551724
+        },
+        "rbf_svc": {
+          "accuracy": 0.9117647058823529,
+          "precision": 0.625,
+          "recall": 1.0,
+          "f1": 0.7692307692307693,
+          "roc_auc": 0.9655172413793104
+        }
+      }
+    },
+    {
+      "split": 65,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "microsoft.com",
+        "monday.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.92,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9393939393939393
+        },
+        "random_forest": {
+          "accuracy": 0.84,
+          "precision": 0.4,
+          "recall": 0.6666666666666666,
+          "f1": 0.5,
+          "roc_auc": 0.8939393939393939
+        },
+        "extra_trees": {
+          "accuracy": 0.88,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9090909090909091
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8,
+          "precision": 0.25,
+          "recall": 0.3333333333333333,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.8409090909090909
+        },
+        "rbf_svc": {
+          "accuracy": 0.84,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.8636363636363636
+        }
+      }
+    },
+    {
+      "split": 66,
+      "train_pairs": 51,
+      "test_pairs": 28,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "github.com",
+        "mattermost.com",
+        "slab.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9642857142857143,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.96
+        },
+        "random_forest": {
+          "accuracy": 0.8214285714285714,
+          "precision": 0.25,
+          "recall": 0.3333333333333333,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.8133333333333334
+        },
+        "extra_trees": {
+          "accuracy": 0.8214285714285714,
+          "precision": 0.25,
+          "recall": 0.3333333333333333,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.88
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7857142857142857,
+          "precision": 0.2,
+          "recall": 0.3333333333333333,
+          "f1": 0.25,
+          "roc_auc": 0.8266666666666667
+        },
+        "rbf_svc": {
+          "accuracy": 0.8571428571428571,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.92
+        }
+      }
+    },
+    {
+      "split": 67,
+      "train_pairs": 62,
+      "test_pairs": 17,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "discord.com",
+        "linear.app",
+        "slab.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9411764705882353,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8235294117647058,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9999999999999999
+        },
+        "rbf_svc": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.9285714285714286
+        }
+      }
+    },
+    {
+      "split": 68,
+      "train_pairs": 51,
+      "test_pairs": 28,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "coda.io",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9285714285714286,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.8933333333333333
+        },
+        "random_forest": {
+          "accuracy": 0.7142857142857143,
+          "precision": 0.2222222222222222,
+          "recall": 0.6666666666666666,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.7933333333333333
+        },
+        "extra_trees": {
+          "accuracy": 0.7857142857142857,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8533333333333333
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7142857142857143,
+          "precision": 0.2222222222222222,
+          "recall": 0.6666666666666666,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.7866666666666666
+        },
+        "rbf_svc": {
+          "accuracy": 0.6785714285714286,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.8666666666666667
+        }
+      }
+    },
+    {
+      "split": 69,
+      "train_pairs": 57,
+      "test_pairs": 22,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "coda.io",
+        "microsoft.com",
+        "monday.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9090909090909091,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.875
+        },
+        "random_forest": {
+          "accuracy": 0.8636363636363636,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9
+        },
+        "extra_trees": {
+          "accuracy": 0.8181818181818182,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8181818181818182,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9
+        },
+        "rbf_svc": {
+          "accuracy": 0.7272727272727273,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.9
+        }
+      }
+    },
+    {
+      "split": 70,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "clickup.com",
+        "coda.io",
+        "linear.app",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.95,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.85,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.85,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9705882352941176
+        },
+        "rbf_svc": {
+          "accuracy": 0.85,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9215686274509803
+        }
+      }
+    },
+    {
+      "split": 71,
+      "train_pairs": 67,
+      "test_pairs": 12,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "slab.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9166666666666666,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9
+        },
+        "random_forest": {
+          "accuracy": 0.75,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.85
+        },
+        "extra_trees": {
+          "accuracy": 0.75,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.75,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9
+        },
+        "rbf_svc": {
+          "accuracy": 0.6666666666666666,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.85
+        }
+      }
+    },
+    {
+      "split": 72,
+      "train_pairs": 61,
+      "test_pairs": 18,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "clickup.com",
+        "coda.io",
+        "mattermost.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9444444444444444,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "roc_auc": 0.9375
+        },
+        "extra_trees": {
+          "accuracy": 0.9444444444444444,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.96875
+        },
+        "rbf_svc": {
+          "accuracy": 0.8333333333333334,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.96875
+        }
+      }
+    },
+    {
+      "split": 73,
+      "train_pairs": 57,
+      "test_pairs": 22,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "linear.app",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "microsoft.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9545454545454546,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9523809523809523
+        },
+        "random_forest": {
+          "accuracy": 0.9090909090909091,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9545454545454546,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9523809523809524
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9090909090909091,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9523809523809523
+        },
+        "rbf_svc": {
+          "accuracy": 0.9545454545454546,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9523809523809523
+        }
+      }
+    },
+    {
+      "split": 74,
+      "train_pairs": 59,
+      "test_pairs": 20,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "discord.com",
+        "microsoft.com",
+        "monday.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.736842105263158
+        },
+        "extra_trees": {
+          "accuracy": 0.8,
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.8421052631578947
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8421052631578947
+        },
+        "rbf_svc": {
+          "accuracy": 0.8,
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.8421052631578947
+        }
+      }
+    },
+    {
+      "split": 75,
+      "train_pairs": 53,
+      "test_pairs": 26,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "coda.io",
+        "discord.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "github.com",
+        "linear.app"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9230769230769231,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9230769230769231,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9230769230769231,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9772727272727273
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8076923076923077,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8181818181818181
+        },
+        "rbf_svc": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.6,
+          "recall": 0.75,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9659090909090909
+        }
+      }
+    },
+    {
+      "split": 76,
+      "train_pairs": 61,
+      "test_pairs": 18,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "bitbucket.org",
+        "github.com",
+        "microsoft.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9444444444444444,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.96875
+        },
+        "random_forest": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9444444444444444,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.96875
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.90625
+        },
+        "rbf_svc": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.96875
+        }
+      }
+    },
+    {
+      "split": 77,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 4,
+      "test_positive_pairs": 6,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "linear.app",
+        "slab.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.88,
+          "precision": 0.7142857142857143,
+          "recall": 0.8333333333333334,
+          "f1": 0.7692307692307693,
+          "roc_auc": 0.9824561403508771
+        },
+        "random_forest": {
+          "accuracy": 0.8,
+          "precision": 0.6,
+          "recall": 0.5,
+          "f1": 0.5454545454545454,
+          "roc_auc": 0.9122807017543859
+        },
+        "extra_trees": {
+          "accuracy": 0.84,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.8859649122807018
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.76,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9035087719298246
+        },
+        "rbf_svc": {
+          "accuracy": 0.76,
+          "precision": 0.5,
+          "recall": 0.3333333333333333,
+          "f1": 0.4,
+          "roc_auc": 0.8859649122807017
+        }
+      }
+    },
+    {
+      "split": 78,
+      "train_pairs": 60,
+      "test_pairs": 19,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "github.com",
+        "slab.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9473684210526315,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9705882352941176
+        },
+        "random_forest": {
+          "accuracy": 0.8947368421052632,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "roc_auc": 0.9705882352941176
+        },
+        "extra_trees": {
+          "accuracy": 0.9473684210526315,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9473684210526315,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9852941176470589
+        },
+        "rbf_svc": {
+          "accuracy": 0.9473684210526315,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9705882352941176
+        }
+      }
+    },
+    {
+      "split": 79,
+      "train_pairs": 56,
+      "test_pairs": 23,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9565217391304348,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9833333333333333
+        },
+        "random_forest": {
+          "accuracy": 0.8260869565217391,
+          "precision": 0.4,
+          "recall": 0.6666666666666666,
+          "f1": 0.5,
+          "roc_auc": 0.9166666666666666
+        },
+        "extra_trees": {
+          "accuracy": 0.9565217391304348,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.9833333333333333
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8695652173913043,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.975
+        },
+        "rbf_svc": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9666666666666667
+        }
+      }
+    },
+    {
+      "split": 80,
+      "train_pairs": 49,
+      "test_pairs": 30,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "coda.io",
+        "discord.com",
+        "linear.app",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9333333333333333,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.962962962962963
+        },
+        "random_forest": {
+          "accuracy": 0.9333333333333333,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9753086419753086
+        },
+        "extra_trees": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9506172839506173
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8703703703703703
+        },
+        "rbf_svc": {
+          "accuracy": 0.9,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9753086419753086
+        }
+      }
+    },
+    {
+      "split": 81,
+      "train_pairs": 57,
+      "test_pairs": 22,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "mattermost.com",
+        "microsoft.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8636363636363636,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9649122807017545
+        },
+        "random_forest": {
+          "accuracy": 0.8636363636363636,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9122807017543859
+        },
+        "extra_trees": {
+          "accuracy": 0.9090909090909091,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9473684210526316
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8636363636363636,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.868421052631579
+        },
+        "rbf_svc": {
+          "accuracy": 0.9090909090909091,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9473684210526316
+        }
+      }
+    },
+    {
+      "split": 82,
+      "train_pairs": 62,
+      "test_pairs": 17,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slack.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "discord.com",
+        "github.com",
+        "slab.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9411764705882353,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9411764705882353,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "rbf_svc": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9666666666666667
+        }
+      }
+    },
+    {
+      "split": 83,
+      "train_pairs": 62,
+      "test_pairs": 17,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "coda.io",
+        "monday.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9375
+        },
+        "random_forest": {
+          "accuracy": 0.8823529411764706,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9375
+        },
+        "extra_trees": {
+          "accuracy": 0.8235294117647058,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.9375
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8823529411764706,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9375
+        },
+        "rbf_svc": {
+          "accuracy": 0.8235294117647058,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.875
+        }
+      }
+    },
+    {
+      "split": 84,
+      "train_pairs": 56,
+      "test_pairs": 23,
+      "train_positive_pairs": 9,
+      "test_positive_pairs": 1,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "monday.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9565217391304348,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9545454545454546
+        },
+        "random_forest": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9545454545454546
+        },
+        "extra_trees": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9545454545454546
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9130434782608695,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.9545454545454546
+        },
+        "rbf_svc": {
+          "accuracy": 0.8695652173913043,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "roc_auc": 0.9545454545454546
+        }
+      }
+    },
+    {
+      "split": 85,
+      "train_pairs": 62,
+      "test_pairs": 17,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "bitbucket.org",
+        "linear.app",
+        "microsoft.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9411764705882353,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8823529411764706,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "rbf_svc": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        }
+      }
+    },
+    {
+      "split": 86,
+      "train_pairs": 63,
+      "test_pairs": 16,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "coda.io",
+        "microsoft.com",
+        "monday.com",
+        "slab.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9375,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9487179487179487
+        },
+        "random_forest": {
+          "accuracy": 0.75,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.9487179487179488
+        },
+        "extra_trees": {
+          "accuracy": 0.75,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.9487179487179487
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8125,
+          "precision": 0.5,
+          "recall": 0.6666666666666666,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.8717948717948718
+        },
+        "rbf_svc": {
+          "accuracy": 0.75,
+          "precision": 0.42857142857142855,
+          "recall": 1.0,
+          "f1": 0.6,
+          "roc_auc": 0.8717948717948717
+        }
+      }
+    },
+    {
+      "split": 87,
+      "train_pairs": 55,
+      "test_pairs": 24,
+      "train_positive_pairs": 4,
+      "test_positive_pairs": 6,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8333333333333334,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9629629629629629
+        },
+        "random_forest": {
+          "accuracy": 0.7916666666666666,
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.9166666666666666
+        },
+        "extra_trees": {
+          "accuracy": 0.8333333333333334,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9537037037037036
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.75,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.712962962962963
+        },
+        "rbf_svc": {
+          "accuracy": 0.875,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9259259259259259
+        }
+      }
+    },
+    {
+      "split": 88,
+      "train_pairs": 55,
+      "test_pairs": 24,
+      "train_positive_pairs": 4,
+      "test_positive_pairs": 6,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "asana.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.875,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9444444444444444
+        },
+        "random_forest": {
+          "accuracy": 0.75,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "roc_auc": 0.8888888888888888
+        },
+        "extra_trees": {
+          "accuracy": 0.875,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9166666666666667
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.75,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.837962962962963
+        },
+        "rbf_svc": {
+          "accuracy": 0.875,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.8333333333333334
+        }
+      }
+    },
+    {
+      "split": 89,
+      "train_pairs": 58,
+      "test_pairs": 21,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "bitbucket.org",
+        "coda.io",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "discord.com",
+        "monday.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9047619047619048,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9629629629629629
+        },
+        "random_forest": {
+          "accuracy": 0.9047619047619048,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9814814814814814
+        },
+        "extra_trees": {
+          "accuracy": 0.9047619047619048,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9629629629629629
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8571428571428571,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.888888888888889
+        },
+        "rbf_svc": {
+          "accuracy": 0.9047619047619048,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9444444444444444
+        }
+      }
+    },
+    {
+      "split": 90,
+      "train_pairs": 53,
+      "test_pairs": 26,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "bitbucket.org",
+        "clickup.com",
+        "linear.app",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9615384615384616,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9230769230769231,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9855072463768116
+        },
+        "extra_trees": {
+          "accuracy": 0.9615384615384616,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.9855072463768116
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8695652173913043
+        },
+        "rbf_svc": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9420289855072465
+        }
+      }
+    },
+    {
+      "split": 91,
+      "train_pairs": 63,
+      "test_pairs": 16,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "linear.app",
+        "slab.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9375,
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091,
+          "roc_auc": 0.9818181818181818
+        },
+        "random_forest": {
+          "accuracy": 0.75,
+          "precision": 0.5714285714285714,
+          "recall": 0.8,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.8363636363636364
+        },
+        "extra_trees": {
+          "accuracy": 0.75,
+          "precision": 0.5555555555555556,
+          "recall": 1.0,
+          "f1": 0.7142857142857143,
+          "roc_auc": 0.9090909090909092
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.6875,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8909090909090909
+        },
+        "rbf_svc": {
+          "accuracy": 0.5,
+          "precision": 0.2,
+          "recall": 0.2,
+          "f1": 0.2,
+          "roc_auc": 0.7090909090909091
+        }
+      }
+    },
+    {
+      "split": 92,
+      "train_pairs": 54,
+      "test_pairs": 25,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "linear.app",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "azure.microsoft.com",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.92,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.92,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.96,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.92,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9782608695652174
+        },
+        "rbf_svc": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        }
+      }
+    },
+    {
+      "split": 93,
+      "train_pairs": 67,
+      "test_pairs": 12,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "linear.app",
+        "microsoft.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8333333333333334,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "rbf_svc": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9
+        }
+      }
+    },
+    {
+      "split": 94,
+      "train_pairs": 62,
+      "test_pairs": 17,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "clickup.com",
+        "coda.io",
+        "mattermost.com",
+        "microsoft.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9411764705882353,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.9411764705882353,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.8823529411764706,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9666666666666667
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.9411764705882353,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "roc_auc": 0.9666666666666667
+        },
+        "rbf_svc": {
+          "accuracy": 0.8235294117647058,
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1": 0.5714285714285714,
+          "roc_auc": 1.0
+        }
+      }
+    },
+    {
+      "split": 95,
+      "train_pairs": 55,
+      "test_pairs": 24,
+      "train_positive_pairs": 8,
+      "test_positive_pairs": 2,
+      "train_source_domains": [
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9583333333333334,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9318181818181819
+        },
+        "random_forest": {
+          "accuracy": 0.8333333333333334,
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.8181818181818181
+        },
+        "extra_trees": {
+          "accuracy": 0.8333333333333334,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "roc_auc": 0.8636363636363636
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7916666666666666,
+          "precision": 0.2,
+          "recall": 0.5,
+          "f1": 0.2857142857142857,
+          "roc_auc": 0.8068181818181818
+        },
+        "rbf_svc": {
+          "accuracy": 0.7916666666666666,
+          "precision": 0.2857142857142857,
+          "recall": 1.0,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.8863636363636362
+        }
+      }
+    },
+    {
+      "split": 96,
+      "train_pairs": 67,
+      "test_pairs": 12,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "monday.com",
+        "slack.com",
+        "stripe.com"
+      ],
+      "test_source_domains": [
+        "linear.app",
+        "microsoft.com",
+        "slab.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "random_forest": {
+          "accuracy": 0.8333333333333334,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.75,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 1.0
+        },
+        "rbf_svc": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0
+        }
+      }
+    },
+    {
+      "split": 97,
+      "train_pairs": 61,
+      "test_pairs": 18,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "coda.io",
+        "github.com",
+        "mattermost.com",
+        "monday.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "discord.com",
+        "linear.app",
+        "microsoft.com",
+        "slab.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.9444444444444444,
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "roc_auc": 0.9777777777777777
+        },
+        "random_forest": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9333333333333333
+        },
+        "extra_trees": {
+          "accuracy": 0.9444444444444444,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571428571428571,
+          "roc_auc": 0.9777777777777777
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.9333333333333333
+        },
+        "rbf_svc": {
+          "accuracy": 0.8888888888888888,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 0.9555555555555556
+        }
+      }
+    },
+    {
+      "split": 98,
+      "train_pairs": 53,
+      "test_pairs": 26,
+      "train_positive_pairs": 6,
+      "test_positive_pairs": 4,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "azure.microsoft.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "github.com",
+        "mattermost.com",
+        "monday.com",
+        "slab.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "coda.io",
+        "linear.app",
+        "microsoft.com",
+        "slack.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8846153846153846,
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4,
+          "roc_auc": 0.9318181818181818
+        },
+        "random_forest": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.5714285714285714,
+          "recall": 1.0,
+          "f1": 0.7272727272727273,
+          "roc_auc": 0.9772727272727273
+        },
+        "extra_trees": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.6666666666666666,
+          "recall": 0.5,
+          "f1": 0.5714285714285714,
+          "roc_auc": 0.9318181818181818
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.8461538461538461,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.8863636363636364
+        },
+        "rbf_svc": {
+          "accuracy": 0.8846153846153846,
+          "precision": 0.6,
+          "recall": 0.75,
+          "f1": 0.6666666666666666,
+          "roc_auc": 0.8977272727272727
+        }
+      }
+    },
+    {
+      "split": 99,
+      "train_pairs": 50,
+      "test_pairs": 29,
+      "train_positive_pairs": 5,
+      "test_positive_pairs": 5,
+      "train_source_domains": [
+        "asana.com",
+        "atlassian.com",
+        "bitbucket.org",
+        "discord.com",
+        "github.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "stripe.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "about.gitlab.com",
+        "azure.microsoft.com",
+        "clickup.com",
+        "coda.io",
+        "monday.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.8620689655172413,
+          "precision": 1.0,
+          "recall": 0.2,
+          "f1": 0.3333333333333333,
+          "roc_auc": 0.95
+        },
+        "random_forest": {
+          "accuracy": 0.8275862068965517,
+          "precision": 0.5,
+          "recall": 0.4,
+          "f1": 0.4444444444444444,
+          "roc_auc": 0.925
+        },
+        "extra_trees": {
+          "accuracy": 0.7931034482758621,
+          "precision": 0.3333333333333333,
+          "recall": 0.2,
+          "f1": 0.25,
+          "roc_auc": 0.875
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.7241379310344828,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.6666666666666666
+        },
+        "rbf_svc": {
+          "accuracy": 0.7241379310344828,
+          "precision": 0.38461538461538464,
+          "recall": 1.0,
+          "f1": 0.5555555555555556,
+          "roc_auc": 0.9
+        }
+      }
+    },
+    {
+      "split": 100,
+      "train_pairs": 55,
+      "test_pairs": 24,
+      "train_positive_pairs": 7,
+      "test_positive_pairs": 3,
+      "train_source_domains": [
+        "about.gitlab.com",
+        "asana.com",
+        "bitbucket.org",
+        "clickup.com",
+        "discord.com",
+        "linear.app",
+        "mattermost.com",
+        "microsoft.com",
+        "monday.com",
+        "slab.com",
+        "slack.com",
+        "slite.com",
+        "trello.com"
+      ],
+      "test_source_domains": [
+        "atlassian.com",
+        "azure.microsoft.com",
+        "coda.io",
+        "github.com",
+        "stripe.com"
+      ],
+      "source_domain_overlap": [],
+      "algorithms": {
+        "logistic_regression": {
+          "accuracy": 0.875,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9841269841269841
+        },
+        "random_forest": {
+          "accuracy": 0.9166666666666666,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 1.0
+        },
+        "extra_trees": {
+          "accuracy": 0.9166666666666666,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "roc_auc": 0.9682539682539683
+        },
+        "hist_gradient_boosting": {
+          "accuracy": 0.875,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "roc_auc": 0.9523809523809523
+        },
+        "rbf_svc": {
+          "accuracy": 0.9166666666666666,
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "roc_auc": 1.0
+        }
+      }
+    }
+  ],
+  "warning": "Exploratory results only. Repeated holdouts may reuse domains and test examples, so split scores are not independent. Results require larger, representative, independently reviewed labels. Candidate domains may overlap by design; source domains do not overlap within any individual split."
+}
